@@ -29,4 +29,3 @@ input[type=file]{background:rgba(255,255,255,0.02);padding:10px;border-radius:8p
 .export-row{display:flex;gap:8px;flex-wrap:wrap}
 .footer{padding:12px;text-align:center;color:var(--muted);font-size:13px}
 @media (max-width:900px){ .grid{grid-template-columns:1fr} .brand h1{font-size:16px} }
-      
