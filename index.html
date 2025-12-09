@@ -1,128 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ANJ Dual OCR Parser — Preview & Export</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ANJ Invoice — Hybrid OCR + Parser</title>
 
-  <link rel="stylesheet" href="style.css" />
+<!-- Styles -->
+<link rel="stylesheet" href="style.css" />
 
-  <!-- PDF.js (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
-  <script>
-    pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.worker.min.js';
-  </script>
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
+<script>
+  pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.worker.min.js";
+</script>
 
-  <!-- Tesseract.js (v4) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
-  <!-- Export libs -->
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
-  <header class="app-header">
-    <div class="brand">
-      <img src="icon-128.png" alt="ANJ" class="logo" />
-      <div>
-        <h1>ANJ Dual OCR Parser</h1>
-        <small>Dual-pass OCR · Smart Parser · Preview & Export (JSON/CSV/XLSX/Tally XML/PDF/ZIP/TXT)</small>
-      </div>
+
+<header class="header">
+  <h1>ANJ Invoice — OCR + Parser + Export Hub</h1>
+  <div id="statusBar" class="status">Ready</div>
+</header>
+
+<main class="main">
+
+  <!-- Upload Section -->
+  <section class="card upload-card">
+    <h2>1. Upload Invoice</h2>
+
+    <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
+
+    <div class="row">
+      <button id="ocrBtn" class="btn outline">OCR Only</button>
+      <button id="parseBtn" class="btn gold">OCR + Parse + Preview</button>
     </div>
-    <div class="header-actions">
-      <button id="clearBtn" class="btn outline">Clear History</button>
+  </section>
+
+  <!-- Previews Section -->
+  <section class="card preview-card">
+    <h2>2. Extracted Data Preview</h2>
+
+    <div id="preview-container" class="preview-area">
+
+      <h3>Summary</h3>
+      <pre id="summaryBox" class="box small">—</pre>
+
+      <h3>Raw OCR Text</h3>
+      <pre id="rawTextEl" class="box large">—</pre>
+
+      <h3>Items Table</h3>
+      <pre id="itemsTable" class="box medium">—</pre>
+
+      <h3>Excel Preview (TSV)</h3>
+      <pre id="excelPreview" class="box medium">—</pre>
+
+      <h3>Tally Preview</h3>
+      <pre id="tallyPreview" class="box medium">—</pre>
+
+      <h3>JSON Preview</h3>
+      <pre id="jsonPreview" class="box large">—</pre>
+
+      <h3>Text Preview</h3>
+      <pre id="textPreview" class="box medium">—</pre>
+
+      <h3>ZIP Contents Preview</h3>
+      <pre id="zipPreview" class="box small">—</pre>
+
     </div>
-  </header>
+  </section>
 
-  <main class="main">
-    <section class="card upload-card">
-      <h2>Upload Bill / Invoice</h2>
-      <div class="file-row">
-        <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
-        <div class="hint">Supported: PDF, PNG, JPG, TXT. Uses dual OCR: quick + enhanced.</div>
-      </div>
+  <!-- Export Section -->
+  <section class="card export-card">
+    <h2>3. Export Files</h2>
 
-      <div class="controls">
-        <button id="parseBtn" class="btn gold">Parse (Dual OCR)</button>
-        <button id="ocrOnlyBtn" class="btn">OCR Only (Show both passes)</button>
-      </div>
+    <div class="row wrap">
+      <button id="exportJSON" class="btn gold">Export JSON</button>
+      <button id="exportTXT" class="btn gold">Export TXT</button>
+      <button id="exportEXCEL" class="btn gold">Export Excel (TSV)</button>
+      <button id="exportTALLY" class="btn gold">Export Tally</button>
+      <button id="exportPDF" class="btn gold">Export PDF</button>
+      <button id="exportZIP" class="btn gold">Export ZIP (All Files)</button>
+    </div>
 
-      <div id="status" class="status">Ready</div>
-    </section>
+    <div class="row">
+      <button id="saveHistoryBtn" class="btn outline">Save to History</button>
+    </div>
+  </section>
 
-    <section class="card grid">
-      <div class="col">
-        <h3>Raw OCR (combined)</h3>
-        <pre id="rawText" class="box mono">No OCR yet.</pre>
-        <h4>Pass Logs</h4>
-        <pre id="logBox" class="box mono small">Logs...</pre>
-      </div>
+  <!-- Debug Log -->
+  <section class="card debug-card">
+    <h2>Debug Log</h2>
+    <textarea id="debugLog" class="debug-box" readonly></textarea>
+  </section>
 
-      <div class="col">
-        <h3>Structured Extracted Data</h3>
-        <div id="structured" class="box small">
-          <div><strong>Date:</strong> <span id="o_date">-</span></div>
-          <div><strong>Total:</strong> <span id="o_total">-</span></div>
-          <div><strong>Merchant:</strong> <span id="o_merchant">-</span></div>
-          <div><strong>Category:</strong> <span id="o_category">-</span></div>
-          <div><strong>Confidence:</strong> <span id="o_confidence">-</span></div>
+</main>
 
-          <div style="margin-top:8px"><strong>Items (best-effort)</strong>
-            <pre id="o_items" class="mono">—</pre>
-          </div>
+<footer class="footer">
+  ANJ Creator Hub © 2025 — Build v1.0
+</footer>
 
-          <div class="buttons-row">
-            <button id="editBtn" class="btn">Edit Fields</button>
-            <button id="saveBtn" class="btn gold">Save to History</button>
-          </div>
-        </div>
-      </div>
+<!-- Main Script (Parts 1–10 Combined) -->
+<script src="script.js"></script>
 
-      <div class="col">
-        <h3>Export Preview & Actions</h3>
-        <div class="box small">
-          <div class="export-row">
-            <button id="previewJsonBtn" class="btn">Preview JSON</button>
-            <button id="previewCsvBtn" class="btn">Preview CSV</button>
-            <button id="previewXlsBtn" class="btn">Preview XLSX</button>
-          </div>
-
-          <div class="export-row" style="margin-top:8px">
-            <button id="previewTallyBtn" class="btn">Preview Tally XML</button>
-            <button id="previewTxtBtn" class="btn">Preview TXT</button>
-          </div>
-
-          <div class="export-row" style="margin-top:8px">
-            <button id="exportJsonBtn" class="btn">Download JSON</button>
-            <button id="exportCsvBtn" class="btn">Download CSV</button>
-            <button id="exportXlsBtn" class="btn">Download XLSX</button>
-          </div>
-
-          <div class="export-row" style="margin-top:8px">
-            <button id="exportPdfBtn" class="btn">Export PDF (visual)</button>
-            <button id="exportZipBtn" class="btn gold">Download ZIP (JSON + PDF + TXT)</button>
-          </div>
-
-          <div style="margin-top:10px;color:var(--muted);font-size:13px">Preview</div>
-          <pre id="previewBox" class="mono box small">No preview</pre>
-        </div>
-      </div>
-    </section>
-
-    <section class="card" id="historyCard">
-      <h2>Saved History (client-side)</h2>
-      <div id="historyList" class="box small">No saved records</div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    ANJ Creator Hub © 2025 · ANJ Dual OCR Parser
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>
