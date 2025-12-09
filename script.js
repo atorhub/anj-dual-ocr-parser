@@ -1,15 +1,3 @@
-/*
-  script.js — ANJ Dual OCR Parser (combined)
-  Option B: Dual OCR + Local WebLLM cleanup + Previews + Exports + IndexedDB history
-  Delivered in 10 parts — paste sequentially into script.js
-  Part 1: UI refs, IndexedDB wrapper init, status/log helpers, file/image helpers,
-          quickOCR + enhancedOCR, extractTextFromFile, basic parser & merge,
-          initial parse/ocr-only handlers (store lastExtract/lastMerged).
-*/
-
-/* =========================
-   UI References
-   ========================= */
 const fileInput = document.getElementById('fileInput');
 const parseBtn = document.getElementById('parseBtn');
 const ocrOnlyBtn = document.getElementById('ocrOnlyBtn');
