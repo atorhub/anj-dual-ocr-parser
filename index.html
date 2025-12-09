@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ANJ Invoice — OCR · Parser · Export (Dual OCR)</title>
+  <title>ANJ Dual OCR Parser — Preview & Export</title>
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- PDF.js (for PDFs) -->
+  <!-- PDF.js (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
   <script>
     pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
@@ -15,10 +15,10 @@
       'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.worker.min.js';
   </script>
 
-  <!-- Tesseract.js -->
+  <!-- Tesseract.js (v4) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
 
-  <!-- Export libraries -->
+  <!-- Export libs -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -29,12 +29,12 @@
     <div class="brand">
       <img src="icon-128.png" alt="ANJ" class="logo" />
       <div>
-        <h1>ANJ Invoice — Dual OCR (v1)</h1>
-        <small>OCR → Parser → Export (JSON/CSV/XLSX/PDF/ZIP)</small>
+        <h1>ANJ Dual OCR Parser</h1>
+        <small>Dual-pass OCR · Smart Parser · Preview & Export (JSON/CSV/XLSX/Tally XML/PDF/ZIP/TXT)</small>
       </div>
     </div>
     <div class="header-actions">
-      <button id="clearBtn" class="btn outline">Clear</button>
+      <button id="clearBtn" class="btn outline">Clear History</button>
     </div>
   </header>
 
@@ -43,12 +43,12 @@
       <h2>Upload Bill / Invoice</h2>
       <div class="file-row">
         <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
-        <div class="hint">Supported: PDF, PNG, JPG, TXT. Dual OCR: quick pass + enhanced pass.</div>
+        <div class="hint">Supported: PDF, PNG, JPG, TXT. Uses dual OCR: quick + enhanced.</div>
       </div>
 
       <div class="controls">
         <button id="parseBtn" class="btn gold">Parse (Dual OCR)</button>
-        <button id="ocrOnlyBtn" class="btn">OCR Only</button>
+        <button id="ocrOnlyBtn" class="btn">OCR Only (Show both passes)</button>
       </div>
 
       <div id="status" class="status">Ready</div>
@@ -58,6 +58,8 @@
       <div class="col">
         <h3>Raw OCR (combined)</h3>
         <pre id="rawText" class="box mono">No OCR yet.</pre>
+        <h4>Pass Logs</h4>
+        <pre id="logBox" class="box mono small">Logs...</pre>
       </div>
 
       <div class="col">
@@ -68,12 +70,14 @@
           <div><strong>Merchant:</strong> <span id="o_merchant">-</span></div>
           <div><strong>Category:</strong> <span id="o_category">-</span></div>
           <div><strong>Confidence:</strong> <span id="o_confidence">-</span></div>
+
           <div style="margin-top:8px"><strong>Items (best-effort)</strong>
             <pre id="o_items" class="mono">—</pre>
           </div>
+
           <div class="buttons-row">
-            <button id="editBtn" class="btn">Edit</button>
-            <button id="saveBtn" class="btn gold">Save JSON</button>
+            <button id="editBtn" class="btn">Edit Fields</button>
+            <button id="saveBtn" class="btn gold">Save to History</button>
           </div>
         </div>
       </div>
@@ -82,16 +86,29 @@
         <h3>Export Preview & Actions</h3>
         <div class="box small">
           <div class="export-row">
-            <button id="exportJsonBtn" class="btn">Export JSON</button>
-            <button id="exportCsvBtn" class="btn">Export CSV</button>
-            <button id="exportXlsBtn" class="btn">Export XLSX</button>
+            <button id="previewJsonBtn" class="btn">Preview JSON</button>
+            <button id="previewCsvBtn" class="btn">Preview CSV</button>
+            <button id="previewXlsBtn" class="btn">Preview XLSX</button>
           </div>
+
+          <div class="export-row" style="margin-top:8px">
+            <button id="previewTallyBtn" class="btn">Preview Tally XML</button>
+            <button id="previewTxtBtn" class="btn">Preview TXT</button>
+          </div>
+
+          <div class="export-row" style="margin-top:8px">
+            <button id="exportJsonBtn" class="btn">Download JSON</button>
+            <button id="exportCsvBtn" class="btn">Download CSV</button>
+            <button id="exportXlsBtn" class="btn">Download XLSX</button>
+          </div>
+
           <div class="export-row" style="margin-top:8px">
             <button id="exportPdfBtn" class="btn">Export PDF (visual)</button>
-            <button id="exportZipBtn" class="btn gold">Download ZIP (JSON + PDF)</button>
+            <button id="exportZipBtn" class="btn gold">Download ZIP (JSON + PDF + TXT)</button>
           </div>
-          <div style="margin-top:10px;color:var(--muted);font-size:13px">Preview of structured JSON</div>
-          <pre id="preview" class="mono box small">No preview</pre>
+
+          <div style="margin-top:10px;color:var(--muted);font-size:13px">Preview</div>
+          <pre id="previewBox" class="mono box small">No preview</pre>
         </div>
       </div>
     </section>
@@ -103,10 +120,9 @@
   </main>
 
   <footer class="footer">
-    ANJ Creator Hub © 2025 · ANJ Invoice Dual-OCR · Deploy on GitHub Pages
+    ANJ Creator Hub © 2025 · ANJ Dual OCR Parser
   </footer>
 
   <script src="script.js"></script>
 </body>
-    </html>
-    
+</html>
