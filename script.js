@@ -489,12 +489,6 @@ ocrOnlyBtn && ocrOnlyBtn.addEventListener('click', async () => {
     alert('OCR failed: ' + (err && err.message || err));
   }
 });
-
-/* End of Part 1 */
-   /* =========================================================
-   PART 2 — Local AI (WebLLM) Cleanup + AI Handler
-   ========================================================= */
-
 // WebLLM global engine
 let webllmEngine = null;
 let webllmReady = false;
@@ -635,12 +629,6 @@ aiCleanupBtn && aiCleanupBtn.addEventListener("click", async () => {
     alert("AI cleanup failed: " + (err.message || err));
   }
 });
-
-/* End of Part 2 */
-/* =========================================================
-   PART 3 — PREVIEW GENERATORS (JSON / CSV / XLSX / TXT / TALLY)
-   ========================================================= */
-
 function getFinalOrMerged() {
   return window.lastFinal || window.lastMerged;
 }
@@ -770,12 +758,6 @@ previewTallyBtn &&
     previewBox.textContent = toTallyXML(d);
     setStatus("Preview: Tally XML");
   });
-
-/* End of Part 3 */
-/* =========================================================
-   PART 4 — EXPORT FUNCTIONS (JSON / CSV / XLSX / TXT / PDF / ZIP)
-   ========================================================= */
-
 function getExportData() {
   return window.lastFinal || window.lastMerged;
 }
@@ -942,12 +924,6 @@ exportZipBtn &&
     if (!d) return alert("Parse first");
     await exportZIP(d);
   });
-
-/* End of Part 4 */
-/* =========================================================
-   PART 5 — HISTORY SYSTEM (IndexedDB Save / Load / Delete)
-   ========================================================= */
-
 // Global DB reference
 let db = null;
 const DB_NAME = "anj_expense_ai_db";
@@ -1126,12 +1102,6 @@ clearHistoryBtn &&
     await refreshHistoryUI();
     setStatus("History cleared");
   });
-
-/* End of Part 5 */
- /* =========================================================
-   PART 6 — OCR ENGINE (Tesseract + PDF Extraction + Enhancer)
-   ========================================================= */
-
 let lastRawText = "";
 
 /* =========================================================
@@ -1270,12 +1240,6 @@ function fileToDataURL(file) {
     r.readAsDataURL(file);
   });
 }
-
-/* End of Part 6 */
-/* =========================================================
-   PART 7 — PARSER ENGINE (Smart Heuristic + Patterns)
-   ========================================================= */
-
 /* =========================================================
    MASTER PARSE FUNCTION
    ========================================================= */
@@ -1451,12 +1415,6 @@ function extractNotes(text) {
   const lines = text.split("\n");
   return lines.slice(-5).join("\n");
 }
-
-/* End of Part 7 */
-/* =========================================================
-   PART 8 — MERGER + PREVIEW RENDERER + HISTORY WRAPPER
-   ========================================================= */
-
 /* Global holder for final bill before exports */
 window.lastMerged = null;
 window.lastFinal = null;
@@ -1592,11 +1550,7 @@ async function saveToHistory(finalObj) {
     tx.onerror = (e) => reject(e);
   });
 }
-
-/* End of Part 8 */
-/* =========================================================
-   PART 9 — EXPORT ENGINE (JSON, TXT, TSV, TALLY, PDF, ZIP)
-   ========================================================= */
+======== */
 
 /* =========================================================
    Export: JSON
@@ -1766,12 +1720,6 @@ function triggerDownload(blob, filename) {
   a.click();
   URL.revokeObjectURL(url);
 }
-
-/* End of Part 9 */
-/* =========================================================
-   PART 10 — EVENT HANDLERS + GLUE + STATUS SYSTEM
-   ========================================================= */
-
 /* ---------------------------------------------------------
    UI ELEMENT REFERENCES
 --------------------------------------------------------- */
@@ -1948,5 +1896,15 @@ exportZIPbtn.addEventListener("click", () => {
   setStatus("Ready");
 })();
 
-/* End of PART 10 — FULL SCRIPT.JS COMPLETE */
+ 
 
+
+
+
+
+
+
+
+
+
+    
