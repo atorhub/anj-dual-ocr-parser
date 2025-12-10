@@ -1,113 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ANJ Invoice — Hybrid OCR + Parser</title>
+<meta charset="UTF-8">
+<title>ANJ Dual OCR Parser</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Styles -->
-<link rel="stylesheet" href="style.css" />
-
-<!-- Libraries -->
+<!-- PDF.js -->
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
 <script>
-  pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.worker.min.js";
+pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.10.177/build/pdf.worker.min.js";
 </script>
 
+<!-- Tesseract.js -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
+
+<!-- html2canvas -->
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<!-- jsPDF -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<!-- JSZip -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
+<link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<header class="header">
-  <h1>ANJ Invoice — OCR + Parser + Export Hub</h1>
-  <div id="statusBar" class="status">Ready</div>
+<header>
+  <h1>ANJ Dual OCR Invoice Parser</h1>
+
+  <div class="theme-row">
+    <label>Select Theme:</label>
+    <select id="themeSelect">
+      <option value="rose">Rose Nebula</option>
+      <option value="lilac">Lilac Glow</option>
+      <option value="cotton">Cotton Candy Sky</option>
+      <option value="galaxy">Galaxy Glitter</option>
+      <option value="blush">Dreamy Blush</option>
+      <option value="fairy">Fairy Dust</option>
+    </select>
+  </div>
 </header>
 
-<main class="main">
+<main>
 
-  <!-- Upload Section -->
-  <section class="card upload-card">
-    <h2>1. Upload Invoice</h2>
+  <section class="card">
+    <h2>Upload Invoice</h2>
+    <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" />
 
-    <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
+    <div class="button-row">
+      <button id="dualOCRBtn">Dual OCR</button>
+      <button id="ocrOnlyBtn">Quick OCR</button>
+      <button id="parseBtn">Parse</button>
+    </div>
 
-    <div class="row">
-      <button id="ocrBtn" class="btn outline">OCR Only</button>
-      <button id="parseBtn" class="btn gold">OCR + Parse + Preview</button>
+    <div id="statusBar" class="status-bar">Ready ✓</div>
+  </section>
+
+  <section class="card" id="previewContainer">
+    <h2>Invoice Preview</h2>
+
+    <div class="preview-grid">
+      <div class="preview-block">
+        <h3>Extracted Fields</h3>
+        <div><b>Merchant:</b> <span id="merchant">-</span></div>
+        <div><b>Date:</b> <span id="date">-</span></div>
+        <div><b>Total:</b> <span id="total">-</span></div>
+        <div><b>Category:</b> <span id="category">-</span></div>
+      </div>
+
+      <div class="preview-block items-block">
+        <h3>Items</h3>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+          </thead>
+          <tbody id="itemsTable"></tbody>
+        </table>
+      </div>
+
+      <div class="preview-block">
+        <h3>Raw OCR Text</h3>
+        <pre id="rawText" class="scroll-box"></pre>
+      </div>
+
+      <div class="preview-block">
+        <h3>Cleaned Text</h3>
+        <pre id="cleanedText" class="scroll-box"></pre>
+      </div>
+
+      <div class="preview-block">
+        <h3>Parse Issues</h3>
+        <div id="issuesBox" class="scroll-box"></div>
+      </div>
+
+      <div class="preview-block">
+        <h3>JSON Preview</h3>
+        <pre id="jsonPreview" class="scroll-box"></pre>
+      </div>
+    </div>
+
+    <div class="button-row bottom-row">
+      <button id="exportJsonBtn">Export JSON</button>
+      <button id="exportTxtBtn">Export TXT</button>
+      <button id="exportCsvBtn">Export CSV</button>
+      <button id="exportPdfBtn">Export PDF</button>
+      <button id="exportZipBtn">Export ZIP</button>
     </div>
   </section>
 
-  <!-- Previews Section -->
-  <section class="card preview-card">
-    <h2>2. Extracted Data Preview</h2>
+  <section class="card">
+    <h2>History</h2>
 
-    <div id="preview-container" class="preview-area">
-
-      <h3>Summary</h3>
-      <pre id="summaryBox" class="box small">—</pre>
-
-      <h3>Raw OCR Text</h3>
-      <pre id="rawTextEl" class="box large">—</pre>
-
-      <h3>Items Table</h3>
-      <pre id="itemsTable" class="box medium">—</pre>
-
-      <h3>Excel Preview (TSV)</h3>
-      <pre id="excelPreview" class="box medium">—</pre>
-
-      <h3>Tally Preview</h3>
-      <pre id="tallyPreview" class="box medium">—</pre>
-
-      <h3>JSON Preview</h3>
-      <pre id="jsonPreview" class="box large">—</pre>
-
-      <h3>Text Preview</h3>
-      <pre id="textPreview" class="box medium">—</pre>
-
-      <h3>ZIP Contents Preview</h3>
-      <pre id="zipPreview" class="box small">—</pre>
-
-    </div>
-  </section>
-
-  <!-- Export Section -->
-  <section class="card export-card">
-    <h2>3. Export Files</h2>
-
-    <div class="row wrap">
-      <button id="exportJSON" class="btn gold">Export JSON</button>
-      <button id="exportTXT" class="btn gold">Export TXT</button>
-      <button id="exportEXCEL" class="btn gold">Export Excel (TSV)</button>
-      <button id="exportTALLY" class="btn gold">Export Tally</button>
-      <button id="exportPDF" class="btn gold">Export PDF</button>
-      <button id="exportZIP" class="btn gold">Export ZIP (All Files)</button>
+    <div class="button-row">
+      <button id="loadHistoryBtn">Load History</button>
+      <button id="clearHistoryBtn">Clear History</button>
     </div>
 
-    <div class="row">
-      <button id="saveHistoryBtn" class="btn outline">Save to History</button>
+    <div id="historyList" class="history-box">
+      No history yet.
     </div>
-  </section>
-
-  <!-- Debug Log -->
-  <section class="card debug-card">
-    <h2>Debug Log</h2>
-    <textarea id="debugLog" class="debug-box" readonly></textarea>
   </section>
 
 </main>
 
-<footer class="footer">
-  ANJ Creator Hub © 2025 — Build v1.0
-</footer>
-
-<!-- Main Script (Parts 1–10 Combined) -->
 <script src="script.js"></script>
-
 </body>
 </html>
