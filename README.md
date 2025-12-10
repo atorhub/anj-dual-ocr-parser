@@ -1,90 +1,116 @@
-# ANJ Invoice — AI-Enhanced OCR + Bill Parser + Export Suite  
-**Version:** 1.0  
-**Author:** ANJ Creator Hub  
+# ANJ Dual OCR Invoice Parser  
+Advanced client-side invoice OCR, parsing, export, and history system — powered entirely by browser technologies, no backend required.
 
-ANJ Invoice is a **free, offline-first, client-side invoice reader** that supports:
-
-✅ Dual OCR (Tesseract + PDF.js)  
-✅ Smart Parsing (merchant, date, GST, totals, UPI, items)  
-✅ Multi-Format Exports (JSON, TXT, Excel TSV, Tally, PDF, ZIP)  
-✅ Full Preview System  
-✅ History via IndexedDB  
-✅ Zero-Backend — runs 100% in browser  
-✅ PWA Ready  
+Live Demo: https://atorhub.github.io/anj-dual-ocr-parser/
 
 ---
 
 ## 🚀 Features
 
-### 🔍 **1. Dual OCR Engine**
-- **Primary OCR:** Tesseract.js  
-- **Enhanced OCR:** extra cleanup + formatting  
-- **PDF Extractor:** PDF.js text extraction (multi-page)
+### 🔍 Dual OCR Engine (Image / PDF)
+- **Quick OCR** – fast text extraction for simple bills
+- **Enhanced OCR** – high-accuracy deep recognition
+- **PDF Support** via pdf.js
+- **Automatic merge** of both OCR passes for improved accuracy
 
-Supports:  
-📄 PDF • 🖼 PNG • JPG • WEBP • TXT  
+### 🧠 Smart Invoice Parsing
+Automatically extracts:
+- Merchant / Shop name  
+- Invoice date  
+- Total amount + currency detection  
+- Line items: name, qty, price, total  
+- Category detection (Food, Shopping, Finance, etc.)
+- Auto-corrections (date fixes, currency normalization)
+- Issue detection & confidence scoring
 
----
-
-### 📦 **2. Smart Invoice Parsing**
-Extracts automatically:
-
-- Merchant  
-- Date (multiple formats)  
-- Total amount  
-- GSTIN  
-- UPI ID  
-- Phone number  
-- Line items  
-- Category (food/shopping/finance/general)  
-- Notes  
-
-Works even with imperfect bills.
-
----
-
-### 🖥 **3. Full Preview System**
-The UI renders:
-
-- Summary  
-- Raw OCR text  
+### 🖼 Preview Panels
+- Extracted fields  
 - Items table  
-- Excel preview (TSV)  
-- Tally preview  
-- JSON output  
-- TXT output  
-- ZIP contents preview  
+- Raw OCR text  
+- Cleaned text  
+- JSON structured output  
+- Issues & corrections viewer  
 
----
+### 📦 Export System
+Export parsed invoices as:
+- **JSON**
+- **TXT**
+- **CSV**
+- **PDF** (with preview capture)
+- **ZIP** bundle (JSON + TXT + CSV + Preview PNG)
 
-### 📤 **4. Export Everything**
-Create real downloadable files:
+### 🗃 IndexedDB History
+- Save every parsed invoice locally
+- Reload instantly from history
+- Clear all saved invoices
+- 100% offline and persistent
 
-- `invoice.json`  
-- `invoice.txt`  
-- `invoice.tsv`  
-- `invoice_tally.txt`  
-- `invoice.pdf`  
-- `invoice.zip` (contains all above)
+### 🎨 Premium UI Themes
+Includes 6 animated / pastel / galaxy themes:
+1. **Rose Nebula**
+2. **Lilac Glow**
+3. **Cotton Candy Sky**
+4. **Galaxy Glitter**
+5. **Dreamy Blush**
+6. **Fairy Dust**
 
----
+Themes are selectable and saved automatically.
 
-### 🗂 **5. History System**
-Invoices can be saved to local IndexedDB.
-
-Persistent across refresh/browser restarts.
-
----
-
-### 🧱 **6. Offline-Ready**
-No server. No backend.  
-Runs **100% in browser** using:
-
+### 📱 100% Client-Side & Offline-Ready
+- No servers
+- No API keys
+- No payments
+- No privacy issues  
+Runs fully in-browser using:
+- pdf.js  
 - Tesseract.js  
-- PDF.js  
-- JSZip  
+- IndexedDB  
 - html2canvas  
 - jsPDF  
+- JSZip  
+
+---
+
+## 🧩 How It Works
+
+### 1) OCR Phase
+- If PDF → converted to text with pdf.js
+- If Image → processed with Tesseract.js
+- Quick + Enhanced OCR → combined
+
+### 2) Parsing Phase
+Custom rule engine detects:
+- Date formats (DD/MM/YYYY, YYYY-MM-DD, etc.)
+- Totals (₹, Rs, $, €, £ detection)
+- Item rows with qty/price
+- Corrects decimals, removes noise, fixes broken lines
+
+### 3) Validation Phase
+Checks for:
+- Missing totals
+- Invalid dates
+- Mangled characters (e.g., “₹” → “Rs”)
+- Bad line items
+
+### 4) UI Rendering
+All preview sections update instantly.
+
+### 5) Export System
+Data converts into:
+- JSON (structured)
+- TXT (raw)
+- CSV (Excel friendly)
+- PDF (visual snapshot)
+- ZIP (bundle)
+
+### 6) History Persistence
+Saved via IndexedDB with:
+- Merchant
+- Date
+- Total
+- Items
+- Raw text
+- Corrections
 
 ---
 
