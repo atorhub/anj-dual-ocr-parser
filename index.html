@@ -1,36 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>ANJ Dual OCR Parser</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ANJ Dual OCR — Invoice Parser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#fddede" />
 
-  <!-- PDF.js (worker via unpkg) -->
+  <!-- ========== Libraries (CDN) ========== -->
   <script src="https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
   <script>
-    pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.worker.min.js';
+    pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.worker.min.js";
   </script>
 
-  <!-- Tesseract.js v4 (no worker API) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
-
-  <!-- html2canvas, jsPDF, JSZip -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
+  <!-- ========== Styles ========== -->
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+
+<body class="theme-rose">
+
+  <!-- ================= HEADER ================= -->
   <header class="app-header">
     <div class="brand">
-      <h1>ANJ Dual OCR Invoice Parser</h1>
-      <div class="subtitle">PDF + Image OCR → Smart Parser → Exports</div>
+      <div class="logo">ANJ</div>
+      <div class="title-wrap">
+        <h1>ANJ Dual OCR — Invoice Parser</h1>
+        <div class="subtitle">PDF/Text Extraction • Dual OCR • Smart Parser • Exports</div>
+      </div>
     </div>
-    <div class="theme-select-wrap">
-      <label for="themeSelect">Select Theme:</label>
-      <select id="themeSelect">
+
+    <div class="top-controls">
+      <label for="themeSelect" class="label">Theme</label>
+      <select id="themeSelect" class="select">
         <option value="rose">Rose Nebula</option>
         <option value="lilac">Lilac Glow</option>
         <option value="cotton">Cotton Candy Sky</option>
@@ -38,61 +45,77 @@
         <option value="blush">Dreamy Blush</option>
         <option value="fairy">Fairy Dust</option>
       </select>
+      <div id="statusBar" class="status">Ready ✓</div>
     </div>
   </header>
 
+  <!-- ================= MAIN ================= -->
   <main class="main">
-    <section class="card">
-      <h2>1. Upload Invoice</h2>
-      <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
-      <div class="controls">
-        <button id="dualOCRBtn" class="btn">Dual OCR (PDF text + image OCR)</button>
-        <button id="ocrOnlyBtn" class="btn">Quick OCR (image)</button>
-        <button id="parseBtn" class="btn primary">Parse</button>
+
+    <!-- Upload Section -->
+    <section class="card upload-card">
+      <h2>1 • Upload Invoice / Receipt</h2>
+
+      <div class="file-row">
+        <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
+        <div class="hint">Supported: PDF, JPG, PNG, TXT. Use clear images for best OCR.</div>
       </div>
-      <div id="statusBar" class="status">Ready ✓</div>
+
+      <div class="controls">
+        <button id="dualOCRBtn" class="btn primary">Dual OCR (PDF + Image)</button>
+        <button id="ocrOnlyBtn" class="btn">Quick OCR</button>
+        <button id="parseBtn" class="btn">Parse</button>
+      </div>
     </section>
 
-    <section class="card" id="previewContainer">
-      <h2>2. Extracted Data Preview</h2>
+    <!-- Preview Section -->
+    <section id="previewContainer" class="card preview-card">
+      <h2>2 • Extracted Preview</h2>
 
       <div class="grid">
-        <div class="block">
+
+        <div class="panel summary">
           <h3>Summary</h3>
-          <div><strong>Merchant:</strong> <span id="merchant">-</span></div>
-          <div><strong>Date:</strong> <span id="date">-</span></div>
-          <div><strong>Total:</strong> <span id="total">-</span></div>
-          <div><strong>Category:</strong> <span id="category">-</span></div>
+          <div class="row"><span class="label">Merchant</span><span id="merchant" class="value">-</span></div>
+          <div class="row"><span class="label">Date</span><span id="date" class="value">-</span></div>
+          <div class="row"><span class="label">Total</span><span id="total" class="value">-</span></div>
+          <div class="row"><span class="label">Confidence</span><span id="confidence" class="value">-</span></div>
         </div>
 
-        <div class="block items-block">
+        <div class="panel items">
           <h3>Items</h3>
-          <table><thead><tr><th>Name</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
-            <tbody id="itemsTable"></tbody>
-          </table>
+          <div class="table-wrap">
+            <table class="items-table">
+              <thead>
+                <tr><th>Name</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+              </thead>
+              <tbody id="itemsTable"></tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="block">
+        <div class="panel">
           <h3>Raw OCR Text</h3>
-          <pre id="rawText" class="scroll"></pre>
+          <pre id="rawText" class="scroll">-</pre>
         </div>
 
-        <div class="block">
+        <div class="panel">
           <h3>Cleaned Text</h3>
-          <pre id="cleanedText" class="scroll"></pre>
+          <pre id="cleanedText" class="scroll">-</pre>
         </div>
 
-        <div class="block">
+        <div class="panel">
           <h3>Parse Issues</h3>
-          <div id="issuesBox" class="scroll small"></div>
+          <div id="issuesBox" class="scroll small">-</div>
         </div>
 
-        <div class="block">
+        <div class="panel">
           <h3>JSON Preview</h3>
-          <pre id="jsonPreview" class="scroll"></pre>
+          <pre id="jsonPreview" class="scroll">-</pre>
         </div>
       </div>
 
+      <!-- Export Buttons -->
       <div class="controls exports">
         <button id="exportJsonBtn" class="btn">Export JSON</button>
         <button id="exportTxtBtn" class="btn">Export TXT</button>
@@ -102,18 +125,25 @@
       </div>
     </section>
 
-    <section class="card">
-      <h2>3. History</h2>
+    <!-- History Section -->
+    <section class="card history-card">
+      <h2>3 • History</h2>
       <div class="controls">
         <button id="loadHistoryBtn" class="btn">Load History</button>
-        <button id="clearHistoryBtn" class="btn">Clear History</button>
+        <button id="clearHistoryBtn" class="btn danger">Clear History</button>
       </div>
       <div id="historyList" class="history-box">No history yet.</div>
     </section>
+
   </main>
 
-  <footer class="footer">ANJ Creator Hub © 2025</footer>
+  <footer class="footer">ANJ Creator Hub © 2025 — Client-side ● Privacy First</footer>
 
-  <script src="script.js"></script>
+  <!-- ========== App Scripts (ORDER MATTERS) ========== -->
+  <script src="js/ocr.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+
 </body>
 </html>
