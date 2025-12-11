@@ -1,17 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>ANJ Dual OCR — Invoice Parser</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#fddede" />
 
-  <!-- ========== Libraries (CDN) ========== -->
+  <!-- ==========================
+       External Libraries (CDN)
+       ========================== -->
   <script src="https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
   <script>
-    pdfjsLib = window.pdfjsLib || window["pdfjs-dist/build/pdf"];
+    pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.worker.min.js";
+      'https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.worker.min.js';
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
@@ -19,13 +21,17 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
-  <!-- ========== Styles ========== -->
-  <link rel="stylesheet" href="style.css" />
+  <!-- ==========================
+       Styles (cache-busted)
+       ========================== -->
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body class="theme-rose">
 
-  <!-- ================= HEADER ================= -->
+  <!-- ==========================
+       HEADER
+       ========================== -->
   <header class="app-header">
     <div class="brand">
       <div class="logo">ANJ</div>
@@ -49,7 +55,9 @@
     </div>
   </header>
 
-  <!-- ================= MAIN ================= -->
+  <!-- ==========================
+       MAIN CONTENT
+       ========================== -->
   <main class="main">
 
     <!-- Upload Section -->
@@ -73,7 +81,8 @@
       <h2>2 • Extracted Preview</h2>
 
       <div class="grid">
-
+        
+        <!-- Summary Panel -->
         <div class="panel summary">
           <h3>Summary</h3>
           <div class="row"><span class="label">Merchant</span><span id="merchant" class="value">-</span></div>
@@ -82,6 +91,7 @@
           <div class="row"><span class="label">Confidence</span><span id="confidence" class="value">-</span></div>
         </div>
 
+        <!-- Items Panel -->
         <div class="panel items">
           <h3>Items</h3>
           <div class="table-wrap">
@@ -94,25 +104,30 @@
           </div>
         </div>
 
+        <!-- Raw OCR Text -->
         <div class="panel">
           <h3>Raw OCR Text</h3>
           <pre id="rawText" class="scroll">-</pre>
         </div>
 
+        <!-- Cleaned Text -->
         <div class="panel">
           <h3>Cleaned Text</h3>
           <pre id="cleanedText" class="scroll">-</pre>
         </div>
 
+        <!-- Issues -->
         <div class="panel">
           <h3>Parse Issues</h3>
           <div id="issuesBox" class="scroll small">-</div>
         </div>
 
+        <!-- JSON -->
         <div class="panel">
           <h3>JSON Preview</h3>
           <pre id="jsonPreview" class="scroll">-</pre>
         </div>
+
       </div>
 
       <!-- Export Buttons -->
@@ -125,7 +140,7 @@
       </div>
     </section>
 
-    <!-- History Section -->
+    <!-- History -->
     <section class="card history-card">
       <h2>3 • History</h2>
       <div class="controls">
@@ -137,13 +152,20 @@
 
   </main>
 
-  <footer class="footer">ANJ Creator Hub © 2025 — Client-side ● Privacy First</footer>
+  <footer class="footer">
+    ANJ Creator Hub © 2025 — Client-side • Privacy First
+  </footer>
 
-  <!-- ========== App Scripts (ORDER MATTERS) ========== -->
+  <!-- ==========================
+       APP SCRIPTS (ORDER MATTERS)
+       ========================== -->
+
   <script src="js/ocr.js"></script>
   <script src="js/parser.js"></script>
   <script src="js/storage.js"></script>
-  <script src="js/ui.js"></script>
+
+  <!-- UI MUST BE MODULE -->
+  <script type="module" src="js/ui.js?v=3"></script>
 
 </body>
 </html>
