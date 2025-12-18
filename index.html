@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>ANJ Dual OCR — Invoice Parser</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#fddede" />
 
   <!-- ==========================
@@ -11,7 +11,7 @@
        ========================== -->
   <script src="https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
   <script>
-    pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+    window.pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.worker.min.js';
   </script>
@@ -22,9 +22,9 @@
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
   <!-- ==========================
-       Styles (cache-busted)
+       Styles
        ========================== -->
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="theme-rose">
@@ -37,7 +37,9 @@
       <div class="logo">ANJ</div>
       <div class="title-wrap">
         <h1>ANJ Dual OCR — Invoice Parser</h1>
-        <div class="subtitle">PDF/Text Extraction • Dual OCR • Smart Parser • Exports</div>
+        <div class="subtitle">
+          PDF/Text Extraction • Dual OCR • Smart Parser • Exports
+        </div>
       </div>
     </div>
 
@@ -56,73 +58,73 @@
   </header>
 
   <!-- ==========================
-       MAIN CONTENT
+       MAIN
        ========================== -->
   <main class="main">
 
-    <!-- Upload Section -->
+    <!-- Upload -->
     <section class="card upload-card">
       <h2>1 • Upload Invoice / Receipt</h2>
 
       <div class="file-row">
         <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
-        <div class="hint">Supported: PDF, JPG, PNG, TXT. Use clear images for best OCR.</div>
+        <div class="hint">
+          Supported: PDF, JPG, PNG, TXT
+        </div>
       </div>
 
       <div class="controls">
-        <button id="dualOCRBtn" class="btn primary">Dual OCR (PDF + Image)</button>
-        <button id="ocrOnlyBtn" class="btn">Quick OCR</button>
-        <button id="parseBtn" class="btn">Parse</button>
+        <button id="dualOCRBtn" class="btn primary">
+          Dual OCR (PDF + Image)
+        </button>
+        <button id="ocrOnlyBtn" class="btn">
+          Quick OCR
+        </button>
+        <button id="parseBtn" class="btn">
+          Parse
+        </button>
       </div>
     </section>
 
-    <!-- Preview Section -->
+    <!-- Preview -->
     <section id="previewContainer" class="card preview-card">
       <h2>2 • Extracted Preview</h2>
 
       <div class="grid">
-        
-        <!-- Summary Panel -->
+
         <div class="panel summary">
           <h3>Summary</h3>
-          <div class="row"><span class="label">Merchant</span><span id="merchant" class="value">-</span></div>
-          <div class="row"><span class="label">Date</span><span id="date" class="value">-</span></div>
-          <div class="row"><span class="label">Total</span><span id="total" class="value">-</span></div>
-          <div class="row"><span class="label">Confidence</span><span id="confidence" class="value">-</span></div>
+          <div class="row"><span class="label">Merchant</span><span id="merchant">-</span></div>
+          <div class="row"><span class="label">Date</span><span id="date">-</span></div>
+          <div class="row"><span class="label">Total</span><span id="total">-</span></div>
+          <div class="row"><span class="label">Confidence</span><span id="confidence">-</span></div>
         </div>
 
-        <!-- Items Panel -->
         <div class="panel items">
           <h3>Items</h3>
-          <div class="table-wrap">
-            <table class="items-table">
-              <thead>
-                <tr><th>Name</th><th>Qty</th><th>Price</th><th>Total</th></tr>
-              </thead>
-              <tbody id="itemsTable"></tbody>
-            </table>
-          </div>
+          <table class="items-table">
+            <thead>
+              <tr><th>Name</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+            </thead>
+            <tbody id="itemsTable"></tbody>
+          </table>
         </div>
 
-        <!-- Raw OCR Text -->
         <div class="panel">
           <h3>Raw OCR Text</h3>
           <pre id="rawText" class="scroll">-</pre>
         </div>
 
-        <!-- Cleaned Text -->
         <div class="panel">
           <h3>Cleaned Text</h3>
           <pre id="cleanedText" class="scroll">-</pre>
         </div>
 
-        <!-- Issues -->
         <div class="panel">
           <h3>Parse Issues</h3>
           <div id="issuesBox" class="scroll small">-</div>
         </div>
 
-        <!-- JSON -->
         <div class="panel">
           <h3>JSON Preview</h3>
           <pre id="jsonPreview" class="scroll">-</pre>
@@ -130,7 +132,6 @@
 
       </div>
 
-      <!-- Export Buttons -->
       <div class="controls exports">
         <button id="exportJsonBtn" class="btn">Export JSON</button>
         <button id="exportTxtBtn" class="btn">Export TXT</button>
@@ -157,15 +158,9 @@
   </footer>
 
   <!-- ==========================
-       APP SCRIPTS (ORDER MATTERS)
+       SINGLE WIRED SCRIPT
        ========================== -->
-
-  <script src="js/ocr.js"></script>
-  <script src="js/parser.js"></script>
-  <script src="js/storage.js"></script>
-
-  <!-- UI MUST BE MODULE -->
-  <script type="module" src="js/ui.js?v=3"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
