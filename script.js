@@ -1,5 +1,5 @@
 /****************************************************
- *  — CONFIG + GLOBAL STATE
+ * CONFIG + GLOBAL STATE
  ****************************************************/
 
 const TESSERACT_CONFIG = {
@@ -11,7 +11,10 @@ const TESSERACT_CONFIG = {
 let currentFile = null;
 let ocrTextCache = "";
 
-/* DOM ELEMENTS */
+/****************************************************
+ * DOM ELEMENTS
+ ****************************************************/
+
 const fileInput = document.getElementById("fileInput");
 const dualOCRBtn = document.getElementById("dualOCRBtn");
 const ocrOnlyBtn = document.getElementById("ocrOnlyBtn");
@@ -29,32 +32,26 @@ const confidenceEl = document.getElementById("confidence");
 
 const statusBar = document.getElementById("statusBar");
 const themeSelect = document.getElementById("themeSelect");
+
 /****************************************************
- *  — UI HELPERS + THEMES
+ * UI HELPERS
  ****************************************************/
 
 function setStatus(text) {
   if (statusBar) statusBar.textContent = text;
 }
 
-function applyTheme(name) {
-  document.body.className = `theme-${name}`;
-}
-
 themeSelect?.addEventListener("change", e => {
-  applyTheme(e.target.value);
+  document.body.className = `theme-${e.target.value}`;
 });
 
 fileInput?.addEventListener("change", e => {
   currentFile = e.target.files[0];
   setStatus(currentFile ? "File loaded ✓" : "No file selected");
 });
+
 /****************************************************
- *  — OCR ENGINE (IMAGES)
- *
- * FIXED:
- * - Explicit worker paths
- * - No silent failures
+ * OCR ENGINE (IMAGES)
  ****************************************************/
 
 async function runOCR(imageSource) {
@@ -85,19 +82,14 @@ async function runOCR(imageSource) {
     return text;
 
   } catch (err) {
-    console.error("OCR ERROR:", err);
-    rawText.textContent = "❌ OCR failed. Check console.";
-    cleanedText.textContent = "";
+    console.error(err);
     setStatus("OCR failed ❌");
     return "";
   }
-  }
+}
+
 /****************************************************
- *  — PDF HYBRID EXTRACTION
- *
- * NEW:
- * - Text-based PDF → extract directly
- * - Scanned PDF → render → OCR
+ * PDF HANDLING (USES PDF.JS FROM INDEX.HTML)
  ****************************************************/
 
 async function extractTextFromPDF(file) {
@@ -109,7 +101,7 @@ async function extractTextFromPDF(file) {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    fullText += content.items.map(item => item.str).join(" ") + "\n";
+    fullText += content.items.map(i => i.str).join(" ") + "\n";
   }
 
   return fullText.trim();
@@ -119,7 +111,7 @@ async function ocrScannedPDF(file) {
   const buffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
 
-  let finalText = "";
+  let text = "";
 
   for (let i = 1; i <= pdf.numPages; i++) {
     setStatus(`OCR page ${i}/${pdf.numPages}`);
@@ -134,11 +126,10 @@ async function ocrScannedPDF(file) {
 
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    const pageText = await runOCR(canvas);
-    finalText += pageText + "\n";
+    text += (await runOCR(canvas)) + "\n";
   }
 
-  return finalText.trim();
+  return text.trim();
 }
 
 async function handlePDF(file) {
@@ -157,50 +148,107 @@ async function handlePDF(file) {
   setStatus("Scanned PDF detected — running OCR…");
   return await ocrScannedPDF(file);
 }
+
 /****************************************************
- * — EVENTS + PARSER
+ * ITEM TABLE DETECTION (STEP 1)
+ ****************************************************/
+
+function extractItems(text) {
+  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+  const items = [];
+
+  for (const line of lines) {
+    // Example: Bread 2 40 80
+    const match = line.match(
+      /^(.+?)\s+(\d+)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)$/
+    );
+
+    if (match) {
+      items.push({
+        name: match[1],
+        qty: match[2],
+        price: match[3],
+        total: match[4]
+      });
+    }
+  }
+
+  return items;
+}
+
+function renderItems(items) {
+  itemsTable.innerHTML = "";
+
+  if (!items.length) {
+    itemsTable.innerHTML = "<tr><td colspan='4'>No items detected</td></tr>";
+    return;
+  }
+
+  for (const item of items) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>${item.price}</td>
+      <td>${item.total}</td>
+    `;
+    itemsTable.appendChild(row);
+  }
+}
+
+/****************************************************
+ * PARSER
  ****************************************************/
 
 function parseText(text) {
   if (!text) return setStatus("No text to parse ❌");
 
   const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+
   merchantEl.textContent = lines[0] || "-";
 
   const totalLine = lines.find(l => /total/i.test(l));
   totalEl.textContent = totalLine || "-";
 
-  confidenceEl.textContent = "Medium";
+  const items = extractItems(text);
+  renderItems(items);
 
-  jsonPreview.textContent = JSON.stringify({
-    merchant: merchantEl.textContent,
-    total: totalEl.textContent,
-    rawText: text
-  }, null, 2);
+  confidenceEl.textContent = items.length ? "Medium" : "Low";
 
-  setStatus("Parsing done ✓");
+  jsonPreview.textContent = JSON.stringify(
+    {
+      merchant: merchantEl.textContent,
+      total: totalEl.textContent,
+      items
+    },
+    null,
+    2
+  );
+
+  setStatus("Parsing completed ✓");
 }
+
+/****************************************************
+ * EVENTS (MANUAL MODE)
+ ****************************************************/
 
 ocrOnlyBtn?.addEventListener("click", async () => {
   if (!currentFile) return setStatus("No file ❌");
-  if (currentFile.type === "application/pdf") {
-    await handlePDF(currentFile);
-  } else {
-    await runOCR(currentFile);
-  }
+  await runOCR(currentFile);
 });
 
 dualOCRBtn?.addEventListener("click", async () => {
   if (!currentFile) return setStatus("No file ❌");
 
   let text = "";
+
   if (currentFile.type === "application/pdf") {
     text = await handlePDF(currentFile);
   } else {
     text = await runOCR(currentFile);
   }
 
-  if (text) parseText(text);
+  ocrTextCache = text;
 });
 
 parseBtn?.addEventListener("click", () => {
@@ -208,5 +256,5 @@ parseBtn?.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  setStatus("App ready ✓");
+  setStatus("Ready ✓");
 });
