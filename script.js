@@ -1,4 +1,10 @@
 /****************************************************
+ * PDF.js WORKER FIX (REQUIRED FOR GITHUB PAGES)
+ ****************************************************/
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js";
+
+/****************************************************
  *  — CONFIG + GLOBAL STATE
  ****************************************************/
 
