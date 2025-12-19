@@ -98,13 +98,37 @@ document.addEventListener("DOMContentLoaded", () => {
         await runOCR(file);
       }
 
-      state.extractedText = await extractText(file);
+    state.extractedText = await extractText(file);
 
-      // Choose best available text
-      state.finalText =
-        state.extractedText.trim() ||
-        state.ocrText.trim();
+// Choose best available text FIRST
+state.finalText =
+  state.extractedText.trim() ||
+  state.ocrText.trim();
 
+// STEP A: Clean text
+state.finalText = cleanExtractedText(state.finalText);
+
+// STEP B: Parse cleaned text
+state.parsed = parseInvoiceText(state.finalText);
+  // STEP C: UI Mapping (safe)
+el.raw.textContent = state.extractedText || "-";
+el.clean.textContent = state.finalText || "-";
+el.json.textContent = JSON.stringify(state.parsed, null, 2);
+
+// Optional summary fields
+if (document.getElementById("summaryMerchant"))
+  summaryMerchant.textContent = state.parsed.merchant || "-";
+
+if (document.getElementById("summaryDate"))
+  summaryDate.textContent = state.parsed.date || "-";
+
+if (document.getElementById("summaryTotal"))
+  summaryTotal.textContent = state.parsed.total || "-";
+
+if (document.getElementById("summaryConfidence"))
+  summaryConfidence.textContent =
+    state.parsed.confidence ? state.parsed.confidence + "%" : "-";
+      
       el.raw.textContent = state.finalText || "-";
       el.clean.textContent = state.finalText || "-";
 
@@ -123,11 +147,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return setStatus("No text to parse", true);
     }
 
-    el.json.textContent = JSON.stringify(
-      {
+    el.json.textContent = JSON.stringify(state.parsed, null, 2);
+    
         length: state.finalText.length,
         preview: state.finalText.slice(0, 300)
-      },
+      }
       null,
       2
     );
@@ -265,4 +289,5 @@ function parseInvoiceText(cleanText) {
     rawLength: cleanText.length
   };
 }
+
 
