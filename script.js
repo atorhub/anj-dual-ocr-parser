@@ -172,4 +172,97 @@ function cleanExtractedText(rawText) {
   // 4. Final joined text
   return cleaned.join("\n");
 }
+/* ===============================
+   STEP B: UNIVERSAL INVOICE PARSER
+   =============================== */
+
+function parseInvoiceText(cleanText) {
+  if (!cleanText) {
+    return {
+      merchant: null,
+      date: null,
+      currency: null,
+      total: null,
+      confidence: 0,
+      rawLength: 0
+    };
+  }
+
+  const lines = cleanText.split("\n");
+  let merchant = null;
+  let date = null;
+  let currency = null;
+  let total = null;
+
+  /* ---- Merchant (top-most meaningful line) ---- */
+  for (let i = 0; i < Math.min(lines.length, 5); i++) {
+    const line = lines[i];
+    if (line.length > 5 && !/\d{2,}/.test(line)) {
+      merchant = line;
+      break;
+    }
+  }
+
+  /* ---- Date detection (multiple formats) ---- */
+  const dateRegex =
+    /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})|(\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})/;
+
+  for (const line of lines) {
+    const match = line.match(dateRegex);
+    if (match) {
+      date = match[0];
+      break;
+    }
+  }
+
+  /* ---- Currency detection (global-safe) ---- */
+  const currencyMap = {
+    "₹": "INR",
+    "Rs": "INR",
+    "₹.": "INR",
+    "$": "USD",
+    "€": "EUR",
+    "£": "GBP",
+    "AED": "AED"
+  };
+
+  for (const line of lines) {
+    for (const symbol in currencyMap) {
+      if (line.includes(symbol)) {
+        currency = currencyMap[symbol];
+        break;
+      }
+    }
+    if (currency) break;
+  }
+
+  /* ---- Total detection (best-effort) ---- */
+  const totalRegex =
+    /(total|grand total|amount payable|net amount)[^\d]{0,10}([\₹\Rs$€£]?\s?\d+[.,]?\d*)/i;
+
+  for (const line of lines) {
+    const match = line.match(totalRegex);
+    if (match) {
+      total = match[2].replace(/\s/g, "");
+      break;
+    }
+  }
+
+  /* ---- Confidence score ---- */
+  let confidence = 0;
+  if (merchant) confidence += 25;
+  if (date) confidence += 20;
+  if (currency) confidence += 20;
+  if (total) confidence += 25;
+  if (cleanText.length > 300) confidence += 10;
+
+  return {
+    merchant,
+    date,
+    currency,
+    total,
+    confidence,
+    rawLength: cleanText.length
+  };
+}
 
