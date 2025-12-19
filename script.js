@@ -135,4 +135,41 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus("Parsed ✓");
   };
 });
-                          
+/* ===============================
+   STEP A: TEXT CLEANER (SAFE)
+   =============================== */
+
+/**
+ * Clean extracted text without altering meaning.
+ * Works for PDF text & OCR text.
+ */
+function cleanExtractedText(rawText) {
+  if (!rawText || typeof rawText !== "string") return "";
+
+  // 1. Normalize line breaks
+  let lines = rawText
+    .replace(/\r/g, "")
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l.length > 0);
+
+  // 2. Remove duplicate consecutive lines (PDF header repeats)
+  const deduped = [];
+  let lastLine = "";
+
+  for (const line of lines) {
+    if (line !== lastLine) {
+      deduped.push(line);
+      lastLine = line;
+    }
+  }
+
+  // 3. Collapse excessive spaces (keep currency + numbers intact)
+  const cleaned = deduped.map(line =>
+    line.replace(/\s{2,}/g, " ")
+  );
+
+  // 4. Final joined text
+  return cleaned.join("\n");
+}
+
