@@ -113,7 +113,8 @@ state.finalText = cleanExtractedText(state.finalText);
 state.analysis = analyzeText(state.finalText);
       
 // STEP B: Parse cleaned text
-state.parsed = parseInvoiceText(state.finalText);
+state.parsed = parseInvoiceText(state.finalText, state.analysis);
+      
   // STEP C: UI Mapping (safe)
 el.raw.textContent = state.extractedText || "-";
 el.clean.textContent = state.finalText || "-";
@@ -191,141 +192,126 @@ function cleanExtractedText(rawText) {
   return cleaned.join("\n");
 }
 /* =========================================================
-   PHASE 1 · STEP 1
-   ANALYSIS LAYER (READ-ONLY, SAFE)
+   PHASE 1 · STEP 2
+   IMPROVED DETERMINISTIC PARSER (NO AI)
    ========================================================= */
 
-function analyzeText(cleanText) {
-  if (!cleanText || typeof cleanText !== "string") {
-    return {
-      lines: [],
-      headerCandidates: [],
-      totalCandidates: [],
-      dateCandidates: [],
-      currencyCandidates: []
-    };
-  }
-
-  const lines = cleanText
-    .split("\n")
-    .map(l => l.trim())
-    .filter(Boolean);
-
-  const headerCandidates = lines.slice(0, 8);
-
-  const totalCandidates = lines.filter(l =>
-    /(total|grand total|amount payable|net amount|balance)/i.test(l)
-  );
-
-  const dateCandidates = lines.filter(l =>
-    /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(l)
-  );
-
-  const currencyCandidates = lines.filter(l =>
-    /₹|rs\.?|inr|\$|usd|eur|aed/i.test(l)
-  );
-
-  return {
-    lines,
-    headerCandidates,
-    totalCandidates,
-    dateCandidates,
-    currencyCandidates
-  };
-}
-
-/* ===============================
-   STEP B: UNIVERSAL INVOICE PARSER
-   =============================== */
-
-function parseInvoiceText(cleanText) {
-  if (!cleanText) {
-    return {
-      merchant: null,
-      date: null,
-      currency: null,
-      total: null,
-      confidence: 0,
-      rawLength: 0
-    };
-  }
-
-  const lines = cleanText.split("\n");
-  let merchant = null;
-  let date = null;
-  let currency = null;
-  let total = null;
-
-  /* ---- Merchant (top-most meaningful line) ---- */
-  for (let i = 0; i < Math.min(lines.length, 5); i++) {
-    const line = lines[i];
-    if (line.length > 5 && !/\d{2,}/.test(line)) {
-      merchant = line;
-      break;
-    }
-  }
-
-  /* ---- Date detection (multiple formats) ---- */
-  const dateRegex =
-    /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})|(\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})/;
-
-  for (const line of lines) {
-    const match = line.match(dateRegex);
-    if (match) {
-      date = match[0];
-      break;
-    }
-  }
-
-  /* ---- Currency detection (global-safe) ---- */
-  const currencyMap = {
-    "₹": "INR",
-    "Rs": "INR",
-    "₹.": "INR",
-    "$": "USD",
-    "€": "EUR",
-    "£": "GBP",
-    "AED": "AED"
+function parseInvoiceText(cleanText, analysis) {
+  const result = {
+    merchant: null,
+    date: null,
+    currency: null,
+    total: null,
+    confidence: 0,
+    confidenceBreakdown: {
+      merchant: false,
+      date: false,
+      currency: false,
+      total: false,
+      textLength: false
+    },
+    rawLength: cleanText ? cleanText.length : 0
   };
 
-  for (const line of lines) {
-    for (const symbol in currencyMap) {
-      if (line.includes(symbol)) {
-        currency = currencyMap[symbol];
+  if (!cleanText || !analysis) return result;
+
+  /* ---------------------------
+     MERCHANT DETECTION
+     --------------------------- */
+  const ignoreWords = /invoice|tax|gst|receipt|bill|cash|order/i;
+
+  let bestMerchant = null;
+  let bestScore = 0;
+
+  analysis.headerCandidates.forEach(line => {
+    let score = 0;
+
+    if (line.length > 6) score += 1;
+    if (line === line.toUpperCase()) score += 2;
+    if (!/\d/.test(line)) score += 1;
+    if (!ignoreWords.test(line)) score += 2;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMerchant = line;
+    }
+  });
+
+  if (bestScore >= 3) {
+    result.merchant = bestMerchant;
+    result.confidenceBreakdown.merchant = true;
+  }
+
+  /* ---------------------------
+     DATE DETECTION
+     --------------------------- */
+  if (analysis.dateCandidates.length) {
+    result.date = analysis.dateCandidates[0];
+    result.confidenceBreakdown.date = true;
+  }
+
+  /* ---------------------------
+     CURRENCY DETECTION
+     --------------------------- */
+  const currencyMap = [
+    { re: /₹|rs\.?|inr/i, val: "INR" },
+    { re: /\$/i, val: "USD" },
+    { re: /€/i, val: "EUR" },
+    { re: /£/i, val: "GBP" },
+    { re: /aed/i, val: "AED" }
+  ];
+
+  for (const line of analysis.currencyCandidates) {
+    for (const c of currencyMap) {
+      if (c.re.test(line)) {
+        result.currency = c.val;
+        result.confidenceBreakdown.currency = true;
         break;
       }
     }
-    if (currency) break;
+    if (result.currency) break;
   }
 
-  /* ---- Total detection (best-effort) ---- */
-  const totalRegex =
-    /(total|grand total|amount payable|net amount)[^\d]{0,10}([\₹\Rs$€£]?\s?\d+[.,]?\d*)/i;
+  /* ---------------------------
+     TOTAL DETECTION
+     --------------------------- */
+  let highestAmount = 0;
 
-  for (const line of lines) {
-    const match = line.match(totalRegex);
-    if (match) {
-      total = match[2].replace(/\s/g, "");
-      break;
-    }
+  analysis.totalCandidates.forEach(line => {
+    const matches = line.match(/[\₹$€£]?\s?\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/g);
+    if (!matches) return;
+
+    matches.forEach(raw => {
+      const value = parseFloat(
+        raw.replace(/[^\d.]/g, "")
+      );
+      if (!isNaN(value) && value > highestAmount) {
+        highestAmount = value;
+        result.total = raw.trim();
+      }
+    });
+  });
+
+  if (result.total) {
+    result.confidenceBreakdown.total = true;
   }
 
-  /* ---- Confidence score ---- */
-  let confidence = 0;
-  if (merchant) confidence += 25;
-  if (date) confidence += 20;
-  if (currency) confidence += 20;
-  if (total) confidence += 25;
-  if (cleanText.length > 300) confidence += 10;
+  /* ---------------------------
+     TEXT LENGTH SIGNAL
+     --------------------------- */
+  if (cleanText.length > 300) {
+    result.confidenceBreakdown.textLength = true;
+  }
 
-  return {
-    merchant,
-    date,
-    currency,
-    total,
-    confidence,
-    rawLength: cleanText.length
-  };
+  /* ---------------------------
+     CONFIDENCE SCORE
+     --------------------------- */
+  Object.values(result.confidenceBreakdown).forEach(v => {
+    if (v) result.confidence += 20;
+  });
+
+  if (result.confidence > 100) result.confidence = 100;
+
+  return result;
 }
-
 
