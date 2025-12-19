@@ -1,13 +1,14 @@
 :root {
-  --bg: #fbeaff;
+  --bg: #f5f5f5;
   --card: #ffffff;
-  --text: #222;
+  --text: #111;
 }
 
 body {
-  background: var(--bg);
-  font-family: sans-serif;
   margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 header {
@@ -17,7 +18,11 @@ header {
   background: var(--card);
 }
 
-.grid {
+.controls {
+  padding: 10px;
+}
+
+.panels {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
@@ -27,13 +32,29 @@ header {
 pre {
   background: var(--card);
   padding: 10px;
-  min-height: 150px;
+  min-height: 200px;
   overflow: auto;
 }
 
-/* THEMES */
+/* THEMES (NOT REDUCED) */
+body.theme-fairy {
+  --bg: #fbeaff;
+  --card: #fff0fa;
+}
+
 body.theme-galaxy {
-  --bg: #1b102a;
-  --card: #2d1b4d;
+  --bg: #120826;
+  --card: #2a144f;
+  --text: #fff;
+}
+
+body.theme-pink {
+  --bg: #ffe6ef;
+  --card: #fff;
+}
+
+body.theme-dark {
+  --bg: #121212;
+  --card: #1e1e1e;
   --text: #fff;
 }
