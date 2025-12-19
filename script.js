@@ -107,32 +107,106 @@ state.finalText =
   state.extractedText.trim() ||
   state.ocrText.trim();
 
-// STEP A: Clean text
-state.finalText = cleanExtractedText(state.finalText);
-// STEP A.5: Analyze cleaned text (read-only)
-state.analysis = analyzeText(state.finalText);
+// STEP A: TEXT CLEANER (SAFE)
+function cleanExtractedText(rawText) {
+  if (!rawText || typeof rawText !== "string") return "";
+
+  return rawText
+    .replace(/\r/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .split("\n")
+    .map(l => l.trim())
+    .filter(Boolean)
+    .join("\n");
+}
+  // STEP A.5: ANALYSIS (READ-ONLY, NO SIDE EFFECTS)
+function analyzeText(cleanText) {
+  const lines = cleanText.split("\n");
+
+  return {
+    lineCount: lines.length,
+    hasCurrency: /₹|\bINR\b|\bUSD\b|\bEUR\b|\bGBP\b/.test(cleanText),
+    hasDate: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(cleanText),
+    hasTotalKeyword: /(total|grand total|amount payable|net amount)/i.test(cleanText),
+    topLines: lines.slice(0, 5)
+  };
+}
+  // STEP B: PARSE INVOICE TEXT (RULE BASED)
+function parseInvoiceText(cleanText) {
+  const lines = cleanText.split("\n");
+
+  let merchant = null;
+  let date = null;
+  let currency = null;
+  let total = null;
+
+  // Merchant (first strong text line)
+  merchant = lines.find(l => l.length > 5 && l.length < 60) || null;
+
+  // Date detection
+  const dateRegex = /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/;
+  for (const l of lines) {
+    const m = l.match(dateRegex);
+    if (m) {
+      date = m[0];
+      break;
+    }
+  }
+
+  // Currency detection
+  if (/₹|\bINR\b/.test(cleanText)) currency = "INR";
+  else if (/\$|\bUSD\b/.test(cleanText)) currency = "USD";
+  else if (/€|\bEUR\b/.test(cleanText)) currency = "EUR";
+  else if (/£|\bGBP\b/.test(cleanText)) currency = "GBP";
+
+  // Total detection
+  const totalRegex = /(total|grand total|amount payable|net amount)[^\d]*([\d,]+(\.\d{1,2})?)/i;
+  for (const l of lines) {
+    const m = l.match(totalRegex);
+    if (m) {
+      total = m[2].replace(/,/g, "");
+      break;
+    }
+  }
+
+  // Confidence score
+  let confidence = 0;
+  if (merchant) confidence += 25;
+  if (date) confidence += 20;
+  if (currency) confidence += 20;
+  if (total) confidence += 25;
+  if (cleanText.length > 300) confidence += 10;
+
+  return {
+    merchant,
+    date,
+    currency,
+    total,
+    confidence,
+    rawLength: cleanText.length
+  };
+}
+  // STEP C: UI MAPPING (SAFE)
+function mapToUI(state, el) {
+  el.raw.textContent = state.extractedText || "-";
+  el.clean.textContent = state.finalText || "-";
+  el.json.textContent = JSON.stringify(state.parsed, null, 2);
+
+  if (document.getElementById("summaryMerchant"))
+    summaryMerchant.textContent = state.parsed.merchant || "-";
+
+  if (document.getElementById("summaryDate"))
+    summaryDate.textContent = state.parsed.date || "-";
+
+  if (document.getElementById("summaryTotal"))
+    summaryTotal.textContent = state.parsed.total || "-";
+
+  if (document.getElementById("summaryConfidence"))
+    summaryConfidence.textContent =
+      state.parsed.confidence ? state.parsed.confidence + "%" : "-";
+}
       
-// STEP B: Parse cleaned text
-state.parsed = parseInvoiceText(state.finalText, state.analysis);
-      
-  // STEP C: UI Mapping (safe)
-el.raw.textContent = state.extractedText || "-";
-el.clean.textContent = state.finalText || "-";
-el.json.textContent = JSON.stringify(state.parsed, null, 2);
-
-// Optional summary fields
-if (document.getElementById("summaryMerchant"))
-  summaryMerchant.textContent = state.parsed.merchant || "-";
-
-if (document.getElementById("summaryDate"))
-  summaryDate.textContent = state.parsed.date || "-";
-
-if (document.getElementById("summaryTotal"))
-  summaryTotal.textContent = state.parsed.total || "-";
-
-if (document.getElementById("summaryConfidence"))
-  summaryConfidence.textContent =
-    state.parsed.confidence ? state.parsed.confidence + "%" : "-";
       
       setStatus("Text ready ✓");
     } catch (e) {
