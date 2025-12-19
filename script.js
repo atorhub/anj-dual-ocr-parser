@@ -95,40 +95,43 @@
 
   /* ---------- IMAGE OCR ---------- */
   async function runImageOCR(source) {
-    try {
-      setStatus("OCR started…");
+  try {
+    setStatus("OCR started…");
 
-      const result = await Tesseract.recognize(
-        source,
-        "eng",
-        {
-          logger: m => {
-            if (m.status === "recognizing text") {
-              setStatus(`OCR ${Math.round(m.progress * 100)}%`);
-            }
+    const OCR = window.Tesseract || window.TesseractJS;
+    if (!OCR) throw new Error("Tesseract not loaded");
+
+    const result = await OCR.recognize(
+      source,
+      "eng",
+      {
+        logger: m => {
+          if (m.status === "recognizing text") {
+            setStatus(`OCR ${Math.round(m.progress * 100)}%`);
           }
         }
-      );
+      }
+    );
 
-      const text = result.data.text.trim();
-      if (!text) throw new Error("Empty OCR result");
+    const text = result.data.text.trim();
+    if (!text) throw new Error("Empty OCR result");
 
-      state.rawText = text;
-      state.cleanedText = text;
+    state.rawText = text;
+    state.cleanedText = text;
 
-      el.rawText.textContent = text;
-      el.cleanedText.textContent = text;
+    el.rawText.textContent = text;
+    el.cleanedText.textContent = text;
 
-      setStatus("OCR completed ✓");
-      return text;
+    setStatus("OCR completed ✓");
+    return text;
 
-    } catch (err) {
-      console.error(err);
-      setStatus("Image OCR failed ❌", true);
-      throw err;
-    }
+  } catch (err) {
+    console.error(err);
+    setStatus("Image OCR failed ❌", true);
+    throw err;
   }
-
+  }
+   
   /* ---------- PDF TEXT EXTRACTION ---------- */
   async function extractPDFText(file) {
     try {
