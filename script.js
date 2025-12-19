@@ -29,26 +29,36 @@
 
     /* ---------- ELEMENTS ---------- */
     const el = {
-      fileInput: $("fileInput"),
-      statusBar: $("statusBar"),
-      themeSelect: $("themeSelect"),
+  fileInput: $("fileInput"),
+  statusBar: $("statusBar"),
+  themeSelect: $("themeSelect"),
 
-      dualOCRBtn: $("dualOCRBtn"),
-      ocrOnlyBtn: $("ocrOnlyBtn"),
-      parseBtn: $("parseBtn"),
+  dualOCRBtn: $("dualOCRBtn"),
+  ocrOnlyBtn: $("ocrOnlyBtn"),
+  parseBtn: $("parseBtn"),
 
-      rawText: $("rawText"),
-      cleanedText: $("cleanedText"),
-      itemsTable: $("itemsTable"),
+  rawText: $("rawText"),
+  cleanedText: $("cleanedText"),
+  itemsTable: $("itemsTable"),
 
-      merchant: $("merchant"),
-      date: $("date"),
-      total: $("total"),
-      confidence: $("confidence"),
+  merchant: $("merchant"),
+  date: $("date"),
+  total: $("total"),
+  confidence: $("confidence"),
 
-      issuesBox: $("issuesBox"),
-      jsonPreview: $("jsonPreview")
-    };
+  issuesBox: $("issuesBox"),
+  jsonPreview: $("jsonPreview"),
+
+  historyList: $("historyList"),
+  loadHistoryBtn: $("loadHistoryBtn"),
+  clearHistoryBtn: $("clearHistoryBtn"),
+
+  exportJsonBtn: $("exportJsonBtn"),
+  exportTxtBtn: $("exportTxtBtn"),
+  exportCsvBtn: $("exportCsvBtn"),
+  exportPdfBtn: $("exportPdfBtn"),
+  exportZipBtn: $("exportZipBtn"),
+};
 
     /* ---------- STATUS ---------- */
     const setStatus = (msg, error = false) => {
