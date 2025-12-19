@@ -1,131 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>ANJ Dual OCR — Invoice Parser</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#fddede" />
+  <meta charset="UTF-8" />
+  <title>ANJ Dual OCR – Invoice Parser</title>
 
-  <!-- PDF.js (SINGLE VERSION – IMPORTANT) -->
-  <script src="https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.min.js"></script>
-  <script>
-    window.pdfjsLib = window['pdfjs-dist/build/pdf'];
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://unpkg.com/pdfjs-dist@3.10.177/build/pdf.worker.min.js';
-  </script>
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-  <!-- OCR + Export libs -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
+<body>
 
-<body class="theme-rose">
-
-<header class="app-header">
-  <div class="brand">
-    <div class="logo">ANJ</div>
-    <div class="title-wrap">
-      <h1>ANJ Dual OCR — Invoice Parser</h1>
-      <div class="subtitle">Client-side • No backend • Privacy-first</div>
-    </div>
-  </div>
-
-  <div class="top-controls">
-    <label>Theme</label>
-    <select id="themeSelect" class="select">
-      <option value="rose">Rose Nebula</option>
-      <option value="lilac">Lilac Glow</option>
-      <option value="cotton">Cotton Candy</option>
-      <option value="galaxy">Galaxy Glitter</option>
-      <option value="blush">Dreamy Blush</option>
-      <option value="fairy">Fairy Dust</option>
-    </select>
-    <div id="statusBar" class="status">Ready ✓</div>
-  </div>
+<header>
+  <span class="logo">ANJ</span>
+  <select id="themeSelect">
+    <option value="fairy">Fairy Dust</option>
+    <option value="galaxy">Galaxy Glitter</option>
+  </select>
+  <span id="statusBar">Ready ✓</span>
 </header>
 
-<main class="main">
+<section>
+  <input type="file" id="fileInput" />
+  <button id="dualOCRBtn">Dual OCR</button>
+  <button id="ocrOnlyBtn">Quick OCR</button>
+  <button id="parseBtn">Parse</button>
+</section>
 
-  <section class="card">
-    <h2>1 • Upload Invoice</h2>
-    <input id="fileInput" type="file" accept=".pdf,image/*,.txt" />
-    <div class="controls">
-      <button id="dualOCRBtn" class="btn primary">Dual OCR</button>
-      <button id="ocrOnlyBtn" class="btn">Quick OCR</button>
-      <button id="parseBtn" class="btn">Parse</button>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>2 • Preview</h2>
-    <div class="grid">
-
-      <div class="panel">
-        <h3>Summary</h3>
-        <div>Merchant: <b id="merchant">-</b></div>
-        <div>Date: <b id="date">-</b></div>
-        <div>Total: <b id="total">-</b></div>
-        <div>Confidence: <b id="confidence">-</b></div>
-      </div>
-
-      <div class="panel">
-        <h3>Items</h3>
-        <table class="items-table">
-          <thead>
-            <tr><th>Name</th><th>Qty</th><th>Price</th><th>Total</th></tr>
-          </thead>
-          <tbody id="itemsTable"></tbody>
-        </table>
-      </div>
-
-      <div class="panel">
-        <h3>Raw OCR</h3>
-        <pre id="rawText" class="scroll">-</pre>
-      </div>
-
-      <div class="panel">
-        <h3>Cleaned</h3>
-        <pre id="cleanedText" class="scroll">-</pre>
-      </div>
-
-      <div class="panel">
-        <h3>Issues</h3>
-        <div id="issuesBox" class="scroll small">-</div>
-      </div>
-
-      <div class="panel">
-        <h3>JSON</h3>
-        <pre id="jsonPreview" class="scroll">-</pre>
-      </div>
-
-    </div>
-
-    <div class="controls exports">
-      <button id="exportJsonBtn" class="btn">JSON</button>
-      <button id="exportTxtBtn" class="btn">TXT</button>
-      <button id="exportCsvBtn" class="btn">CSV</button>
-      <button id="exportPdfBtn" class="btn">PDF</button>
-      <button id="exportZipBtn" class="btn">ZIP</button>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>3 • History</h2>
-    <div class="controls">
-      <button id="loadHistoryBtn" class="btn">Load</button>
-      <button id="clearHistoryBtn" class="btn danger">Clear</button>
-    </div>
-    <div id="historyList">No history yet.</div>
-  </section>
-
-</main>
-
-<footer class="footer">ANJ Creator Hub © 2025</footer>
+<section class="grid">
+  <pre id="rawText">-</pre>
+  <pre id="cleanedText">-</pre>
+  <pre id="jsonPreview">-</pre>
+</section>
 
 <script src="script.js"></script>
 </body>
