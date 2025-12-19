@@ -11,23 +11,48 @@ document.addEventListener("DOMContentLoaded", () => {
     theme: document.getElementById("themeSelect")
   };
 
-  let extractedText = "";
+  let state = {
+    ocrText: "",
+    extractedText: "",
+    finalText: ""
+  };
 
   const setStatus = (msg, err = false) => {
     el.status.textContent = msg;
     el.status.style.color = err ? "red" : "green";
   };
 
-  /* ---------------- THEME ---------------- */
+  /* THEME */
   el.theme.addEventListener("change", () => {
     document.body.className = "theme-" + el.theme.value;
   });
 
-  /* ---------------- FILE HANDLER ---------------- */
+  /* OCR (UNCHANGED, DOES ITS OWN JOB) */
+  async function runOCR(file) {
+    try {
+      const OCR = window.Tesseract || window.TesseractJS;
+      if (!OCR) throw new Error("OCR engine missing");
+
+      const res = await OCR.recognize(file, "eng", {
+        logger: m => {
+          if (m.status === "recognizing text") {
+            setStatus(`OCR ${Math.round(m.progress * 100)}%`);
+          }
+        }
+      });
+
+      state.ocrText = res.data.text || "";
+      return state.ocrText;
+    } catch (e) {
+      console.warn("OCR failed", e);
+      return "";
+    }
+  }
+
+  /* TEXT EXTRACTION (PDF / ZIP) */
   async function extractText(file) {
     const name = file.name.toLowerCase();
 
-    /* ZIP */
     if (name.endsWith(".zip")) {
       const zip = await JSZip.loadAsync(file);
       let text = "";
@@ -36,10 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
           text += await f.async("string") + "\n";
         }
       }
-      return { text, source: "zip" };
+      return text;
     }
 
-    /* PDF (NO OCR) */
     if (name.endsWith(".pdf")) {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -52,59 +76,63 @@ document.addEventListener("DOMContentLoaded", () => {
         const content = await page.getTextContent();
         text += content.items.map(i => i.str).join(" ") + "\n";
       }
-      return { text, source: "pdf" };
+      return text;
     }
 
-    /* IMAGE OCR */
-    if (file.type.startsWith("image/")) {
-      const OCR = window.Tesseract || window.TesseractJS;
-      const result = await OCR.recognize(file, "eng", {
-        logger: m => {
-          if (m.status === "recognizing text") {
-            setStatus(`OCR ${Math.round(m.progress * 100)}%`);
-          }
-        }
-      });
-      return { text: result.data.text, source: "image" };
-    }
-
-    throw new Error("Unsupported file type");
+    return "";
   }
 
-  /* ---------------- BUTTONS ---------------- */
-  async function run() {
+  /* ORCHESTRATION (THIS WAS MISSING BEFORE) */
+  async function processFile(useOCR) {
     try {
       const file = el.file.files[0];
       if (!file) return setStatus("No file selected", true);
 
       setStatus("Processing…");
-      const result = await extractText(file);
 
-      extractedText = result.text.trim();
-      el.raw.textContent = extractedText || "-";
-      el.clean.textContent = extractedText || "-";
+      state.ocrText = "";
+      state.extractedText = "";
 
-      setStatus(`Done ✓ (${result.source})`);
+      // Run independently
+      if (useOCR && file.type.startsWith("image/")) {
+        await runOCR(file);
+      }
+
+      state.extractedText = await extractText(file);
+
+      // Choose best available text
+      state.finalText =
+        state.extractedText.trim() ||
+        state.ocrText.trim();
+
+      el.raw.textContent = state.finalText || "-";
+      el.clean.textContent = state.finalText || "-";
+
+      setStatus("Text ready ✓");
     } catch (e) {
       console.error(e);
-      setStatus("Failed ❌", true);
+      setStatus("Processing failed ❌", true);
     }
   }
 
-  el.dual.onclick = run;
-  el.ocr.onclick = run;
+  el.dual.onclick = () => processFile(true);
+  el.ocr.onclick = () => processFile(true);
 
   el.parse.onclick = () => {
-    if (!extractedText) {
-      setStatus("OCR / PDF first", true);
-      return;
+    if (!state.finalText) {
+      return setStatus("No text to parse", true);
     }
+
     el.json.textContent = JSON.stringify(
-      { length: extractedText.length, preview: extractedText.slice(0, 200) },
+      {
+        length: state.finalText.length,
+        preview: state.finalText.slice(0, 300)
+      },
       null,
       2
     );
+
     setStatus("Parsed ✓");
   };
 });
-        
+                          
