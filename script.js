@@ -1,34 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const fileInput = document.getElementById("fileInput");
-  const dualOCRBtn = document.getElementById("dualOCRBtn");
-  const ocrOnlyBtn = document.getElementById("ocrOnlyBtn");
-  const parseBtn = document.getElementById("parseBtn");
+  const el = {
+    file: document.getElementById("fileInput"),
+    dual: document.getElementById("dualOCRBtn"),
+    ocr: document.getElementById("ocrOnlyBtn"),
+    parse: document.getElementById("parseBtn"),
+    raw: document.getElementById("rawText"),
+    clean: document.getElementById("cleanedText"),
+    json: document.getElementById("jsonPreview"),
+    status: document.getElementById("statusBar"),
+    theme: document.getElementById("themeSelect")
+  };
 
-  const rawText = document.getElementById("rawText");
-  const cleanedText = document.getElementById("cleanedText");
-  const statusBar = document.getElementById("statusBar");
+  let extractedText = "";
 
-  function setStatus(msg) {
-    statusBar.textContent = msg;
-  }
+  const setStatus = (msg, err = false) => {
+    el.status.textContent = msg;
+    el.status.style.color = err ? "red" : "green";
+  };
 
-  let currentFile = null;
-
-  fileInput.addEventListener("change", e => {
-    currentFile = e.target.files[0];
-    setStatus(currentFile ? "File loaded ✓" : "No file");
+  /* ---------------- THEME ---------------- */
+  el.theme.addEventListener("change", () => {
+    document.body.className = "theme-" + el.theme.value;
   });
 
-  async function runOCR(file) {
-    try {
-      setStatus("OCR started…");
+  /* ---------------- FILE HANDLER ---------------- */
+  async function extractText(file) {
+    const name = file.name.toLowerCase();
 
-      const OCR = window.Tesseract || window.TesseractJS;
-      if (!OCR) {
-        setStatus("Tesseract not loaded ❌");
-        return;
+    /* ZIP */
+    if (name.endsWith(".zip")) {
+      const zip = await JSZip.loadAsync(file);
+      let text = "";
+      for (const f of Object.values(zip.files)) {
+        if (!f.dir && f.name.endsWith(".txt")) {
+          text += await f.async("string") + "\n";
+        }
       }
+      return { text, source: "zip" };
+    }
 
+    /* PDF (NO OCR) */
+    if (name.endsWith(".pdf")) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+      const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+      let text = "";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(i => i.str).join(" ") + "\n";
+      }
+      return { text, source: "pdf" };
+    }
+
+    /* IMAGE OCR */
+    if (file.type.startsWith("image/")) {
+      const OCR = window.Tesseract || window.TesseractJS;
       const result = await OCR.recognize(file, "eng", {
         logger: m => {
           if (m.status === "recognizing text") {
@@ -36,38 +65,46 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       });
+      return { text: result.data.text, source: "image" };
+    }
 
-      const text = result.data.text.trim();
-      rawText.textContent = text;
-      cleanedText.textContent = text;
+    throw new Error("Unsupported file type");
+  }
 
-      setStatus("OCR completed ✓");
+  /* ---------------- BUTTONS ---------------- */
+  async function run() {
+    try {
+      const file = el.file.files[0];
+      if (!file) return setStatus("No file selected", true);
+
+      setStatus("Processing…");
+      const result = await extractText(file);
+
+      extractedText = result.text.trim();
+      el.raw.textContent = extractedText || "-";
+      el.clean.textContent = extractedText || "-";
+
+      setStatus(`Done ✓ (${result.source})`);
     } catch (e) {
       console.error(e);
-      setStatus("OCR failed ❌");
+      setStatus("Failed ❌", true);
     }
   }
 
-  dualOCRBtn.addEventListener("click", () => {
-    if (!currentFile) {
-      setStatus("No file selected");
+  el.dual.onclick = run;
+  el.ocr.onclick = run;
+
+  el.parse.onclick = () => {
+    if (!extractedText) {
+      setStatus("OCR / PDF first", true);
       return;
     }
-    runOCR(currentFile);
-  });
-
-  ocrOnlyBtn.addEventListener("click", () => {
-    if (!currentFile) {
-      setStatus("No file selected");
-      return;
-    }
-    runOCR(currentFile);
-  });
-
-  parseBtn.addEventListener("click", () => {
-    setStatus("Parse clicked ✓ (OCR first)");
-  });
-
-  setStatus("Ready ✓");
+    el.json.textContent = JSON.stringify(
+      { length: extractedText.length, preview: extractedText.slice(0, 200) },
+      null,
+      2
+    );
+    setStatus("Parsed ✓");
+  };
 });
-       
+        
