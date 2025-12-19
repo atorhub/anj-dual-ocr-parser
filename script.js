@@ -129,9 +129,6 @@ if (document.getElementById("summaryConfidence"))
   summaryConfidence.textContent =
     state.parsed.confidence ? state.parsed.confidence + "%" : "-";
       
-      el.raw.textContent = state.finalText || "-";
-      el.clean.textContent = state.finalText || "-";
-
       setStatus("Text ready ✓");
     } catch (e) {
       console.error(e);
@@ -146,15 +143,8 @@ if (document.getElementById("summaryConfidence"))
     if (!state.finalText) {
       return setStatus("No text to parse", true);
     }
-
     el.json.textContent = JSON.stringify(state.parsed, null, 2);
     
-        length: state.finalText.length,
-        preview: state.finalText.slice(0, 300)
-      }
-      null,
-      2
-    );
 
     setStatus("Parsed ✓");
   };
