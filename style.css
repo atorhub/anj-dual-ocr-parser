@@ -1,253 +1,39 @@
-/* ============================================================
-   ANJ — Animated Themes (Medium Intensity)
-   Entire style.css — Fully Optimized + Clean + Responsive
-   ============================================================ */
-
-/* ---------- ROOT VARIABLES ---------- */
 :root {
-  --bg-1: #FDE2E4;
-  --bg-2: #FFF;
-  --glass: rgba(255,255,255,0.6);
-  --glass-border: rgba(0,0,0,0.04);
-  --card-bg: rgba(255,255,255,0.9);
-  --text: #2c2c2c;
-  --radius: 14px;
-  --shadow: 0 8px 30px rgba(31,41,55,0.06);
-
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+  --bg: #fbeaff;
+  --card: #ffffff;
+  --text: #222;
 }
 
-/* ---------- RESET ---------- */
-* { box-sizing: border-box; }
-html, body { height: 100%; }
 body {
+  background: var(--bg);
+  font-family: sans-serif;
   margin: 0;
-  color: var(--text);
-  background: var(--bg-1);
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
 }
 
-/* ============================================================
-   GLOBAL BACKGROUND ANIMATION LAYERS
-   ============================================================ */
-
-body::before {
-  content: "";
-  position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
-  z-index: 0;
-  background: var(--bg-1);
-  animation: bgFlow 18s ease-in-out infinite;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.09) 0px, transparent 50px),
-    radial-gradient(circle at 80% 60%, rgba(255,255,255,0.06) 0px, transparent 60px);
-  animation: sparkleFloat 8s infinite ease-in-out;
-  opacity: .55;
-}
-
-/* Soft floating motion */
-@keyframes bgFlow {
-  0%   { transform: translateY(0px) scale(1); }
-  50%  { transform: translateY(-12px) scale(1.02); }
-  100% { transform: translateY(0px) scale(1); }
-}
-
-/* Ambient sparkles */
-@keyframes sparkleFloat {
-  0%   { opacity: 0.45; transform: translateY(0px); }
-  50%  { opacity: 0.65; transform: translateY(-10px); }
-  100% { opacity: 0.45; transform: translateY(0px); }
-}
-
-/* ============================================================
-   PER-THEME ANIMATED BACKGROUNDS (MEDIUM INTENSITY)
-   ============================================================ */
-
-/* 🌹 Rose Nebula */
-body.theme-rose::before {
-  background: linear-gradient(135deg, #FDE2E4, #F9D3E1, #FFE3EC);
-  animation-duration: 16s;
-}
-
-body.theme-rose::after {
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.16) 0px, transparent 70px),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.10) 0px, transparent 90px);
-}
-
-/* 💜 Lilac Glow */
-body.theme-lilac::before {
-  background: linear-gradient(135deg, #F3E5F5, #E0D4FF, #F8EFFF);
-  animation-duration: 17s;
-}
-
-body.theme-lilac::after {
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.14) 0px, transparent 70px),
-    radial-gradient(circle at 60% 80%, rgba(255,255,255,0.12) 0px, transparent 90px);
-}
-
-/* 🍭 Cotton Candy Sky */
-body.theme-cotton::before {
-  background: linear-gradient(135deg, #FFD6E0, #E0BBE4, #CDEBFF);
-  animation-duration: 18s;
-}
-
-body.theme-cotton::after {
-  background-image:
-    radial-gradient(circle at 15% 40%, rgba(255,255,255,0.16) 0px, transparent 80px),
-    radial-gradient(circle at 85% 60%, rgba(255,255,255,0.14) 0px, transparent 100px);
-}
-
-/* 🌌 Galaxy Glitter */
-body.theme-galaxy::before {
-  background: linear-gradient(135deg, #EDE7F6, #C5C6F7, #FFCAF2);
-  animation-duration: 20s;
-}
-
-body.theme-galaxy::after {
-  background-image:
-    radial-gradient(circle at 25% 30%, rgba(255,255,255,0.15) 0px, transparent 85px),
-    radial-gradient(circle at 75% 70%, rgba(255,255,255,0.13) 0px, transparent 110px);
-}
-
-/* 🌺 Dreamy Blush */
-body.theme-blush::before {
-  background: linear-gradient(135deg, #FFE5EC, #F6CCE3, #FFD9EE);
-  animation-duration: 18s;
-}
-
-body.theme-blush::after {
-  background-image:
-    radial-gradient(circle at 10% 50%, rgba(255,255,255,0.15) 0px, transparent 80px),
-    radial-gradient(circle at 90% 40%, rgba(255,255,255,0.12) 0px, transparent 95px);
-}
-
-/* 🧚 Fairy Dust */
-body.theme-fairy::before {
-  background: linear-gradient(135deg, #FFF0F5, #EFD9FF, #F9E8FF);
-  animation-duration: 16s;
-}
-
-body.theme-fairy::after {
-  background-image:
-    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.17) 0px, transparent 70px),
-    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.14) 0px, transparent 100px);
-}
-
-/* ============================================================
-   UI + COMPONENT STYLES (same as before but cleaner)
-   ============================================================ */
-
-.app-header,
-.main,
-.footer {
-  position: relative;
-  z-index: 5;
-}
-
-/* Header */
-.app-header {
+header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 18px 20px;
-  gap: 12px;
+  padding: 10px;
+  background: var(--card);
 }
 
-.brand { display: flex; gap: 12px; align-items: center; }
-.logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 800;
-  font-size: 18px;
-  box-shadow: 0 8px 30px rgba(139,92,246,0.18);
-}
-
-.title-wrap h1 { margin: 0; font-size: 18px; }
-.subtitle { font-size: 12px; opacity: .7; }
-
-/* Top controls */
-.top-controls { display: flex; gap: 10px; align-items: center; }
-.select {
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--glass-border);
-  background: var(--card-bg);
-}
-.status { font-weight: 700; color: #117a46; }
-
-/* Cards */
-.main { max-width: 1100px; margin: 18px auto; padding: 0 18px; }
-.card {
-  background: var(--card-bg);
-  padding: 18px;
-  border-radius: 12px;
-  margin-bottom: 18px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--glass-border);
-}
-
-/* Buttons */
-.controls { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn {
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  box-shadow: 0 6px 16px rgba(11,15,28,0.06);
-}
-.btn.primary { background: linear-gradient(90deg, #7c3aed, #a78bfa); color: white; }
-.btn.danger { background: linear-gradient(90deg, #ff6b6b, #ff8787); color: white; }
-.controls.exports .btn { background: linear-gradient(90deg,#8b5cf6,#a78bfa); color: white; }
-
-/* Preview grid */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 12px;
-}
-
-.panel {
-  padding: 12px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.92);
-  border: 1px solid rgba(0,0,0,0.02);
-}
-
-/* Scroll boxes */
-.scroll {
-  background: #fff;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
   padding: 10px;
-  border-radius: 10px;
-  min-height: 120px;
-  overflow: auto;
-  border: 1px solid rgba(0,0,0,0.03);
 }
 
-.small { min-height: 60px; }
+pre {
+  background: var(--card);
+  padding: 10px;
+  min-height: 150px;
+  overflow: auto;
+}
 
-/* Responsive */
-@media (max-width: 920px) {
-  .grid { grid-template-columns: 1fr; }
-  .logo { width: 48px; height: 48px; }
+/* THEMES */
+body.theme-galaxy {
+  --bg: #1b102a;
+  --card: #2d1b4d;
+  --text: #fff;
 }
