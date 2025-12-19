@@ -12,10 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let state = {
-    ocrText: "",
-    extractedText: "",
-    finalText: ""
-  };
+  ocrText: "",
+  extractedText: "",
+  finalText: "",
+  analysis: null   // ← NEW
+};
+  
 
   const setStatus = (msg, err = false) => {
     el.status.textContent = msg;
@@ -107,7 +109,9 @@ state.finalText =
 
 // STEP A: Clean text
 state.finalText = cleanExtractedText(state.finalText);
-
+// STEP A.5: Analyze cleaned text (read-only)
+state.analysis = analyzeText(state.finalText);
+      
 // STEP B: Parse cleaned text
 state.parsed = parseInvoiceText(state.finalText);
   // STEP C: UI Mapping (safe)
@@ -186,6 +190,50 @@ function cleanExtractedText(rawText) {
   // 4. Final joined text
   return cleaned.join("\n");
 }
+/* =========================================================
+   PHASE 1 · STEP 1
+   ANALYSIS LAYER (READ-ONLY, SAFE)
+   ========================================================= */
+
+function analyzeText(cleanText) {
+  if (!cleanText || typeof cleanText !== "string") {
+    return {
+      lines: [],
+      headerCandidates: [],
+      totalCandidates: [],
+      dateCandidates: [],
+      currencyCandidates: []
+    };
+  }
+
+  const lines = cleanText
+    .split("\n")
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  const headerCandidates = lines.slice(0, 8);
+
+  const totalCandidates = lines.filter(l =>
+    /(total|grand total|amount payable|net amount|balance)/i.test(l)
+  );
+
+  const dateCandidates = lines.filter(l =>
+    /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(l)
+  );
+
+  const currencyCandidates = lines.filter(l =>
+    /₹|rs\.?|inr|\$|usd|eur|aed/i.test(l)
+  );
+
+  return {
+    lines,
+    headerCandidates,
+    totalCandidates,
+    dateCandidates,
+    currencyCandidates
+  };
+}
+
 /* ===============================
    STEP B: UNIVERSAL INVOICE PARSER
    =============================== */
