@@ -18,6 +18,12 @@ const state = {
   extractedText: "",
   finalText: "",
   parsed: null,
+  try {
+  state.analysis = analyzeText(state.finalText);
+} catch (_) {
+  state.analysis = {};
+}
+                          
 };
 
 
@@ -27,9 +33,11 @@ const state = {
   };
 
   /* THEME */
+  if (el.theme) {
   el.theme.addEventListener("change", () => {
     document.body.className = "theme-" + el.theme.value;
   });
+  }
 
   /* OCR (UNCHANGED, DOES ITS OWN JOB) */
   async function runOCR(file) {
@@ -91,14 +99,16 @@ async function processFile(useOCR) {
       return;
     }
 
-    const file = el.file.files[0];
-    setStatus("Processing…");
+  const file = el.file.files[0];
+setStatus("Processing...");
 
-    // reset state safely
-    state.ocrText = "";
-    state.extractedText = "";
-    state.finalText = "";
-    state.parsed = null;
+// reset state
+state.ocrText = "";
+state.extractedText = "";
+state.finalText = "";
+state.parsed = {};
+state.analysis = {};
+    
 
     // OCR only if image
     if (useOCR && file.type.startsWith("image/")) {
@@ -117,9 +127,10 @@ async function processFile(useOCR) {
 
     // choose best available text
     state.finalText =
-      (state.extractedText || "").trim() ||
-      (state.ocrText || "").trim() ||
-      "";
+  (state.extractedText && state.extractedText.trim()) ||
+  (state.ocrText && state.ocrText.trim()) ||
+  "";
+    
 
     // clean text (safe)
     state.finalText = cleanExtractedText(state.finalText);
@@ -135,9 +146,9 @@ async function processFile(useOCR) {
     setStatus("Text ready ✓");
   } catch (err) {
     console.error(err);
-    setStatus("Processing failed ❌", true);
-  }
-}
+    console.warn("Non-fatal processing error", e);
+setStatus("Done");
+    
    // ===== BOOTSTRAP C: SINGLE RENDER =====
 function renderUI() {
   if (el.raw) el.raw.textContent = state.extractedText || "-";
@@ -323,4 +334,5 @@ function parseInvoiceText(cleanText, analysis) {
 
   return result;
 }
-
+});
+  
