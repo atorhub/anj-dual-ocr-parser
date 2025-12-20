@@ -1,61 +1,115 @@
-/* ===============================
-   GLOBAL STATE (single owner)
-================================ */
+document.addEventListener("DOMContentLoaded", () => {
 
-const state = {
-  rawText: "",
-  cleanedText: "",
-  analysis: null,
-  parsed: null
-};
+  /* ===============================
+     BLACK BOX DEBUGGER
+  ============================== */
 
-/* ===============================
-   DOM HELPERS
-================================ */
+  const debugBox = document.createElement("div");
+  debugBox.style.cssText = `
+    position:fixed;bottom:10px;right:10px;
+    width:300px;max-height:40vh;
+    overflow:auto;z-index:9999;
+    background:#0b1020;color:#9ef;
+    font:12px monospace;
+    border:1px solid #334;
+    padding:8px;border-radius:8px;
+  `;
+  document.body.appendChild(debugBox);
 
-const el = {
-  file: document.getElementById("fileInput"),
-  output: document.getElementById("output"),
-  status: document.getElementById("status")
-};
-
-function setStatus(msg, error = false) {
-  el.status.textContent = msg;
-  el.status.style.color = error ? "red" : "#6cf";
-}
-
-/* ===============================
-   OCR (PURE FUNCTION)
-================================ */
-
-async function runOCR(file) {
-  try {
-    const { data } = await Tesseract.recognize(file, "eng", {
-      logger: m => {
-        if (m.status === "recognizing text") {
-          setStatus(`OCR ${Math.round(m.progress * 100)}%`);
-        }
-      }
-    });
-    return data.text || "";
-  } catch (e) {
-    console.warn("OCR failed", e);
-    return "";
+  function debug(msg, type = "info") {
+    const line = document.createElement("div");
+    const color =
+      type === "error" ? "#f66" :
+      type === "warn"  ? "#fd6" :
+                         "#9ef";
+    line.style.color = color;
+    line.textContent = `[${type.toUpperCase()}] ${msg}`;
+    debugBox.appendChild(line);
+    debugBox.scrollTop = debugBox.scrollHeight;
   }
-}
 
-/* ===============================
-   PDF / ZIP TEXT EXTRACTION
-   (PURE FUNCTION)
-================================ */
+  debug("DOM ready");
 
-async function extractText(file) {
-  const name = file.name.toLowerCase();
+  /* ===============================
+     DOM ELEMENTS
+  ============================== */
 
-  // ZIP
-  if (name.endsWith(".zip")) {
+  const el = {
+    file: document.getElementById("fileInput"),
+    raw: document.getElementById("rawText"),
+    clean: document.getElementById("cleanedText"),
+    json: document.getElementById("jsonPreview"),
+    status: document.getElementById("status"),
+    run: document.getElementById("processBtn")
+  };
+
+  if (!el.file) {
+    debug("fileInput missing", "error");
+    return;
+  }
+
+  /* ===============================
+     STATE (SINGLE OWNER)
+  ============================== */
+
+  const state = {
+    finalText: "",
+    parsed: {},
+    analysis: {}
+  };
+
+  function setStatus(msg, err = false) {
+    if (!el.status) return;
+    el.status.textContent = msg;
+    el.status.style.color = err ? "red" : "lime";
+  }
+
+  /* ===============================
+     PURE HELPERS (NO STATE)
+  ============================== */
+
+  async function runOCR(file) {
+    debug("OCR selected");
+    if (!window.Tesseract) {
+      debug("Tesseract missing", "error");
+      return "";
+    }
+    const res = await Tesseract.recognize(file, "eng");
+    return res?.data?.text || "";
+  }
+
+  async function extractPDF(file) {
+    debug("PDF selected");
+    if (!window.pdfjsLib) {
+      debug("pdfjsLib missing", "error");
+      return "";
+    }
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+    const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+    let text = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      debug(`PDF page ${i}/${pdf.numPages}`);
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(i => i.str).join(" ") + "\n";
+    }
+    return text;
+  }
+
+  async function extractZIP(file) {
+    debug("ZIP selected");
+    if (!window.JSZip) {
+      debug("JSZip missing", "error");
+      return "";
+    }
+
     const zip = await JSZip.loadAsync(file);
     let text = "";
+
     for (const f of Object.values(zip.files)) {
       if (!f.dir && f.name.endsWith(".txt")) {
         text += await f.async("string") + "\n";
@@ -64,142 +118,73 @@ async function extractText(file) {
     return text;
   }
 
-  // PDF
-  if (name.endsWith(".pdf")) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-    const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
-    let text = "";
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      text += content.items.map(i => i.str).join(" ") + "\n";
-    }
-    return text;
+  function cleanText(t) {
+    return t.replace(/\s+/g, " ").trim();
   }
 
-  return "";
-}
-
-/* ===============================
-   A — CLEAN TEXT
-================================ */
-
-function cleanText(text) {
-  return text
-    .replace(/\s+/g, " ")
-    .replace(/[^\x20-\x7E]/g, "")
-    .trim();
-}
-
-/* ===============================
-   A.5 — ANALYSIS (NO AI)
-================================ */
-
-function analyzeText(text) {
-  const result = {
-    confidence: 0,
-    confidenceBreakdown: {
-      hasDate: /\d{2}[-/]\d{2}[-/]\d{4}/.test(text),
-      hasAmount: /₹|\btotal\b|\bamount\b/i.test(text),
-      hasInvoice: /invoice|bill|receipt/i.test(text),
-      textLength: text.length > 300
-    }
-  };
-
-  Object.values(result.confidenceBreakdown).forEach(v => {
-    if (v) result.confidence += 25;
-  });
-
-  if (result.confidence > 100) result.confidence = 100;
-  return result;
-}
-
-/* ===============================
-   B — PARSE (BASIC)
-================================ */
-
-function parseText(text) {
-  const totalMatch = text.match(/total[:\s]*₹?\s?([\d,.]+)/i);
-
-  return {
-    total: totalMatch ? totalMatch[1] : null,
-    rawPreview: text.slice(0, 400)
-  };
-}
-
-/* ===============================
-   C — UI RENDER
-================================ */
-
-function render() {
-  el.output.textContent = JSON.stringify(
-    {
-      cleanedText: state.cleanedText,
-      analysis: state.analysis,
-      parsed: state.parsed
-    },
-    null,
-    2
-  );
-}
-
-/* ===============================
-   🚀 BOOTSTRAP PIPELINE
-   (ONLY OWNER OF STATE)
-================================ */
-
-async function processFile(useOCR) {
-  try {
-    if (!el.file.files[0]) {
-      setStatus("No file selected", true);
-      return;
-    }
-
-    setStatus("Processing...");
-    const file = el.file.files[0];
-
-    // RESET STATE (SAFE)
-    state.rawText = "";
-    state.cleanedText = "";
-    state.analysis = null;
-    state.parsed = null;
-
-    // 1️⃣ SOURCE TEXT
-    if (useOCR && file.type.startsWith("image/")) {
-      state.rawText = await runOCR(file);
-    } else {
-      state.rawText = await extractText(file);
-    }
-
-    if (!state.rawText) {
-      setStatus("No text extracted", true);
-      return;
-    }
-
-    // 2️⃣ CLEAN
-    state.cleanedText = cleanText(state.rawText);
-
-    // 3️⃣ ANALYZE
-    state.analysis = analyzeText(state.cleanedText);
-
-    // 4️⃣ PARSE
-    state.parsed = parseText(state.cleanedText);
-
-    // 5️⃣ RENDER
-    render();
-    setStatus("Done ✓");
-  } catch (e) {
-    console.error(e);
-    setStatus("Processing failed", true);
+  function parseText(t) {
+    const m = t.match(/total[:\s]*₹?\s?([\d,.]+)/i);
+    return { total: m ? m[1] : null };
   }
-}
 
-/* ===============================
-   BUTTON HOOKS
-================================ */
+  /* ===============================
+     PIPELINE (ONLY STATE WRITER)
+  ============================== */
 
-window.runDualOCR = () => processFile(true);
-window.runQuickOCR = () => processFile(false);
+  async function processFile() {
+    try {
+      if (!el.file.files[0]) {
+        setStatus("No file selected", true);
+        debug("No file selected", "warn");
+        return;
+      }
+
+      const file = el.file.files[0];
+      debug(`File: ${file.name}`);
+
+      state.finalText = "";
+      state.parsed = {};
+      state.analysis = {};
+
+      let raw = "";
+
+      if (file.type.startsWith("image/")) {
+        raw = await runOCR(file);
+      } else if (file.name.endsWith(".pdf")) {
+        raw = await extractPDF(file);
+      } else if (file.name.endsWith(".zip")) {
+        raw = await extractZIP(file);
+      } else {
+        debug("Unsupported file type", "error");
+      }
+
+      if (!raw) {
+        setStatus("No text extracted", true);
+        debug("Extraction returned empty", "error");
+        return;
+      }
+
+      state.finalText = cleanText(raw);
+      state.parsed = parseText(state.finalText);
+
+      el.raw.textContent = raw;
+      el.clean.textContent = state.finalText;
+      el.json.textContent = JSON.stringify(state.parsed, null, 2);
+
+      setStatus("Done ✓");
+      debug(`Done. Text length: ${state.finalText.length}`);
+
+    } catch (e) {
+      debug(e.message || "Unknown error", "error");
+      setStatus("Failed", true);
+    }
+  }
+
+  /* ===============================
+     EVENTS
+  ============================== */
+
+  if (el.run) el.run.onclick = processFile;
+
+});
+       
