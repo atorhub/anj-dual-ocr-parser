@@ -1,148 +1,101 @@
-/* RESET */
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, sans-serif;
+:root {
+  --bg: #0b1020;
+  --panel: #111833;
+  --text: #e6e8ff;
+  --accent: #8b5cf6;
+  --muted: #6b7280;
 }
 
 body {
   margin: 0;
-  background: #0f1220;
-  color: #e5e7eb;
-}
-
-/* APP SHELL */
-.app-shell {
-  display: flex;
-  height: 100vh;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 240px;
-  background: #0b0e1a;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.logo {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 30px;
-}
-
-.sidebar nav a {
-  display: block;
-  padding: 10px 14px;
-  margin-bottom: 6px;
-  color: #9ca3af;
-  text-decoration: none;
-  border-radius: 12px;
-  transition: all 0.2s ease;
-}
-
-.sidebar nav a:hover {
-  background: rgba(255,255,255,0.08);
-  color: white;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-}
-
-.xp-card {
-  background: rgba(255,255,255,0.06);
-  padding: 12px;
-  border-radius: 14px;
-  font-size: 13px;
-}
-
-/* WORKSPACE */
-.workspace {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
 /* TOP BAR */
 .topbar {
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  background: rgba(0,0,0,0.2);
-}
-
-/* PANELS */
-.panel {
-  display: none;
-  padding: 28px;
-  animation: fadeIn 0.3s ease;
-}
-
-.panel:target {
-  display: block;
-}
-
-body:not(:has(:target)) #uploadPanel {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* UPLOAD */
-.upload-box {
-  display: block;
-  border: 2px dashed rgba(255,255,255,0.25);
-  border-radius: 20px;
-  padding: 40px;
-  text-align: center;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: all 0.25s ease;
-}
-
-.upload-box:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: #a78bfa;
-}
-
-.upload-box input {
-  display: none;
-}
-
-/* ACTIONS */
-.action-row {
   display: flex;
   gap: 12px;
+  padding: 12px 16px;
+  align-items: center;
+  background: #0f1530;
+}
+
+.logo {
+  font-weight: 800;
+}
+
+/* CONTROLS */
+.controls {
+  padding: 12px;
+  display: flex;
+  gap: 8px;
 }
 
 button {
-  background: linear-gradient(135deg,#7c3aed,#ec4899);
+  background: var(--accent);
   border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
   color: white;
-  padding: 10px 16px;
-  border-radius: 12px;
   cursor: pointer;
 }
 
-/* EMPTY STATES */
-.empty-state {
-  margin-top: 40px;
-  padding: 40px;
-  border-radius: 18px;
+/* PANELS */
+.panels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.panel {
+  background: var(--panel);
+  padding: 16px;
+  border-radius: 16px;
+  overflow-y: auto;
+}
+
+.panel h2 {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* === RESULT VISIBILITY FIX (CORRECT PLACE) === */
+.panel pre {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
   background: rgba(255,255,255,0.04);
-  color: #9ca3af;
-  text-align: center;
+  padding: 16px;
+  border-radius: 14px;
+  margin-top: 16px;
+  color: #e5e7eb;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Ensure upload panel shows results */
+#uploadPanel pre {
+  display: block;
+}
+
+/* Prevent accidental hiding */
+pre:empty::before {
+  content: "Waiting for output …";
+  color: var(--muted);
+}
+
+/* THEMES */
+.theme-dark {
+  --bg: #020617;
+  --panel: #020617;
+  --accent: #38bdf8;
+}
+
+.theme-pink {
+  --bg: #1a1025;
+  --panel: #25143b;
+  --accent: #ec4899;
 }
