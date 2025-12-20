@@ -1,5 +1,5 @@
 /* ===============================
-   ROOT + THEME DEFAULT
+   ROOT DEFAULTS
 ================================ */
 :root {
   --bg: #0b1020;
@@ -9,21 +9,67 @@
   --text: #e5e7eb;
   --muted: #9ca3af;
   --accent: #8b5cf6;
-  --radius: 16px;
-}
-
-body.theme-default {
-  background: radial-gradient(circle at top, #111827, #020617);
-  color: var(--text);
-  font-family: system-ui, sans-serif;
+  --glow: 0 0 16px rgba(139,92,246,0.6);
 }
 
 /* ===============================
-   APP SHELL
+   THEMES
 ================================ */
+body.theme-default { }
+
+body.theme-fairy {
+  --bg: radial-gradient(circle at top, #fde2ff, #c7d2fe);
+  --sidebar: rgba(255,255,255,0.6);
+  --card: rgba(255,255,255,0.6);
+  --border: rgba(0,0,0,0.08);
+  --text: #3b0764;
+  --muted: #6b21a8;
+  --accent: #ec4899;
+}
+
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #1e1b4b, #020617);
+  --sidebar: #020617;
+  --card: rgba(99,102,241,0.12);
+  --border: rgba(99,102,241,0.3);
+  --text: #e0e7ff;
+  --muted: #a5b4fc;
+  --accent: #6366f1;
+}
+
+body.theme-pink {
+  --bg: linear-gradient(135deg, #fdf2f8, #fbcfe8);
+  --sidebar: #fff1f2;
+  --card: #ffffff;
+  --border: #f9a8d4;
+  --text: #831843;
+  --muted: #be185d;
+  --accent: #db2777;
+}
+
+body.theme-dark {
+  --bg: #020617;
+  --sidebar: #020617;
+  --card: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.06);
+  --text: #f9fafb;
+  --muted: #9ca3af;
+  --accent: #22d3ee;
+}
+
+/* ===============================
+   BASE
+================================ */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 /* ===============================
@@ -32,41 +78,47 @@ body.theme-default {
 .sidebar {
   width: 220px;
   background: var(--sidebar);
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
+  transition: width 0.3s ease;
 }
 
-.brand {
+.logo {
   font-weight: 800;
   letter-spacing: 2px;
   margin-bottom: 24px;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .nav-item {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: 12px;
-  text-align: left;
   cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.nav-item.active,
 .nav-item:hover {
-  background: rgba(139,92,246,0.15);
-  color: #fff;
+  background: var(--card);
+  transform: translateX(4px);
+}
+
+.nav-item.active {
+  background: var(--card);
+  box-shadow: var(--glow);
+  animation: pulse 1.8s infinite;
+}
+
+/* Glow pulse */
+@keyframes pulse {
+  0% { box-shadow: 0 0 8px var(--accent); }
+  50% { box-shadow: 0 0 22px var(--accent); }
+  100% { box-shadow: 0 0 8px var(--accent); }
 }
 
 /* ===============================
-   MAIN AREA
+   MAIN
 ================================ */
 .main {
   flex: 1;
@@ -74,24 +126,33 @@ body.theme-default {
   flex-direction: column;
 }
 
-/* ===============================
-   TOP BAR
-================================ */
 .topbar {
+  padding: 12px 16px;
   display: flex;
-  justify-content: space-between;
+  gap: 12px;
   align-items: center;
-  padding: 16px 24px;
   border-bottom: 1px solid var(--border);
 }
 
-/* ===============================
-   CONTENT
-================================ */
-.content {
-  padding: 24px;
+.panel-grid {
+  padding: 16px;
   display: grid;
-  gap: 24px;
+  gap: 16px;
+}
+
+/* ===============================
+   LAYOUT MODES
+================================ */
+.layout-dashboard .panel-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.layout-focus .panel-grid {
+  grid-template-columns: 1fr;
+}
+
+.layout-wide .panel-grid {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 /* ===============================
@@ -99,63 +160,26 @@ body.theme-default {
 ================================ */
 .panel {
   background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px;
-  animation: fadeUp 0.4s ease;
+  overflow-y: auto;
+  animation: fadeUp 0.4s ease both;
 }
 
 .panel h2 {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   font-weight: 600;
 }
 
-/* ===============================
-   UPLOAD
-================================ */
-.upload-panel .drop-zone {
-  border: 2px dashed var(--border);
-  border-radius: 14px;
-  padding: 30px;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===============================
-   PROCESSING STATE
+   RESULT VISIBILITY FIX
 ================================ */
-.processing {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-  color: var(--muted);
-}
-
-.loader {
-  width: 18px;
-  height: 18px;
-  border: 3px solid rgba(255,255,255,0.2);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-/* ===============================
-   RESULTS GRID
-================================ */
-.results {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
-
 .panel pre {
   display: block;
   white-space: pre-wrap;
@@ -163,26 +187,45 @@ body.theme-default {
   background: rgba(255,255,255,0.04);
   padding: 16px;
   border-radius: 14px;
-  color: #e5e7eb;
+  margin-top: 16px;
+  color: var(--text);
   font-size: 13px;
   line-height: 1.5;
-  max-height: 280px;
-  overflow-y: auto;
 }
 
 pre:empty::before {
   content: "Waiting for output …";
-  color: #6b7280;
+  color: var(--muted);
 }
 
 /* ===============================
-   ANIMATIONS
+   BUTTONS
 ================================ */
-@keyframes spin {
-  to { transform: rotate(360deg); }
+button {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-  }
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow);
+}
+
+/* ===============================
+   DROP ZONE
+================================ */
+.drop-zone {
+  margin-top: 12px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 2px dashed var(--border);
+  text-align: center;
+  color: var(--muted);
+     }
+     
