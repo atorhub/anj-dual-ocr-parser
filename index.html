@@ -3,37 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
+
+  <!-- LIBS (unchanged) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-default" data-layout="pro">
-  <header>
+<body class="theme-default">
+
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
     <div class="logo">ANJ</div>
 
-    <select id="themeSelect">
-      <option value="default">Default</option>
-      <option value="dark">Dark</option>
-      <option value="pink">Pink</option>
-      <option value="galaxy">Galaxy</option>
-      <option value="fairy">Fairy</option>
-    </select>
+    <nav class="nav">
+      <button class="nav-item active">🏠 Dashboard</button>
+      <button class="nav-item">📤 OCR / Upload</button>
+      <button class="nav-item">🕘 History</button>
+      <button class="nav-item">📊 Analytics</button>
+      <button class="nav-item">⬇ Export</button>
+      <button class="nav-item">⚙ Settings</button>
+    </nav>
 
-    <div id="statusBar">Ready</div>
-  </header>
+    <div class="xp-card">
+      <div class="xp-title">Creature XP</div>
+      <div class="xp-bar">
+        <span></span>
+      </div>
+      <small>Level 1</small>
+    </div>
+  </aside>
 
-  <div class="controls">
-    <input type="file" id="fileInput" />
-    <button id="dualOCRBtn">Dual OCR</button>
-    <button id="ocrOnlyBtn">OCR Only</button>
-    <button id="parseBtn">Parse</button>
-  </div>
+  <!-- MAIN -->
+  <main class="main">
 
-  <div class="panels">
-    <pre id="rawText"></pre>
-    <pre id="cleanedText"></pre>
-    <pre id="jsonPreview"></pre>
-  </div>
+    <!-- TOP HEADER -->
+    <header class="topbar">
+      <span id="statusBar">Ready ✓</span>
 
-  <script src="script.js"></script>
+      <select id="themeSelect">
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="pink">Pink</option>
+        <option value="galaxy">Galaxy</option>
+      </select>
+    </header>
+
+    <!-- PANELS -->
+    <section class="panel active">
+      <h2>Dashboard</h2>
+
+      <div class="card-grid">
+        <div class="card">
+          <h3>Total Spent</h3>
+          <p>₹0.00</p>
+        </div>
+
+        <div class="card">
+          <h3>This Month</h3>
+          <p>₹0.00</p>
+        </div>
+
+        <div class="card">
+          <h3>Categories</h3>
+          <p>No data yet</p>
+        </div>
+      </div>
+
+      <div class="empty-state">
+        Upload a bill to begin ✨
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
