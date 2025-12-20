@@ -1,93 +1,100 @@
 document.addEventListener("DOMContentLoaded", () => {
   /* =========================
-     SAFE DOM REFERENCES
+     SAFE QUERY (NO CRASH)
   ========================== */
+  const $ = (id) => document.getElementById(id) || null;
+
   const el = {
-    file: document.getElementById("fileInput"),
-    raw: document.getElementById("rawText"),
-    clean: document.getElementById("cleanedText"),
-    json: document.getElementById("jsonPreview"),
-    status: document.getElementById("statusBar"),
-    dual: document.getElementById("dualOCRBtn"),
-    ocr: document.getElementById("ocrOnlyBtn"),
-    parse: document.getElementById("parseBtn"),
-    theme: document.getElementById("themeSelect"),
+    file: $("fileInput"),
+    raw: $("rawText"),
+    clean: $("cleanedText"),
+    json: $("jsonPreview"),
+    status: $("statusBar"),
+    dual: $("dualOCRBtn"),
+    ocr: $("ocrOnlyBtn"),
+    parse: $("parseBtn"),
+    theme: $("themeSelect"),
   };
 
   /* =========================
-     STATE (SINGLE SOURCE)
-  ========================== */
-  const state = {
-    ocrText: "",
-    extractedText: "",
-    finalText: "",
-    parsed: null,
-  };
-
-  /* =========================
-     STATUS HELPER
+     STATUS (SAFE)
   ========================== */
   function setStatus(msg, error = false) {
+    if (!el.status) return;
     el.status.textContent = msg;
     el.status.style.color = error ? "#ff5f5f" : "#6bff95";
   }
 
   /* =========================
-     THEME SWITCH (SAFE)
+     DEBUG VISIBILITY
   ========================== */
-  el.theme.addEventListener("change", () => {
-    document.body.className = `theme-${el.theme.value}`;
+  console.info("[ANJ] script.js loaded");
+  Object.entries(el).forEach(([k, v]) => {
+    if (!v) console.warn(`[ANJ] Missing element: ${k}`);
   });
+
+  /* =========================
+     STATE
+  ========================== */
+  const state = {
+    extracted: "",
+    ocr: "",
+    final: "",
+    parsed: null,
+  };
+
+  /* =========================
+     THEME (NON-BLOCKING)
+  ========================== */
+  if (el.theme) {
+    el.theme.addEventListener("change", () => {
+      document.body.className = `theme-${el.theme.value}`;
+    });
+  }
 
   /* =========================
      OCR (IMAGES ONLY)
   ========================== */
   async function runOCR(file) {
-    try {
-      if (!window.Tesseract) throw new Error("Tesseract missing");
-
-      const res = await Tesseract.recognize(file, "eng", {
-        logger: m => {
-          if (m.status === "recognizing text") {
-            setStatus(`OCR ${Math.round(m.progress * 100)}%`);
-          }
-        },
-      });
-
-      state.ocrText = res.data.text || "";
-      return state.ocrText;
-    } catch (e) {
-      console.error("OCR failed:", e);
+    if (!window.Tesseract) {
+      setStatus("Tesseract not loaded", true);
       return "";
     }
+
+    const res = await Tesseract.recognize(file, "eng", {
+      logger: (m) => {
+        if (m.status === "recognizing text") {
+          setStatus(`OCR ${Math.round(m.progress * 100)}%`);
+        }
+      },
+    });
+
+    return res?.data?.text || "";
   }
 
   /* =========================
-     TEXT EXTRACTION (PDF / ZIP)
+     PDF / ZIP EXTRACTION
   ========================== */
   async function extractText(file) {
     const name = file.name.toLowerCase();
 
-    // ZIP → read .txt files
-    if (name.endsWith(".zip")) {
+    if (name.endsWith(".zip") && window.JSZip) {
       const zip = await JSZip.loadAsync(file);
-      let text = "";
+      let txt = "";
       for (const f of Object.values(zip.files)) {
         if (!f.dir && f.name.endsWith(".txt")) {
-          text += await f.async("string") + "\n";
+          txt += await f.async("string") + "\n";
         }
       }
-      return text;
+      return txt;
     }
 
-    // PDF → text layer
-    if (name.endsWith(".pdf")) {
+    if (name.endsWith(".pdf") && window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
       const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
       let text = "";
-
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
@@ -100,106 +107,75 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================
-     CLEANER (SAFE, NO AI)
+     CLEANER
   ========================== */
-  function cleanText(raw) {
-    if (!raw || typeof raw !== "string") return "";
-    return raw
+  function cleanText(t) {
+    return (t || "")
       .replace(/\r/g, "")
       .replace(/\n{2,}/g, "\n")
       .trim();
   }
 
   /* =========================
-     SIMPLE PARSER (PHASE 1)
+     PARSER (PHASE-1)
   ========================== */
-  function parseInvoice(text) {
-    const result = {
-      merchant: null,
-      date: null,
-      total: null,
-      confidence: 0,
-      rawLength: text.length,
+  function parseText(t) {
+    return {
+      length: t.length,
+      hasNumbers: /\d/.test(t),
+      preview: t.slice(0, 200),
     };
-
-    const merchant = text.match(/^[A-Z0-9 &.,\-]{5,}$/m);
-    if (merchant) {
-      result.merchant = merchant[0];
-      result.confidence += 30;
-    }
-
-    const total = text.match(/(?:total|amount)[^\d]{0,10}([\d,.]+)/i);
-    if (total) {
-      result.total = total[1];
-      result.confidence += 30;
-    }
-
-    if (text.length > 200) result.confidence += 20;
-    if (text.length > 500) result.confidence += 20;
-
-    if (result.confidence > 100) result.confidence = 100;
-    return result;
   }
 
   /* =========================
-     CORE PIPELINE (STABLE)
+     PIPELINE (SINGLE ENTRY)
   ========================== */
   async function processFile(useOCR) {
-    try {
-      const file = el.file.files[0];
-      if (!file) return setStatus("No file selected", true);
+    if (!el.file || !el.file.files.length) {
+      setStatus("No file selected", true);
+      return;
+    }
 
+    try {
       setStatus("Processing…");
 
-      // reset
-      state.ocrText = "";
-      state.extractedText = "";
-      state.finalText = "";
+      const file = el.file.files[0];
+      state.extracted = "";
+      state.ocr = "";
+      state.final = "";
       state.parsed = null;
 
-      // OCR only if image
       if (useOCR && file.type.startsWith("image/")) {
-        await runOCR(file);
+        state.ocr = await runOCR(file);
       }
 
-      // Extract text (PDF / ZIP)
-      state.extractedText = await extractText(file);
+      state.extracted = await extractText(file);
+      state.final = cleanText(state.extracted || state.ocr);
+      state.parsed = parseText(state.final);
 
-      // Choose best source
-      state.finalText =
-        state.extractedText.trim() || state.ocrText.trim();
-
-      // Clean
-      state.finalText = cleanText(state.finalText);
-
-      // Parse
-      state.parsed = parseInvoice(state.finalText);
-
-      // UI
-      el.raw.textContent = state.extractedText || state.ocrText || "-";
-      el.clean.textContent = state.finalText || "-";
-      el.json.textContent = JSON.stringify(state.parsed, null, 2);
+      if (el.raw) el.raw.textContent = state.extracted || state.ocr || "-";
+      if (el.clean) el.clean.textContent = state.final || "-";
+      if (el.json) el.json.textContent = JSON.stringify(state.parsed, null, 2);
 
       setStatus("Ready ✓");
     } catch (e) {
       console.error(e);
-      setStatus("Processing failed ✖", true);
+      setStatus("Failed", true);
     }
   }
 
   /* =========================
-     BUTTON HOOKS
+     BUTTON WIRING (SAFE)
   ========================== */
-  el.dual.onclick = () => processFile(true);
-  el.ocr.onclick = () => processFile(true);
-  el.parse.onclick = () => {
-    if (!state.finalText) return setStatus("No text to parse", true);
-    el.json.textContent = JSON.stringify(state.parsed, null, 2);
-    setStatus("Parsed ✓");
-  };
+  if (el.dual) el.dual.onclick = () => processFile(true);
+  if (el.ocr) el.ocr.onclick = () => processFile(true);
+  if (el.parse)
+    el.parse.onclick = () => {
+      if (el.json && state.parsed) {
+        el.json.textContent = JSON.stringify(state.parsed, null, 2);
+        setStatus("Parsed ✓");
+      }
+    };
 
-  /* =========================
-     READY
-  ========================== */
-  console.info("[ANJ] Script loaded cleanly");
+  setStatus("Ready");
 });
