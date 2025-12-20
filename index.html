@@ -14,44 +14,86 @@
 
 <body class="theme-default">
 
-  <header class="topbar">
-    <div class="logo">ANJ</div>
+<div class="app-shell">
 
-    <select id="themeSelect">
-      <option value="default">Default</option>
-      <option value="dark">Dark</option>
-      <option value="pink">Pink</option>
-    </select>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">ANJ</div>
 
-    <span id="statusBar">Ready</span>
-  </header>
+    <nav class="nav">
+      <button class="nav-item active">Upload</button>
+      <button class="nav-item">OCR</button>
+      <button class="nav-item">Parsed</button>
+      <button class="nav-item">History</button>
+      <button class="nav-item">Settings</button>
+    </nav>
+  </aside>
 
-  <section class="controls">
-    <input type="file" id="fileInput" />
-    <button id="dualOCRBtn">Dual OCR</button>
-    <button id="ocrOnlyBtn">Quick OCR</button>
-    <button id="parseBtn">Parse</button>
-  </section>
+  <!-- MAIN -->
+  <main class="main">
 
-  <section class="panels">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <span id="statusBar">Ready ✓</span>
 
-    <div class="panel" id="uploadPanel">
-      <h2>Raw OCR / Extracted Text</h2>
-      <pre id="rawText"></pre>
-    </div>
+      <select id="themeSelect">
+        <option value="default">Default</option>
+        <option value="fairy">Fairy</option>
+        <option value="galaxy">Galaxy</option>
+        <option value="pink">Pink</option>
+        <option value="dark">Dark</option>
+      </select>
+    </header>
 
-    <div class="panel">
-      <h2>Cleaned Text</h2>
-      <pre id="cleanedText"></pre>
-    </div>
+    <!-- CONTENT -->
+    <section class="content">
 
-    <div class="panel">
-      <h2>Parsed JSON</h2>
-      <pre id="jsonPreview"></pre>
-    </div>
+      <!-- UPLOAD PANEL -->
+      <section class="panel upload-panel" id="uploadPanel">
+        <h2>Upload Bill</h2>
 
-  </section>
+        <div class="drop-zone">
+          <input type="file" id="fileInput" />
+          <span>Tap or drop file</span>
+        </div>
 
-  <script src="script.js"></script>
+        <div class="actions">
+          <button id="dualOCRBtn">Dual OCR</button>
+          <button id="ocrOnlyBtn">Quick OCR</button>
+          <button id="parseBtn">Parse</button>
+        </div>
+
+        <!-- Processing visual (auto works with JS updates) -->
+        <div class="processing">
+          <div class="loader"></div>
+          <span>Processing…</span>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="results">
+
+        <section class="panel">
+          <h2>Raw OCR / Extracted Text</h2>
+          <pre id="rawText"></pre>
+        </section>
+
+        <section class="panel">
+          <h2>Cleaned Text</h2>
+          <pre id="cleanedText"></pre>
+        </section>
+
+        <section class="panel">
+          <h2>Parsed JSON</h2>
+          <pre id="jsonPreview"></pre>
+        </section>
+
+      </section>
+
+    </section>
+  </main>
+
+</div>
+
+<script src="script.js"></script>
 </body>
-</html>
