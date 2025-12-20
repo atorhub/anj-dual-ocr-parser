@@ -1,147 +1,167 @@
-/* =========================================================
-   ROOT VARIABLES
-========================================================= */
-:root {
+/* ======================
+   THEME VARIABLES
+====================== */
+
+body.theme-default {
   --bg: #0b1020;
-  --panel: rgba(255,255,255,0.06);
   --card: rgba(255,255,255,0.08);
-  --border: rgba(255,255,255,0.12);
-
-  --text: #eef1f8;
-  --muted: #9aa4bf;
-
-  --accent: #8a7bfa;
-  --accent-2: #ff72b6;
-
-  --radius: 16px;
-  --radius-lg: 22px;
-
-  --shadow-soft: 0 10px 30px rgba(0,0,0,0.25);
-  --blur: 18px;
+  --border: rgba(255,255,255,0.15);
+  --text: #ffffff;
+  --muted: #b7c0ff;
+  --accent: #8b7bff;
+  --shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
-/* =========================================================
-   THEMES
-========================================================= */
-body.theme-default { --bg: #0b1020; }
-body.theme-dark { --bg: #05070d; }
-body.theme-pink { --accent:#ff72b6; --accent-2:#ffa6d5; }
-body.theme-galaxy { --accent:#7b9cff; --accent-2:#a88bff; }
-body.theme-fairy { --accent:#7ef0c1; --accent-2:#b8ffd9; }
-
-/* =========================================================
-   BASE
-========================================================= */
-* { box-sizing: border-box; }
+body.theme-dark {
+  --bg: #090909;
+  --card: #141414;
+  --border: #222;
+  --text: #fff;
+  --muted: #aaa;
+  --accent: #6cf;
+  --shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background:
-    radial-gradient(1200px 600px at 10% -10%, #18245a, transparent),
-    radial-gradient(900px 500px at 90% 10%, #3b155f, transparent),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  font-family: system-ui, sans-serif;
 }
 
-/* =========================================================
-   PRO LAYOUT (DEFAULT)
-========================================================= */
-body[data-layout="pro"] {
-  display: grid;
-  grid-template-columns: 260px 1fr;
+/* ======================
+   APP SHELL
+====================== */
+
+.app-shell {
+  display: flex;
+  height: 100vh;
 }
 
-/* Sidebar */
-header {
+/* ======================
+   SIDEBAR
+====================== */
+
+.sidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #0f1530, #070b1a);
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 22px 18px;
-  background: rgba(10,14,35,0.75);
-  backdrop-filter: blur(var(--blur));
-  border-right: 1px solid var(--border);
+  gap: 16px;
 }
 
 .logo {
-  font-size: 1.4rem;
+  font-size: 22px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  color: white;
+  letter-spacing: 1px;
 }
 
-/* Controls */
-.controls {
-  margin: 20px;
-  padding: 18px;
+.nav {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  flex-direction: column;
+  gap: 6px;
 }
 
-#fileInput {
-  flex: 1 1 260px;
-  padding: 12px;
-  background: rgba(255,255,255,0.06);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  color: var(--muted);
-}
-
-/* Buttons */
-button {
+.nav-item {
+  background: none;
   border: none;
-  border-radius: 999px;
-  padding: 10px 18px;
-  font-weight: 600;
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
   cursor: pointer;
-  color: #fff;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  text-align: left;
+  transition: background 0.3s, transform 0.2s;
 }
 
-/* Panels */
-.panels {
-  margin: 0 20px 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
-  gap: 18px;
+.nav-item:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateX(4px);
 }
 
-.panels pre {
+.nav-item.active {
+  background: linear-gradient(135deg, var(--accent), #6a5cff);
+  box-shadow: var(--shadow);
+}
+
+/* XP CARD */
+
+.xp-card {
+  margin-top: auto;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  min-height: 220px;
-  white-space: pre-wrap;
-  color: var(--muted);
+  border-radius: 16px;
+  padding: 12px;
 }
 
-/* =========================================================
-   SIMPLE LAYOUT
-========================================================= */
-body[data-layout="simple"] {
+.xp-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.xp-bar span {
   display: block;
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(90deg, #ffb703, #ff6a00);
 }
 
-body[data-layout="simple"] header {
-  flex-direction: row;
-  align-items: center;
+/* ======================
+   MAIN
+====================== */
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOPBAR */
+
+.topbar {
+  display: flex;
   justify-content: space-between;
-  border-right: none;
+  align-items: center;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--border);
 }
 
-body[data-layout="simple"] .controls,
-body[data-layout="simple"] .panels {
-  max-width: 680px;
-  margin: 30px auto;
+/* ======================
+   PANELS
+====================== */
+
+.panel {
+  padding: 24px;
+  animation: fadeUp 0.4s ease;
 }
 
-body[data-layout="simple"] .panels {
-  grid-template-columns: 1fr;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.empty-state {
+  margin-top: 32px;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 18px;
 }
