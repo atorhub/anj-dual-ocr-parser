@@ -1,235 +1,182 @@
-/* =========================================================
-   ROOT THEME VARIABLES
-   ========================================================= */
+/* ===============================
+   ROOT VARIABLES
+================================ */
 :root {
   --bg: #0b1020;
-  --panel: rgba(255, 255, 255, 0.06);
-  --card: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.12);
-
-  --text: #e9ecf1;
-  --muted: #9aa4bf;
-
+  --card: rgba(255,255,255,0.06);
+  --muted: rgba(255,255,255,0.65);
   --accent: #8a7bfa;
   --accent-2: #ff72b6;
-
+  --border: rgba(255,255,255,0.12);
   --radius: 16px;
-  --radius-lg: 22px;
-
-  --shadow-soft: 0 10px 30px rgba(0,0,0,0.25);
-  --shadow-strong: 0 18px 60px rgba(0,0,0,0.35);
-
-  --blur: 18px;
-  --transition: 0.25s ease;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* =========================================================
-   BASE RESET
-   ========================================================= */
-* {
-  box-sizing: border-box;
+/* ===============================
+   THEME: DEFAULT  ✅ FIX
+================================ */
+body.theme-default {
+  --bg: #0b1020;
+  --card: rgba(255,255,255,0.06);
+  --muted: rgba(255,255,255,0.65);
+  --accent: #8a7bfa;
+  --accent-2: #ff72b6;
+  --border: rgba(255,255,255,0.12);
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
+/* ===============================
+   THEME: DARK
+================================ */
+body.theme-dark {
+  --bg: #05070d;
+  --card: rgba(255,255,255,0.04);
+  --muted: rgba(255,255,255,0.6);
+  --accent: #6cf0c2;
+  --accent-2: #4facfe;
+}
+
+/* ===============================
+   THEME: PINK
+================================ */
+body.theme-pink {
+  --bg: #1b0a17;
+  --card: rgba(255,182,193,0.12);
+  --accent: #ff72b6;
+  --accent-2: #ffa6d5;
+}
+
+/* ===============================
+   THEME: GALAXY
+================================ */
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #1a1446, #05020f);
+  --card: rgba(130,120,255,0.15);
+  --accent: #9d8cff;
+  --accent-2: #5f7cff;
+}
+
+/* ===============================
+   THEME: FAIRY
+================================ */
+body.theme-fairy {
+  --bg: linear-gradient(135deg, #1b1f3b, #2b1055);
+  --card: rgba(255,255,255,0.14);
+  --accent: #ffb7ff;
+  --accent-2: #a6f7ff;
+}
+
+/* ===============================
+   BASE LAYOUT
+================================ */
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: radial-gradient(1200px 600px at 20% -10%, #18245a, transparent),
-              radial-gradient(900px 500px at 90% 10%, #3b155f, transparent),
-              var(--bg);
-  color: var(--text);
+  background: var(--bg);
+  color: #fff;
   min-height: 100vh;
+  transition: background 0.4s ease, color 0.3s ease;
 }
 
-/* =========================================================
-   HEADER / TOP BAR
-   ========================================================= */
 header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  padding: 14px 18px;
-  background: rgba(10, 14, 35, 0.75);
-  backdrop-filter: blur(var(--blur));
+  gap: 12px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.02)
+  );
+  backdrop-filter: blur(14px);
 }
 
-/* Brand */
 .logo {
   font-weight: 800;
-  font-size: 1.1rem;
-  letter-spacing: 0.08em;
-  color: white;
-  text-shadow: 0 0 12px rgba(138,123,250,0.6);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
 }
 
-/* Status */
-#statusBar {
-  font-size: 0.85rem;
-  color: var(--muted);
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--border);
-}
-
-/* Theme selector */
-#themeSelect {
-  appearance: none;
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-#themeSelect:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-/* =========================================================
-   CONTROL PANEL
-   ========================================================= */
+/* ===============================
+   CONTROLS
+================================ */
 .controls {
-  margin: 24px auto 0;
-  max-width: 1100px;
-
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-
-  padding: 18px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
+  padding: 16px 20px;
 }
 
-/* File input */
-#fileInput {
-  flex: 1 1 260px;
-  padding: 12px;
+input[type="file"] {
   color: var(--muted);
-  background: rgba(255,255,255,0.06);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
 }
 
-#fileInput:hover {
-  border-color: var(--accent);
-}
-
-/* =========================================================
-   BUTTON SYSTEM
-   ========================================================= */
+/* ===============================
+   BUTTONS
+================================ */
 button {
   appearance: none;
   border: none;
   border-radius: 999px;
-  padding: 10px 18px;
-
+  padding: 8px 16px;
   font-weight: 600;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #fff;
   cursor: pointer;
-
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 8px 26px rgba(138,123,250,0.35);
-
-  transition: transform var(--transition),
-              box-shadow var(--transition),
-              opacity var(--transition);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 40px rgba(138,123,250,0.5);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+  opacity: 0.95;
 }
 
 button:active {
   transform: translateY(0);
-  box-shadow: 0 6px 20px rgba(138,123,250,0.35);
 }
 
-/* Secondary button feel */
-#ocrOnlyBtn {
-  background: linear-gradient(135deg, #6aa8ff, #7bdcff);
-}
-
-/* Tertiary / calm action */
-#parseBtn {
-  background: linear-gradient(135deg, #6ed1a7, #4fb98f);
-}
-
-/* =========================================================
-   PANELS (OUTPUT AREA)
-   ========================================================= */
+/* ===============================
+   PANELS
+================================ */
 .panels {
-  max-width: 1100px;
-  margin: 28px auto;
-  padding: 0 10px;
-
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 18px;
+  gap: 16px;
+  padding: 16px 20px;
 }
 
-.panels pre {
+pre {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
-
-  min-height: 200px;
+  padding: 14px;
+  min-height: 140px;
+  box-shadow: var(--shadow);
+  overflow: auto;
   white-space: pre-wrap;
-  word-break: break-word;
-
   font-size: 0.85rem;
+}
+
+/* ===============================
+   STATUS BAR
+================================ */
+#statusBar {
+  margin-left: auto;
+  font-size: 0.8rem;
   color: var(--muted);
-
-  box-shadow: var(--shadow-soft);
-  animation: fadeUp 0.4s ease both;
 }
 
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* =========================================================
-   THEMES (CLASS-BASED — NO JS CHANGE)
-   ========================================================= */
-body.theme-dark {
-  --bg: #070a16;
-}
-
-body.theme-pink {
-  --accent: #ff72b6;
-  --accent-2: #ff9ad5;
-}
-
-body.theme-galaxy {
-  --accent: #7b9cff;
-  --accent-2: #a88bff;
-}
-
-body.theme-fairy {
-  --accent: #7ef0c1;
-  --accent-2: #b8ffd9;
+/* ===============================
+   SELECT
+================================ */
+select {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: #fff;
 }
