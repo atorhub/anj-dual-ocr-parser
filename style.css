@@ -1,68 +1,161 @@
+/* ===============================
+   ROOT + THEME DEFAULT
+================================ */
 :root {
   --bg: #0b1020;
-  --panel: #111833;
-  --text: #e6e8ff;
+  --sidebar: #0f172a;
+  --card: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.08);
+  --text: #e5e7eb;
+  --muted: #9ca3af;
   --accent: #8b5cf6;
-  --muted: #6b7280;
+  --radius: 16px;
 }
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
+body.theme-default {
+  background: radial-gradient(circle at top, #111827, #020617);
   color: var(--text);
+  font-family: system-ui, sans-serif;
 }
 
-/* TOP BAR */
-.topbar {
+/* ===============================
+   APP SHELL
+================================ */
+.app-shell {
   display: flex;
-  gap: 12px;
-  padding: 12px 16px;
-  align-items: center;
-  background: #0f1530;
+  min-height: 100vh;
 }
 
-.logo {
+/* ===============================
+   SIDEBAR
+================================ */
+.sidebar {
+  width: 220px;
+  background: var(--sidebar);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
   font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
 }
 
-/* CONTROLS */
-.controls {
-  padding: 12px;
+.nav {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
 }
 
-button {
-  background: var(--accent);
+.nav-item {
+  background: transparent;
   border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  color: white;
+  color: var(--muted);
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-align: left;
   cursor: pointer;
 }
 
-/* PANELS */
-.panels {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 16px;
+.nav-item.active,
+.nav-item:hover {
+  background: rgba(139,92,246,0.15);
+  color: #fff;
 }
 
+/* ===============================
+   MAIN AREA
+================================ */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===============================
+   TOP BAR
+================================ */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===============================
+   CONTENT
+================================ */
+.content {
+  padding: 24px;
+  display: grid;
+  gap: 24px;
+}
+
+/* ===============================
+   PANELS
+================================ */
 .panel {
-  background: var(--panel);
-  padding: 16px;
-  border-radius: 16px;
-  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  animation: fadeUp 0.4s ease;
 }
 
 .panel h2 {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   font-weight: 600;
 }
 
-/* === RESULT VISIBILITY FIX (CORRECT PLACE) === */
+/* ===============================
+   UPLOAD
+================================ */
+.upload-panel .drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ===============================
+   PROCESSING STATE
+================================ */
+.processing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: var(--muted);
+}
+
+.loader {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ===============================
+   RESULTS GRID
+================================ */
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
 .panel pre {
   display: block;
   white-space: pre-wrap;
@@ -70,32 +163,26 @@ button {
   background: rgba(255,255,255,0.04);
   padding: 16px;
   border-radius: 14px;
-  margin-top: 16px;
   color: #e5e7eb;
   font-size: 13px;
   line-height: 1.5;
+  max-height: 280px;
+  overflow-y: auto;
 }
 
-/* Ensure upload panel shows results */
-#uploadPanel pre {
-  display: block;
-}
-
-/* Prevent accidental hiding */
 pre:empty::before {
   content: "Waiting for output …";
-  color: var(--muted);
+  color: #6b7280;
 }
 
-/* THEMES */
-.theme-dark {
-  --bg: #020617;
-  --panel: #020617;
-  --accent: #38bdf8;
+/* ===============================
+   ANIMATIONS
+================================ */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.theme-pink {
-  --bg: #1a1025;
-  --panel: #25143b;
-  --accent: #ec4899;
-}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+  }
