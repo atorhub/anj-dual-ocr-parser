@@ -1,182 +1,219 @@
-/* ===============================
+/* =========================================================
    ROOT VARIABLES
-================================ */
+========================================================= */
 :root {
   --bg: #0b1020;
-  --card: rgba(255,255,255,0.06);
-  --muted: rgba(255,255,255,0.65);
+  --panel: rgba(255,255,255,0.06);
+  --card: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.12);
+
+  --text: #eef1f8;
+  --muted: #9aa4bf;
+
   --accent: #8a7bfa;
   --accent-2: #ff72b6;
-  --border: rgba(255,255,255,0.12);
+
   --radius: 16px;
-  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --radius-lg: 22px;
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.25);
+  --shadow-strong: 0 18px 60px rgba(0,0,0,0.35);
+
+  --blur: 18px;
+  --transition: 0.25s ease;
 }
 
-/* ===============================
-   THEME: DEFAULT  ✅ FIX
-================================ */
+/* =========================================================
+   THEMES (SAFE – NO JS CHANGE)
+========================================================= */
 body.theme-default {
   --bg: #0b1020;
-  --card: rgba(255,255,255,0.06);
-  --muted: rgba(255,255,255,0.65);
-  --accent: #8a7bfa;
-  --accent-2: #ff72b6;
-  --border: rgba(255,255,255,0.12);
-  --shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
-/* ===============================
-   THEME: DARK
-================================ */
 body.theme-dark {
   --bg: #05070d;
-  --card: rgba(255,255,255,0.04);
-  --muted: rgba(255,255,255,0.6);
-  --accent: #6cf0c2;
-  --accent-2: #4facfe;
 }
 
-/* ===============================
-   THEME: PINK
-================================ */
 body.theme-pink {
-  --bg: #1b0a17;
-  --card: rgba(255,182,193,0.12);
   --accent: #ff72b6;
   --accent-2: #ffa6d5;
 }
 
-/* ===============================
-   THEME: GALAXY
-================================ */
 body.theme-galaxy {
-  --bg: radial-gradient(circle at top, #1a1446, #05020f);
-  --card: rgba(130,120,255,0.15);
-  --accent: #9d8cff;
-  --accent-2: #5f7cff;
+  --accent: #7b9cff;
+  --accent-2: #a88bff;
 }
 
-/* ===============================
-   THEME: FAIRY
-================================ */
 body.theme-fairy {
-  --bg: linear-gradient(135deg, #1b1f3b, #2b1055);
-  --card: rgba(255,255,255,0.14);
-  --accent: #ffb7ff;
-  --accent-2: #a6f7ff;
+  --accent: #7ef0c1;
+  --accent-2: #b8ffd9;
 }
 
-/* ===============================
-   BASE LAYOUT
-================================ */
+/* =========================================================
+   BASE
+========================================================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: #fff;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #18245a, transparent),
+    radial-gradient(900px 500px at 90% 10%, #3b155f, transparent),
+    var(--bg);
+  color: var(--text);
   min-height: 100vh;
-  transition: background 0.4s ease, color 0.3s ease;
 }
 
+/* =========================================================
+   APP GRID (SIDEBAR + CONTENT)
+========================================================= */
+body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+/* =========================================================
+   SIDEBAR (CSS-ONLY)
+========================================================= */
 header {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.06),
-    rgba(255,255,255,0.02)
-  );
-  backdrop-filter: blur(14px);
+  flex-direction: column;
+  gap: 18px;
+
+  padding: 22px 18px;
+  background: rgba(10,14,35,0.75);
+  backdrop-filter: blur(var(--blur));
+  border-right: 1px solid var(--border);
 }
 
+/* Logo */
 .logo {
+  font-size: 1.4rem;
   font-weight: 800;
-  font-size: 1.2rem;
-  letter-spacing: 0.04em;
-  color: var(--accent);
+  letter-spacing: 0.08em;
+  color: white;
+  text-shadow: 0 0 14px rgba(138,123,250,0.7);
 }
 
-/* ===============================
-   CONTROLS
-================================ */
+/* Sidebar items (visual only) */
+header::after {
+  content: "Upload\nOCR\nParser\nHistory\nSettings";
+  white-space: pre;
+  line-height: 2.4;
+  font-size: 0.9rem;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* =========================================================
+   TOP BAR (STATUS / THEME)
+========================================================= */
+#statusBar,
+#themeSelect {
+  margin-top: auto;
+}
+
+/* =========================================================
+   MAIN CONTENT AREA
+========================================================= */
+.controls,
+.panels {
+  grid-column: 2;
+}
+
+/* =========================================================
+   CONTROLS (ACTION STRIP)
+========================================================= */
 .controls {
+  margin: 20px;
+  padding: 18px;
+
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 16px 20px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
 }
 
-input[type="file"] {
+/* File input */
+#fileInput {
+  flex: 1 1 260px;
+  padding: 12px;
   color: var(--muted);
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
 }
 
-/* ===============================
+/* =========================================================
    BUTTONS
-================================ */
+========================================================= */
 button {
-  appearance: none;
   border: none;
   border-radius: 999px;
-  padding: 8px 16px;
+  padding: 10px 18px;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 26px rgba(138,123,250,0.35);
+
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-  opacity: 0.95;
+  box-shadow: 0 14px 40px rgba(138,123,250,0.5);
 }
 
-button:active {
-  transform: translateY(0);
-}
-
-/* ===============================
-   PANELS
-================================ */
+/* =========================================================
+   PANELS (RESULT SECTIONS)
+========================================================= */
 .panels {
+  margin: 0 20px 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  padding: 16px 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
 }
 
-pre {
+/* Output cards */
+.panels pre {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px;
-  min-height: 140px;
-  box-shadow: var(--shadow);
-  overflow: auto;
+  padding: 16px;
+
+  min-height: 220px;
   white-space: pre-wrap;
+  word-break: break-word;
+
   font-size: 0.85rem;
-}
-
-/* ===============================
-   STATUS BAR
-================================ */
-#statusBar {
-  margin-left: auto;
-  font-size: 0.8rem;
   color: var(--muted);
+
+  box-shadow: var(--shadow-soft);
+  animation: fadeUp 0.45s ease both;
 }
 
-/* ===============================
-   SELECT
-================================ */
-select {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 6px 10px;
-  color: #fff;
+/* =========================================================
+   ANIMATION
+========================================================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
