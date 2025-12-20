@@ -2,16 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ANJ Dual OCR Parser</title>
-
-  <!-- LIBS (unchanged) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
+  <title>ANJ Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body class="theme-default">
 
 <div class="app-shell">
@@ -20,69 +13,70 @@
   <aside class="sidebar">
     <div class="logo">ANJ</div>
 
-    <nav class="nav">
-      <button class="nav-item active">🏠 Dashboard</button>
-      <button class="nav-item">📤 OCR / Upload</button>
-      <button class="nav-item">🕘 History</button>
-      <button class="nav-item">📊 Analytics</button>
-      <button class="nav-item">⬇ Export</button>
-      <button class="nav-item">⚙ Settings</button>
+    <nav>
+      <a href="#uploadPanel">Upload</a>
+      <a href="#ocrPanel">OCR</a>
+      <a href="#parsedPanel">Parsed</a>
+      <a href="#historyPanel">History</a>
+      <a href="#settingsPanel">Settings</a>
     </nav>
 
-    <div class="xp-card">
-      <div class="xp-title">Creature XP</div>
-      <div class="xp-bar">
-        <span></span>
+    <div class="sidebar-footer">
+      <div class="xp-card">
+        <strong>Nibbi</strong>
+        <span>XP ▓▓░░</span>
       </div>
-      <small>Level 1</small>
     </div>
   </aside>
 
   <!-- MAIN -->
-  <main class="main">
+  <main class="workspace">
 
-    <!-- TOP HEADER -->
     <header class="topbar">
-      <span id="statusBar">Ready ✓</span>
-
-      <select id="themeSelect">
-        <option value="default">Default</option>
-        <option value="dark">Dark</option>
-        <option value="pink">Pink</option>
-        <option value="galaxy">Galaxy</option>
-      </select>
+      <span>Status: Ready</span>
+      <span>Theme: Default</span>
     </header>
 
     <!-- PANELS -->
-    <section class="panel active">
-      <h2>Dashboard</h2>
 
-      <div class="card-grid">
-        <div class="card">
-          <h3>Total Spent</h3>
-          <p>₹0.00</p>
-        </div>
+    <section class="panel" id="uploadPanel">
+      <h2>Upload Bill</h2>
 
-        <div class="card">
-          <h3>This Month</h3>
-          <p>₹0.00</p>
-        </div>
+      <label class="upload-box">
+        <input type="file" id="fileInput" />
+        <span>Tap or drop file</span>
+      </label>
 
-        <div class="card">
-          <h3>Categories</h3>
-          <p>No data yet</p>
-        </div>
+      <div class="action-row">
+        <button id="dualOCRBtn">Dual OCR</button>
+        <button id="ocrOnlyBtn">Quick OCR</button>
+        <button id="parseBtn">Parse</button>
       </div>
+    </section>
 
-      <div class="empty-state">
-        Upload a bill to begin ✨
-      </div>
+    <section class="panel" id="ocrPanel">
+      <h2>OCR Output</h2>
+      <div class="empty-state">No OCR yet</div>
+    </section>
+
+    <section class="panel" id="parsedPanel">
+      <h2>Parsed Data</h2>
+      <div class="empty-state">Nothing parsed</div>
+    </section>
+
+    <section class="panel" id="historyPanel">
+      <h2>History</h2>
+      <div class="empty-state">No bills uploaded</div>
+    </section>
+
+    <section class="panel" id="settingsPanel">
+      <h2>Settings</h2>
+      <div class="empty-state">Coming soon</div>
     </section>
 
   </main>
 
 </div>
 
-<script src="script.js"></script>
 </body>
 </html>
