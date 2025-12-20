@@ -1,23 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const el = {
-    file: document.getElementById("fileInput"),
-    dual: document.getElementById("dualOCRBtn"),
-    ocr: document.getElementById("ocrOnlyBtn"),
-    parse: document.getElementById("parseBtn"),
-    raw: document.getElementById("rawText"),
-    clean: document.getElementById("cleanedText"),
-    json: document.getElementById("jsonPreview"),
-    status: document.getElementById("statusBar"),
-    theme: document.getElementById("themeSelect")
-  };
+  // ===== BOOTSTRAP A: SAFE ELEMENT MAP =====
+const el = {
+  file: document.getElementById("fileInput"),
+  raw: document.getElementById("rawText"),
+  clean: document.getElementById("cleanedText"),
+  json: document.getElementById("jsonPreview"),
+  status: document.getElementById("status"),
+  dual: document.getElementById("dualBtn"),
+  ocr: document.getElementById("ocrBtn"),
+  parse: document.getElementById("parseBtn"),
+  theme: document.getElementById("themeSelect"),
+};
 
-  let state = {
+// ===== BOOTSTRAP A.5: SAFE STATE =====
+const state = {
   ocrText: "",
   extractedText: "",
   finalText: "",
-  analysis: null   // ← NEW
+  parsed: null,
 };
-  
+
 
   const setStatus = (msg, err = false) => {
     el.status.textContent = msg;
@@ -81,153 +83,86 @@ document.addEventListener("DOMContentLoaded", () => {
       return text;
     }
 
-    return "";
-  }
+    // ===== BOOTSTRAP B: SAFE PROCESS PIPELINE =====
+async function processFile(useOCR) {
+  try {
+    if (!el.file || !el.file.files[0]) {
+      setStatus("No file selected", true);
+      return;
+    }
 
-  /* ORCHESTRATION (THIS WAS MISSING BEFORE) */
-  async function processFile(useOCR) {
-    try {
-      const file = el.file.files[0];
-      if (!file) return setStatus("No file selected", true);
+    const file = el.file.files[0];
+    setStatus("Processing…");
 
-      setStatus("Processing…");
+    // reset state safely
+    state.ocrText = "";
+    state.extractedText = "";
+    state.finalText = "";
+    state.parsed = null;
 
-      state.ocrText = "";
-      state.extractedText = "";
-
-      // Run independently
-      if (useOCR && file.type.startsWith("image/")) {
-        await runOCR(file);
+    // OCR only if image
+    if (useOCR && file.type.startsWith("image/")) {
+      try {
+        state.ocrText = await runOCR(file);
+      } catch {
+        state.ocrText = "";
       }
-
-    state.extractedText = await extractText(file);
-
-// Choose best available text FIRST
-state.finalText =
-  state.extractedText.trim() ||
-  state.ocrText.trim();
-
-// STEP A: TEXT CLEANER (SAFE)
-function cleanExtractedText(rawText) {
-  if (!rawText || typeof rawText !== "string") return "";
-
-  return rawText
-    .replace(/\r/g, "")
-    .replace(/[ \t]+/g, " ")
-    .replace(/\n{3,}/g, "\n\n")
-    .split("\n")
-    .map(l => l.trim())
-    .filter(Boolean)
-    .join("\n");
-}
-  // STEP A.5: ANALYSIS (READ-ONLY, NO SIDE EFFECTS)
-function analyzeText(cleanText) {
-  const lines = cleanText.split("\n");
-
-  return {
-    lineCount: lines.length,
-    hasCurrency: /₹|\bINR\b|\bUSD\b|\bEUR\b|\bGBP\b/.test(cleanText),
-    hasDate: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(cleanText),
-    hasTotalKeyword: /(total|grand total|amount payable|net amount)/i.test(cleanText),
-    topLines: lines.slice(0, 5)
-  };
-}
-  // STEP B: PARSE INVOICE TEXT (RULE BASED)
-function parseInvoiceText(cleanText) {
-  const lines = cleanText.split("\n");
-
-  let merchant = null;
-  let date = null;
-  let currency = null;
-  let total = null;
-
-  // Merchant (first strong text line)
-  merchant = lines.find(l => l.length > 5 && l.length < 60) || null;
-
-  // Date detection
-  const dateRegex = /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/;
-  for (const l of lines) {
-    const m = l.match(dateRegex);
-    if (m) {
-      date = m[0];
-      break;
     }
-  }
 
-  // Currency detection
-  if (/₹|\bINR\b/.test(cleanText)) currency = "INR";
-  else if (/\$|\bUSD\b/.test(cleanText)) currency = "USD";
-  else if (/€|\bEUR\b/.test(cleanText)) currency = "EUR";
-  else if (/£|\bGBP\b/.test(cleanText)) currency = "GBP";
-
-  // Total detection
-  const totalRegex = /(total|grand total|amount payable|net amount)[^\d]*([\d,]+(\.\d{1,2})?)/i;
-  for (const l of lines) {
-    const m = l.match(totalRegex);
-    if (m) {
-      total = m[2].replace(/,/g, "");
-      break;
+    try {
+      state.extractedText = await extractText(file);
+    } catch {
+      state.extractedText = "";
     }
-  }
 
-  // Confidence score
-  let confidence = 0;
-  if (merchant) confidence += 25;
-  if (date) confidence += 20;
-  if (currency) confidence += 20;
-  if (total) confidence += 25;
-  if (cleanText.length > 300) confidence += 10;
+    // choose best available text
+    state.finalText =
+      (state.extractedText || "").trim() ||
+      (state.ocrText || "").trim() ||
+      "";
 
-  return {
-    merchant,
-    date,
-    currency,
-    total,
-    confidence,
-    rawLength: cleanText.length
-  };
-}
-  // STEP C: UI MAPPING (SAFE)
-function mapToUI(state, el) {
-  el.raw.textContent = state.extractedText || "-";
-  el.clean.textContent = state.finalText || "-";
-  el.json.textContent = JSON.stringify(state.parsed, null, 2);
+    // clean text (safe)
+    state.finalText = cleanExtractedText(state.finalText);
 
-  if (document.getElementById("summaryMerchant"))
-    summaryMerchant.textContent = state.parsed.merchant || "-";
-
-  if (document.getElementById("summaryDate"))
-    summaryDate.textContent = state.parsed.date || "-";
-
-  if (document.getElementById("summaryTotal"))
-    summaryTotal.textContent = state.parsed.total || "-";
-
-  if (document.getElementById("summaryConfidence"))
-    summaryConfidence.textContent =
-      state.parsed.confidence ? state.parsed.confidence + "%" : "-";
-}
-      
-      
-      setStatus("Text ready ✓");
-    } catch (e) {
-      console.error(e);
-      setStatus("Processing failed ❌", true);
+    // parse (safe)
+    try {
+      state.parsed = parseInvoiceText(state.finalText);
+    } catch {
+      state.parsed = null;
     }
+
+    renderUI();
+    setStatus("Text ready ✓");
+  } catch (err) {
+    console.error(err);
+    setStatus("Processing failed ❌", true);
   }
-
-  el.dual.onclick = () => processFile(true);
-  el.ocr.onclick = () => processFile(true);
-
+}
+   // ===== BOOTSTRAP C: SINGLE RENDER =====
+function renderUI() {
+  if (el.raw) el.raw.textContent = state.extractedText || "-";
+  if (el.clean) el.clean.textContent = state.finalText || "-";
+  if (el.json)
+    el.json.textContent = JSON.stringify(state.parsed || {}, null, 2);
+}
+    if (el.dual) el.dual.onclick = () => processFile(true);
+if (el.ocr) el.ocr.onclick = () => processFile(true);
+if (el.parse)
   el.parse.onclick = () => {
     if (!state.finalText) {
-      return setStatus("No text to parse", true);
+      setStatus("No text to parse", true);
+      return;
     }
-    el.json.textContent = JSON.stringify(state.parsed, null, 2);
-    
-
-    setStatus("Parsed ✓");
+    try {
+      state.parsed = parseInvoiceText(state.finalText);
+      renderUI();
+      setStatus("Parsed ✓");
+    } catch {
+      setStatus("Parse failed ❌", true);
+    }
   };
-});
+  
+
 /* ===============================
    STEP A: TEXT CLEANER (SAFE)
    =============================== */
