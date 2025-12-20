@@ -3,44 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
-
-  <!-- LIBS -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-default">
+<body class="theme-default" data-layout="pro">
+  <header>
+    <div class="logo">ANJ</div>
 
-<header>
-  <div class="logo">ANJ</div>
+    <select id="themeSelect">
+      <option value="default">Default</option>
+      <option value="dark">Dark</option>
+      <option value="pink">Pink</option>
+      <option value="galaxy">Galaxy</option>
+      <option value="fairy">Fairy</option>
+    </select>
 
-  <select id="themeSelect">
-    <option value="default">Default</option>
-    <option value="fairy">Fairy</option>
-    <option value="galaxy">Galaxy</option>
-    <option value="pink">Pink</option>
-    <option value="dark">Dark</option>
-  </select>
+    <div id="statusBar">Ready</div>
+  </header>
 
-  <span id="statusBar">Ready ✓</span>
-</header>
+  <div class="controls">
+    <input type="file" id="fileInput" />
+    <button id="dualOCRBtn">Dual OCR</button>
+    <button id="ocrOnlyBtn">OCR Only</button>
+    <button id="parseBtn">Parse</button>
+  </div>
 
-<section class="controls">
-  <input type="file" id="fileInput" />
-  <button id="dualOCRBtn">Dual OCR</button>
-  <button id="ocrOnlyBtn">Quick OCR</button>
-  <button id="parseBtn">Parse</button>
-</section>
+  <div class="panels">
+    <pre id="rawText"></pre>
+    <pre id="cleanedText"></pre>
+    <pre id="jsonPreview"></pre>
+  </div>
 
-<section class="panels">
-  <pre id="rawText">Raw OCR / Extracted text</pre>
-  <pre id="cleanedText">Cleaned text</pre>
-  <pre id="jsonPreview">Parsed JSON</pre>
-</section>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
