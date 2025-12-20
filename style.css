@@ -1,210 +1,235 @@
 /* =========================================================
-   GLOBAL RESET & TOKENS
+   ROOT THEME VARIABLES
    ========================================================= */
+:root {
+  --bg: #0b1020;
+  --panel: rgba(255, 255, 255, 0.06);
+  --card: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.12);
 
+  --text: #e9ecf1;
+  --muted: #9aa4bf;
+
+  --accent: #8a7bfa;
+  --accent-2: #ff72b6;
+
+  --radius: 16px;
+  --radius-lg: 22px;
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.25);
+  --shadow-strong: 0 18px 60px rgba(0,0,0,0.35);
+
+  --blur: 18px;
+  --transition: 0.25s ease;
+}
+
+/* =========================================================
+   BASE RESET
+   ========================================================= */
 * {
   box-sizing: border-box;
 }
 
-:root {
-  --bg: #f6f7fb;
-  --card: rgba(255, 255, 255, 0.75);
-  --card-border: rgba(0, 0, 0, 0.06);
-  --text: #1f2937;
-  --muted: #6b7280;
-  --accent: #7c3aed;
-  --radius: 16px;
-  --blur: 14px;
-  --shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
-}
-
-/* =========================================================
-   BASE LAYOUT
-   ========================================================= */
-
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
-  background: linear-gradient(135deg, #f3e8ff, #eef2ff);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(1200px 600px at 20% -10%, #18245a, transparent),
+              radial-gradient(900px 500px at 90% 10%, #3b155f, transparent),
+              var(--bg);
   color: var(--text);
   min-height: 100vh;
 }
 
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-}
-
-h1, h2, h3 {
-  margin: 0 0 10px;
-  font-weight: 700;
-}
-
-h2 {
-  font-size: 1.1rem;
-  letter-spacing: 0.02em;
-}
-
-p {
-  margin: 0;
-  color: var(--muted);
-}
-
 /* =========================================================
-   CARD SYSTEM (BIGGEST UPGRADE)
+   HEADER / TOP BAR
    ========================================================= */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
-.card {
-  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 14px 18px;
+  background: rgba(10, 14, 35, 0.75);
   backdrop-filter: blur(var(--blur));
-  border-radius: var(--radius);
-  border: 1px solid var(--card-border);
-  padding: 16px;
-  box-shadow: var(--shadow);
-  margin-bottom: 18px;
-  animation: fadeUp 0.4s ease both;
+  border-bottom: 1px solid var(--border);
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.12);
+/* Brand */
+.logo {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: white;
+  text-shadow: 0 0 12px rgba(138,123,250,0.6);
+}
+
+/* Status */
+#statusBar {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+}
+
+/* Theme selector */
+#themeSelect {
+  appearance: none;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+#themeSelect:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 /* =========================================================
-   BUTTONS
+   CONTROL PANEL
    ========================================================= */
+.controls {
+  margin: 24px auto 0;
+  max-width: 1100px;
 
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  padding: 18px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+/* File input */
+#fileInput {
+  flex: 1 1 260px;
+  padding: 12px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.06);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+#fileInput:hover {
+  border-color: var(--accent);
+}
+
+/* =========================================================
+   BUTTON SYSTEM
+   ========================================================= */
 button {
   appearance: none;
   border: none;
   border-radius: 999px;
-  padding: 8px 16px;
+  padding: 10px 18px;
+
   font-weight: 600;
-  background: linear-gradient(135deg, #a78bfa, #f472b6);
   color: #fff;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s;
+
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 26px rgba(138,123,250,0.35);
+
+  transition: transform var(--transition),
+              box-shadow var(--transition),
+              opacity var(--transition);
 }
 
 button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 25px rgba(167, 139, 250, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(138,123,250,0.5);
 }
 
 button:active {
-  transform: scale(0.97);
+  transform: translateY(0);
+  box-shadow: 0 6px 20px rgba(138,123,250,0.35);
+}
+
+/* Secondary button feel */
+#ocrOnlyBtn {
+  background: linear-gradient(135deg, #6aa8ff, #7bdcff);
+}
+
+/* Tertiary / calm action */
+#parseBtn {
+  background: linear-gradient(135deg, #6ed1a7, #4fb98f);
 }
 
 /* =========================================================
-   OUTPUT BOXES
+   PANELS (OUTPUT AREA)
    ========================================================= */
+.panels {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 0 10px;
 
-.output-box {
-  background: rgba(255, 255, 255, 0.65);
-  border-radius: 12px;
-  padding: 12px;
-  min-height: 180px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  line-height: 1.5;
-  overflow: auto;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
 }
 
-/* =========================================================
-   PLACEHOLDER / EMPTY STATES
-   ========================================================= */
+.panels pre {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
 
-.placeholder {
+  min-height: 200px;
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  font-size: 0.85rem;
   color: var(--muted);
-  font-style: italic;
-  text-align: center;
-  padding: 24px;
-  opacity: 0.75;
-}
 
-/* =========================================================
-   STATUS TEXT
-   ========================================================= */
-
-.status {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--accent);
+  box-shadow: var(--shadow-soft);
+  animation: fadeUp 0.4s ease both;
 }
 
 /* =========================================================
    ANIMATIONS
    ========================================================= */
-
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
-  }
-/* =========================================================
-   THEME: FAIRY ✨
-   ========================================================= */
-
-body.theme-fairy {
-  background: linear-gradient(135deg, #ffe6fa, #e9f0ff);
-}
-
-body.theme-fairy .card {
-  box-shadow: 0 18px 50px rgba(255, 182, 218, 0.35);
 }
 
 /* =========================================================
-   THEME: GALAXY 🌌
+   THEMES (CLASS-BASED — NO JS CHANGE)
    ========================================================= */
-
-body.theme-galaxy {
-  background: radial-gradient(circle at top, #2b1055, #09001a);
-  color: #e5e7eb;
+body.theme-dark {
+  --bg: #070a16;
 }
-
-body.theme-galaxy .card {
-  background: rgba(25, 25, 50, 0.75);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.35);
-}
-
-body.theme-galaxy button {
-  background: linear-gradient(135deg, #7c3aed, #22d3ee);
-}
-
-/* =========================================================
-   THEME: PINK 💖
-   ========================================================= */
 
 body.theme-pink {
-  background: linear-gradient(135deg, #ffe4ec, #fff1f7);
+  --accent: #ff72b6;
+  --accent-2: #ff9ad5;
 }
 
-body.theme-pink button {
-  background: linear-gradient(135deg, #fb7185, #f472b6);
+body.theme-galaxy {
+  --accent: #7b9cff;
+  --accent-2: #a88bff;
 }
 
-/* =========================================================
-   THEME: DARK 🖤
-   ========================================================= */
-
-body.theme-dark {
-  background: linear-gradient(135deg, #0f172a, #020617);
-  color: #e5e7eb;
-}
-
-body.theme-dark .card {
-  background: rgba(20, 20, 30, 0.85);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-body.theme-dark button {
-  background: linear-gradient(135deg, #6366f1, #22d3ee);
+body.theme-fairy {
+  --accent: #7ef0c1;
+  --accent-2: #b8ffd9;
 }
