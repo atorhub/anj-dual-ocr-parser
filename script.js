@@ -1,81 +1,74 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("[INFO] DOM ready");
-
-  /* ===============================
-     SAFE ELEMENT BINDINGS
-  =============================== */
+  /* =========================
+     SAFE DOM REFERENCES
+  ========================== */
   const el = {
     file: document.getElementById("fileInput"),
     raw: document.getElementById("rawText"),
     clean: document.getElementById("cleanedText"),
     json: document.getElementById("jsonPreview"),
-    status: document.getElementById("status"),
-    dual: document.getElementById("dualBtn"),
-    ocr: document.getElementById("ocrBtn"),
+    status: document.getElementById("statusBar"),
+    dual: document.getElementById("dualOCRBtn"),
+    ocr: document.getElementById("ocrOnlyBtn"),
     parse: document.getElementById("parseBtn"),
-    theme: document.getElementById("themeSelect")
+    theme: document.getElementById("themeSelect"),
   };
 
-  /* ===============================
-     SAFE STATE (SINGLE SOURCE)
-  =============================== */
+  /* =========================
+     STATE (SINGLE SOURCE)
+  ========================== */
   const state = {
     ocrText: "",
     extractedText: "",
     finalText: "",
-    parsed: {}
+    parsed: null,
   };
 
-  /* ===============================
-     STATUS + DEBUG
-  =============================== */
-  function setStatus(msg, isError = false) {
+  /* =========================
+     STATUS HELPER
+  ========================== */
+  function setStatus(msg, error = false) {
     el.status.textContent = msg;
-    el.status.style.color = isError ? "red" : "lime";
-    console.log(isError ? "[ERROR]" : "[STATUS]", msg);
+    el.status.style.color = error ? "#ff5f5f" : "#6bff95";
   }
 
-  /* ===============================
-     THEME (PURE UI – NO LOGIC)
-  =============================== */
-  if (el.theme) {
-    el.theme.addEventListener("change", () => {
-      document.body.className = "theme-" + el.theme.value;
-      console.log("[THEME]", el.theme.value);
-    });
-  }
+  /* =========================
+     THEME SWITCH (SAFE)
+  ========================== */
+  el.theme.addEventListener("change", () => {
+    document.body.className = `theme-${el.theme.value}`;
+  });
 
-  /* ===============================
-     OCR (IMAGE ONLY)
-  =============================== */
+  /* =========================
+     OCR (IMAGES ONLY)
+  ========================== */
   async function runOCR(file) {
     try {
       if (!window.Tesseract) throw new Error("Tesseract missing");
-      setStatus("OCR running...");
 
       const res = await Tesseract.recognize(file, "eng", {
         logger: m => {
           if (m.status === "recognizing text") {
             setStatus(`OCR ${Math.round(m.progress * 100)}%`);
           }
-        }
+        },
       });
 
       state.ocrText = res.data.text || "";
       return state.ocrText;
     } catch (e) {
-      console.warn("OCR failed", e);
+      console.error("OCR failed:", e);
       return "";
     }
   }
 
-  /* ===============================
+  /* =========================
      TEXT EXTRACTION (PDF / ZIP)
-  =============================== */
+  ========================== */
   async function extractText(file) {
     const name = file.name.toLowerCase();
 
-    // ZIP
+    // ZIP → read .txt files
     if (name.endsWith(".zip")) {
       const zip = await JSZip.loadAsync(file);
       let text = "";
@@ -87,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return text;
     }
 
-    // PDF
+    // PDF → text layer
     if (name.endsWith(".pdf")) {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -98,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
-        text += content.items.map(it => it.str).join(" ") + "\n";
+        text += content.items.map(i => i.str).join(" ") + "\n";
       }
       return text;
     }
@@ -106,95 +99,107 @@ document.addEventListener("DOMContentLoaded", () => {
     return "";
   }
 
-  /* ===============================
-     CLEANER (SAFE, DUMB)
-  =============================== */
-  function cleanText(txt) {
-    return txt
-      .replace(/\s+/g, " ")
-      .replace(/[^\x20-\x7E₹$€]/g, "")
+  /* =========================
+     CLEANER (SAFE, NO AI)
+  ========================== */
+  function cleanText(raw) {
+    if (!raw || typeof raw !== "string") return "";
+    return raw
+      .replace(/\r/g, "")
+      .replace(/\n{2,}/g, "\n")
       .trim();
   }
 
-  /* ===============================
-     PARSER (NO AI)
-  =============================== */
-  function parseInvoiceText(txt) {
+  /* =========================
+     SIMPLE PARSER (PHASE 1)
+  ========================== */
+  function parseInvoice(text) {
     const result = {
       merchant: null,
       date: null,
       total: null,
-      currency: null,
-      confidence: 0
+      confidence: 0,
+      rawLength: text.length,
     };
 
-    const lines = txt.split("\n");
-
-    result.merchant = lines[0]?.slice(0, 80) || null;
-
-    const totalMatch = txt.match(/(₹|\$|€)\s?\d+[.,]?\d*/);
-    if (totalMatch) {
-      result.total = totalMatch[0];
-      result.currency = totalMatch[1];
-      result.confidence += 40;
+    const merchant = text.match(/^[A-Z0-9 &.,\-]{5,}$/m);
+    if (merchant) {
+      result.merchant = merchant[0];
+      result.confidence += 30;
     }
 
-    if (txt.length > 100) result.confidence += 30;
-    if (result.merchant) result.confidence += 30;
+    const total = text.match(/(?:total|amount)[^\d]{0,10}([\d,.]+)/i);
+    if (total) {
+      result.total = total[1];
+      result.confidence += 30;
+    }
+
+    if (text.length > 200) result.confidence += 20;
+    if (text.length > 500) result.confidence += 20;
 
     if (result.confidence > 100) result.confidence = 100;
     return result;
   }
 
-  /* ===============================
-     MAIN PIPELINE (ONE ENTRY)
-  =============================== */
+  /* =========================
+     CORE PIPELINE (STABLE)
+  ========================== */
   async function processFile(useOCR) {
-    console.log("[PIPELINE] processFile()");
     try {
-      if (!el.file.files[0]) {
-        setStatus("No file selected", true);
-        return;
-      }
-
       const file = el.file.files[0];
-      setStatus("Processing...");
+      if (!file) return setStatus("No file selected", true);
+
+      setStatus("Processing…");
 
       // reset
       state.ocrText = "";
       state.extractedText = "";
       state.finalText = "";
-      state.parsed = {};
+      state.parsed = null;
 
+      // OCR only if image
       if (useOCR && file.type.startsWith("image/")) {
         await runOCR(file);
       }
 
+      // Extract text (PDF / ZIP)
       state.extractedText = await extractText(file);
 
+      // Choose best source
       state.finalText =
-        cleanText(state.extractedText) ||
-        cleanText(state.ocrText);
+        state.extractedText.trim() || state.ocrText.trim();
 
-      state.parsed = parseInvoiceText(state.finalText);
+      // Clean
+      state.finalText = cleanText(state.finalText);
+
+      // Parse
+      state.parsed = parseInvoice(state.finalText);
 
       // UI
       el.raw.textContent = state.extractedText || state.ocrText || "-";
       el.clean.textContent = state.finalText || "-";
       el.json.textContent = JSON.stringify(state.parsed, null, 2);
 
-      setStatus("Parsed ✓");
+      setStatus("Ready ✓");
     } catch (e) {
       console.error(e);
-      setStatus("Processing failed", true);
+      setStatus("Processing failed ✖", true);
     }
   }
 
-  /* ===============================
-     BUTTON BINDINGS (CRITICAL)
-  =============================== */
-  el.dual.addEventListener("click", () => processFile(true));
-  el.ocr.addEventListener("click", () => processFile(true));
-  el.parse.addEventListener("click", () => processFile(false));
+  /* =========================
+     BUTTON HOOKS
+  ========================== */
+  el.dual.onclick = () => processFile(true);
+  el.ocr.onclick = () => processFile(true);
+  el.parse.onclick = () => {
+    if (!state.finalText) return setStatus("No text to parse", true);
+    el.json.textContent = JSON.stringify(state.parsed, null, 2);
+    setStatus("Parsed ✓");
+  };
 
+  /* =========================
+     READY
+  ========================== */
+  console.info("[ANJ] Script loaded cleanly");
 });
