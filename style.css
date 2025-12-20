@@ -1,167 +1,148 @@
-/* ======================
-   THEME VARIABLES
-====================== */
-
-body.theme-default {
-  --bg: #0b1020;
-  --card: rgba(255,255,255,0.08);
-  --border: rgba(255,255,255,0.15);
-  --text: #ffffff;
-  --muted: #b7c0ff;
-  --accent: #8b7bff;
-  --shadow: 0 20px 60px rgba(0,0,0,0.4);
-}
-
-body.theme-dark {
-  --bg: #090909;
-  --card: #141414;
-  --border: #222;
-  --text: #fff;
-  --muted: #aaa;
-  --accent: #6cf;
-  --shadow: 0 20px 40px rgba(0,0,0,0.6);
+/* RESET */
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, sans-serif;
+  background: #0f1220;
+  color: #e5e7eb;
 }
 
-/* ======================
-   APP SHELL
-====================== */
-
+/* APP SHELL */
 .app-shell {
   display: flex;
   height: 100vh;
 }
 
-/* ======================
-   SIDEBAR
-====================== */
-
+/* SIDEBAR */
 .sidebar {
   width: 240px;
-  background: linear-gradient(180deg, #0f1530, #070b1a);
-  padding: 16px;
+  background: #0b0e1a;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .logo {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.nav-item {
-  background: none;
-  border: none;
-  color: var(--text);
+.sidebar nav a {
+  display: block;
   padding: 10px 14px;
+  margin-bottom: 6px;
+  color: #9ca3af;
+  text-decoration: none;
   border-radius: 12px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.3s, transform 0.2s;
+  transition: all 0.2s ease;
 }
 
-.nav-item:hover {
+.sidebar nav a:hover {
   background: rgba(255,255,255,0.08);
-  transform: translateX(4px);
+  color: white;
 }
 
-.nav-item.active {
-  background: linear-gradient(135deg, var(--accent), #6a5cff);
-  box-shadow: var(--shadow);
+.sidebar-footer {
+  margin-top: auto;
 }
-
-/* XP CARD */
 
 .xp-card {
-  margin-top: auto;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
   padding: 12px;
+  border-radius: 14px;
+  font-size: 13px;
 }
 
-.xp-bar {
-  height: 8px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 999px;
-  overflow: hidden;
-  margin: 8px 0;
-}
-
-.xp-bar span {
-  display: block;
-  height: 100%;
-  width: 35%;
-  background: linear-gradient(90deg, #ffb703, #ff6a00);
-}
-
-/* ======================
-   MAIN
-====================== */
-
-.main {
+/* WORKSPACE */
+.workspace {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* TOPBAR */
-
+/* TOP BAR */
 .topbar {
+  height: 54px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.2);
 }
 
-/* ======================
-   PANELS
-====================== */
-
+/* PANELS */
 .panel {
-  padding: 24px;
-  animation: fadeUp 0.4s ease;
+  display: none;
+  padding: 28px;
+  animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.panel:target {
+  display: block;
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 16px;
+body:not(:has(:target)) #uploadPanel {
+  display: block;
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 16px;
-  box-shadow: var(--shadow);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.empty-state {
-  margin-top: 32px;
-  padding: 24px;
+/* UPLOAD */
+.upload-box {
+  display: block;
+  border: 2px dashed rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 40px;
   text-align: center;
-  color: var(--muted);
-  border: 1px dashed var(--border);
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.25s ease;
+}
+
+.upload-box:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: #a78bfa;
+}
+
+.upload-box input {
+  display: none;
+}
+
+/* ACTIONS */
+.action-row {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  background: linear-gradient(135deg,#7c3aed,#ec4899);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* EMPTY STATES */
+.empty-state {
+  margin-top: 40px;
+  padding: 40px;
   border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  color: #9ca3af;
+  text-align: center;
 }
