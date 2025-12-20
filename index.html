@@ -2,81 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ANJ Dashboard</title>
+  <title>ANJ Dual OCR Parser</title>
+
+  <!-- LIBS -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body class="theme-default">
 
-<div class="app-shell">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <header class="topbar">
     <div class="logo">ANJ</div>
 
-    <nav>
-      <a href="#uploadPanel">Upload</a>
-      <a href="#ocrPanel">OCR</a>
-      <a href="#parsedPanel">Parsed</a>
-      <a href="#historyPanel">History</a>
-      <a href="#settingsPanel">Settings</a>
-    </nav>
+    <select id="themeSelect">
+      <option value="default">Default</option>
+      <option value="dark">Dark</option>
+      <option value="pink">Pink</option>
+    </select>
 
-    <div class="sidebar-footer">
-      <div class="xp-card">
-        <strong>Nibbi</strong>
-        <span>XP ▓▓░░</span>
-      </div>
+    <span id="statusBar">Ready</span>
+  </header>
+
+  <section class="controls">
+    <input type="file" id="fileInput" />
+    <button id="dualOCRBtn">Dual OCR</button>
+    <button id="ocrOnlyBtn">Quick OCR</button>
+    <button id="parseBtn">Parse</button>
+  </section>
+
+  <section class="panels">
+
+    <div class="panel" id="uploadPanel">
+      <h2>Raw OCR / Extracted Text</h2>
+      <pre id="rawText"></pre>
     </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="workspace">
+    <div class="panel">
+      <h2>Cleaned Text</h2>
+      <pre id="cleanedText"></pre>
+    </div>
 
-    <header class="topbar">
-      <span>Status: Ready</span>
-      <span>Theme: Default</span>
-    </header>
+    <div class="panel">
+      <h2>Parsed JSON</h2>
+      <pre id="jsonPreview"></pre>
+    </div>
 
-    <!-- PANELS -->
+  </section>
 
-    <section class="panel" id="uploadPanel">
-      <h2>Upload Bill</h2>
-
-      <label class="upload-box">
-        <input type="file" id="fileInput" />
-        <span>Tap or drop file</span>
-      </label>
-
-      <div class="action-row">
-        <button id="dualOCRBtn">Dual OCR</button>
-        <button id="ocrOnlyBtn">Quick OCR</button>
-        <button id="parseBtn">Parse</button>
-      </div>
-    </section>
-
-    <section class="panel" id="ocrPanel">
-      <h2>OCR Output</h2>
-      <div class="empty-state">No OCR yet</div>
-    </section>
-
-    <section class="panel" id="parsedPanel">
-      <h2>Parsed Data</h2>
-      <div class="empty-state">Nothing parsed</div>
-    </section>
-
-    <section class="panel" id="historyPanel">
-      <h2>History</h2>
-      <div class="empty-state">No bills uploaded</div>
-    </section>
-
-    <section class="panel" id="settingsPanel">
-      <h2>Settings</h2>
-      <div class="empty-state">Coming soon</div>
-    </section>
-
-  </main>
-
-</div>
-
+  <script src="script.js"></script>
 </body>
 </html>
