@@ -217,3 +217,93 @@ button:hover {
     transform: translateY(0);
   }
 }
+/* =========================================================
+   SIDEBAR NAV — ICONS + ACTIVE STATE (CSS ONLY)
+========================================================= */
+
+/* Turn sidebar text into nav items */
+header::after {
+  content: "";
+  display: none;
+}
+
+/* Sidebar container illusion */
+header {
+  position: relative;
+}
+
+/* Fake nav list */
+header::before {
+  content: "";
+  display: block;
+  height: 12px;
+}
+
+/* Visual nav items */
+header nav,
+header .nav {
+  display: none;
+}
+
+/* Inject nav items using pseudo elements */
+header .logo::after {
+  content:
+    "⬆ Upload\n"
+    "👁 OCR\n"
+    "🧾 Parser\n"
+    "🕘 History\n"
+    "⚙ Settings";
+  white-space: pre;
+  margin-top: 26px;
+  display: block;
+  font-size: 0.9rem;
+  line-height: 2.8;
+  color: var(--muted);
+}
+
+/* Style each line as a row */
+header .logo::after {
+  padding-left: 6px;
+}
+
+/* Hover illusion */
+header .logo::after span {
+  display: block;
+}
+
+/* Active item highlight (Upload = default) */
+header {
+  --active-index: 0;
+}
+
+/* Fancy highlight bar */
+header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 92px; /* aligns with first item */
+  width: 4px;
+  height: 36px;
+  background: linear-gradient(
+    180deg,
+    var(--accent),
+    var(--accent-2)
+  );
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 0 18px rgba(138,123,250,0.7);
+}
+
+/* Glow on hover (visual only) */
+header .logo:hover::after {
+  color: #fff;
+}
+
+/* Cursor hint */
+header .logo::after {
+  cursor: pointer;
+}
+
+/* Subtle hover animation */
+header .logo::after:hover {
+  text-shadow: 0 0 10px rgba(138,123,250,0.6);
+}
