@@ -13,29 +13,26 @@
 </head>
 
 <body class="theme-default">
-
-<div class="app-shell">
+<div class="app-shell layout-dashboard">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="brand">ANJ</div>
+    <div class="logo">ANJ</div>
 
     <nav class="nav">
-      <button class="nav-item active">Upload</button>
-      <button class="nav-item">OCR</button>
-      <button class="nav-item">Parsed</button>
-      <button class="nav-item">History</button>
-      <button class="nav-item">Settings</button>
+      <div class="nav-item active" data-panel="upload">📤 Upload</div>
+      <div class="nav-item" data-panel="ocr">🧠 OCR</div>
+      <div class="nav-item" data-panel="parsed">📊 Parsed</div>
+      <div class="nav-item" data-panel="history">🕒 History</div>
+      <div class="nav-item" data-panel="settings">⚙️ Settings</div>
     </nav>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
-    <!-- TOP BAR -->
+    <!-- HEADER -->
     <header class="topbar">
-      <span id="statusBar">Ready ✓</span>
-
       <select id="themeSelect">
         <option value="default">Default</option>
         <option value="fairy">Fairy</option>
@@ -43,18 +40,27 @@
         <option value="pink">Pink</option>
         <option value="dark">Dark</option>
       </select>
+
+      <select id="layoutSelect">
+        <option value="dashboard">Dashboard</option>
+        <option value="focus">Focus</option>
+        <option value="wide">Wide</option>
+      </select>
+
+      <span id="statusBar">Ready ✓</span>
     </header>
 
     <!-- CONTENT -->
-    <section class="content">
+    <section class="panel-grid">
 
-      <!-- UPLOAD PANEL -->
-      <section class="panel upload-panel" id="uploadPanel">
+      <!-- UPLOAD -->
+      <section class="panel" id="uploadPanel">
         <h2>Upload Bill</h2>
 
+        <input type="file" id="fileInput" />
+
         <div class="drop-zone">
-          <input type="file" id="fileInput" />
-          <span>Tap or drop file</span>
+          Tap or drop file
         </div>
 
         <div class="actions">
@@ -62,38 +68,31 @@
           <button id="ocrOnlyBtn">Quick OCR</button>
           <button id="parseBtn">Parse</button>
         </div>
-
-        <!-- Processing visual (auto works with JS updates) -->
-        <div class="processing">
-          <div class="loader"></div>
-          <span>Processing…</span>
-        </div>
       </section>
 
-      <!-- RESULTS -->
-      <section class="results">
+      <!-- RAW -->
+      <section class="panel">
+        <h2>Raw OCR / Extracted Text</h2>
+        <pre id="rawText"></pre>
+      </section>
 
-        <section class="panel">
-          <h2>Raw OCR / Extracted Text</h2>
-          <pre id="rawText"></pre>
-        </section>
+      <!-- CLEAN -->
+      <section class="panel">
+        <h2>Cleaned Text</h2>
+        <pre id="cleanedText"></pre>
+      </section>
 
-        <section class="panel">
-          <h2>Cleaned Text</h2>
-          <pre id="cleanedText"></pre>
-        </section>
-
-        <section class="panel">
-          <h2>Parsed JSON</h2>
-          <pre id="jsonPreview"></pre>
-        </section>
-
+      <!-- JSON -->
+      <section class="panel">
+        <h2>Parsed JSON</h2>
+        <pre id="jsonPreview"></pre>
       </section>
 
     </section>
   </main>
-
 </div>
 
 <script src="script.js"></script>
 </body>
+  </html>
+  
