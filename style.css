@@ -60,24 +60,20 @@ body.theme-dark {
 }
 
 /* ========================
-   SIDEBAR (ANIMATED)
+   SIDEBAR (FROM PREVIOUS STEP)
 ======================== */
 .sidebar {
   width: 220px;
   padding: 20px;
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(18px);
-  display: flex;
-  flex-direction: column;
 }
 
 .logo {
   font-weight: 800;
   margin-bottom: 26px;
-  letter-spacing: 1px;
 }
 
-/* --- NAV ITEMS --- */
 .nav-item {
   position: relative;
   padding: 12px 14px;
@@ -85,52 +81,21 @@ body.theme-dark {
   cursor: pointer;
   margin-bottom: 8px;
   opacity: 0.65;
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.35s ease,
-    background 0.35s ease,
-    opacity 0.25s ease;
+  transition: all 0.3s ease;
 }
 
-/* Hover = lift + soft glow */
 .nav-item:hover {
   opacity: 1;
   transform: translateY(-2px);
   background: var(--card);
-  box-shadow:
-    0 0 14px color-mix(in srgb, var(--accent) 60%, transparent),
-    inset 0 0 0 1px rgba(255,255,255,0.12);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
-/* Active = breathing glow */
 .nav-item.active {
   opacity: 1;
   background: var(--card);
-  box-shadow:
-    0 0 18px var(--accent),
-    inset 0 0 0 1px rgba(255,255,255,0.18);
+  box-shadow: 0 0 20px var(--accent);
   animation: sidebarPulse 2.4s ease-in-out infinite;
-}
-
-/* Accent glow indicator */
-.nav-item::before {
-  content: "";
-  position: absolute;
-  left: -6px;
-  top: 50%;
-  width: 4px;
-  height: 60%;
-  border-radius: 999px;
-  background: var(--accent);
-  opacity: 0;
-  transform: translateY(-50%) scaleY(0.4);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.nav-item.active::before,
-.nav-item:hover::before {
-  opacity: 1;
-  transform: translateY(-50%) scaleY(1);
 }
 
 /* ========================
@@ -138,7 +103,7 @@ body.theme-dark {
 ======================== */
 .main {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
 }
 
 /* ========================
@@ -148,7 +113,7 @@ body.theme-dark {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 26px;
 }
 
 .topbar select {
@@ -161,7 +126,7 @@ body.theme-dark {
 
 #statusBar {
   margin-left: 10px;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 /* ========================
@@ -171,42 +136,45 @@ body.theme-dark {
   transition: all 0.45s cubic-bezier(.4,0,.2,1);
 }
 
+/* 🔥 CARD DASHBOARD LAYOUT */
 body.layout-dashboard .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-body.layout-focus .grid {
-  display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 24px;
-}
-
-body.layout-vertical .grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  align-items: stretch;
 }
 
 /* ========================
-   PANELS
+   PANELS (CARD STYLE)
 ======================== */
 .panel {
+  position: relative;
   background: var(--card);
-  border-radius: 18px;
-  padding: 18px;
-  backdrop-filter: blur(14px);
-  animation: fadeUp 0.4s ease both;
+  border-radius: 22px;
+  padding: 20px;
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.25),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+  animation: cardEnter 0.45s ease both;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Hover = subtle lift */
+.panel:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.35),
+    inset 0 0 0 1px rgba(255,255,255,0.14);
 }
 
 .panel h2 {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   font-weight: 600;
 }
 
 /* ========================
-   RESULTS VISIBILITY FIX
+   EMPTY STATE ANIMATION (IMPORTANT)
 ======================== */
 .panel pre {
   display: block;
@@ -217,11 +185,29 @@ body.layout-vertical .grid {
   border-radius: 14px;
   margin-top: 16px;
   font-size: 13px;
+  min-height: 120px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* ✨ Animated shimmer for empty panels */
 pre:empty::before {
   content: "Waiting for output …";
-  opacity: 0.5;
+  opacity: 0.6;
+  animation: textPulse 1.8s ease-in-out infinite;
+}
+
+pre:empty::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.12),
+    transparent
+  );
+  animation: shimmer 2.2s infinite;
 }
 
 /* ========================
@@ -231,7 +217,7 @@ pre:empty::before {
   margin: 14px 0;
   padding: 20px;
   border: 2px dashed rgba(255,255,255,0.2);
-  border-radius: 14px;
+  border-radius: 16px;
   text-align: center;
   opacity: 0.8;
 }
@@ -240,7 +226,7 @@ pre:empty::before {
   background: linear-gradient(135deg, var(--accent), #9333ea);
   border: none;
   color: white;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 999px;
   margin-right: 6px;
   cursor: pointer;
@@ -249,10 +235,16 @@ pre:empty::before {
 /* ========================
    ANIMATIONS
 ======================== */
-@keyframes fadeUp {
+@keyframes sidebarPulse {
+  0% { box-shadow: 0 0 14px var(--accent); }
+  50% { box-shadow: 0 0 28px var(--accent); }
+  100% { box-shadow: 0 0 14px var(--accent); }
+}
+
+@keyframes cardEnter {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -260,9 +252,12 @@ pre:empty::before {
   }
 }
 
-@keyframes sidebarPulse {
-  0%   { box-shadow: 0 0 14px var(--accent); }
-  50%  { box-shadow: 0 0 26px var(--accent); }
-  100% { box-shadow: 0 0 14px var(--accent); }
-   }
-   
+@keyframes textPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
