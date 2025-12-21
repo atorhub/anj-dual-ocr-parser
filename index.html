@@ -4,27 +4,25 @@
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
 
-  <!-- LIBS -->
+  <!-- LIBS (unchanged) -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-  <!-- STYLES -->
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body class="theme-default layout-dashboard">
-
 <div class="app-shell">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">ANJ</div>
     <nav class="nav">
-      <div class="nav-item active" data-panel="upload">🔥 Upload</div>
-      <div class="nav-item" data-panel="ocr">📄 OCR</div>
+      <div class="nav-item active" data-panel="upload">📤 Upload</div>
+      <div class="nav-item" data-panel="ocr">🔍 OCR</div>
       <div class="nav-item" data-panel="parsed">📊 Parsed</div>
-      <div class="nav-item" data-panel="history">🕒 History</div>
+      <div class="nav-item" data-panel="history">🕘 History</div>
       <div class="nav-item" data-panel="settings">⚙️ Settings</div>
     </nav>
   </aside>
@@ -34,24 +32,30 @@
 
     <!-- TOPBAR -->
     <header class="topbar">
-      <select id="themeSelect">
-        <option value="default">Default</option>
-        <option value="fairy">Fairy</option>
-        <option value="galaxy">Galaxy</option>
-        <option value="pink">Pink</option>
-        <option value="dark">Dark</option>
-      </select>
+      <div class="top-left">
+        <span class="brand">ANJ</span>
+      </div>
 
-      <select id="layoutSelect">
-        <option value="dashboard">Dashboard</option>
-        <option value="focus">Focus</option>
-        <option value="vertical">Vertical</option>
-      </select>
+      <div class="top-controls">
+        <select id="themeSelect">
+          <option value="default">Default</option>
+          <option value="galaxy">Galaxy</option>
+          <option value="fairy">Fairy</option>
+          <option value="pink">Pink</option>
+          <option value="dark">Dark</option>
+        </select>
 
-      <span id="statusBar">Ready ✓</span>
+        <select id="layoutSelect">
+          <option value="dashboard">Dashboard</option>
+          <option value="focus">Focus</option>
+          <option value="vertical">Vertical</option>
+        </select>
+
+        <span id="statusBar">Ready ✓</span>
+      </div>
     </header>
 
-    <!-- CONTENT GRID -->
+    <!-- PANELS -->
     <section class="grid">
 
       <!-- UPLOAD -->
@@ -72,41 +76,51 @@
       </section>
 
       <!-- RAW -->
-      <section class="panel" id="rawPanel">
+      <section class="panel">
         <h2>Raw OCR / Extracted Text</h2>
-        <pre id="rawText">Waiting for output …</pre>
+        <pre id="rawText"></pre>
       </section>
 
       <!-- CLEAN -->
-      <section class="panel" id="cleanPanel">
+      <section class="panel">
         <h2>Cleaned Text</h2>
-        <pre id="cleanText">Waiting for output …</pre>
+        <pre id="cleanedText"></pre>
       </section>
 
       <!-- JSON -->
-      <section class="panel" id="jsonPanel">
+      <section class="panel">
         <h2>Parsed JSON</h2>
-        <pre id="jsonText">Waiting for output …</pre>
+        <pre id="jsonPreview"></pre>
       </section>
 
     </section>
   </main>
 </div>
 
-<!-- ✅ LAYOUT SWITCHER SCRIPT (ONLY THIS JS ADDED) -->
+<!-- THEME + LAYOUT CONTROLLER (SAFE) -->
 <script>
+  const themeSelect = document.getElementById("themeSelect");
   const layoutSelect = document.getElementById("layoutSelect");
 
-  layoutSelect.addEventListener("change", () => {
-    document.body.classList.remove(
-      "layout-dashboard",
-      "layout-focus",
-      "layout-vertical"
-    );
+  const savedTheme = localStorage.getItem("theme") || "default";
+  const savedLayout = localStorage.getItem("layout") || "dashboard";
 
-    document.body.classList.add("layout-" + layoutSelect.value);
-  });
+  themeSelect.value = savedTheme;
+  layoutSelect.value = savedLayout;
+
+  document.body.className = `theme-${savedTheme} layout-${savedLayout}`;
+
+  themeSelect.onchange = () => {
+    document.body.className = `theme-${themeSelect.value} layout-${layoutSelect.value}`;
+    localStorage.setItem("theme", themeSelect.value);
+  };
+
+  layoutSelect.onchange = () => {
+    document.body.className = `theme-${themeSelect.value} layout-${layoutSelect.value}`;
+    localStorage.setItem("layout", layoutSelect.value);
+  };
 </script>
 
+<script src="script.js"></script>
 </body>
 </html>
