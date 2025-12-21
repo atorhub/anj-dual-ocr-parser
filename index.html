@@ -1,72 +1,126 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-default layout-dashboard">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
+
+  <!-- LIBS (unchanged) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body class="theme-default layout-dashboard">
-
 <div class="app-shell">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="logo">ANJ OCR</div>
-
+    <div class="logo">ANJ</div>
     <nav class="nav">
-      <div class="nav-item active">Upload</div>
-      <div class="nav-item">OCR</div>
-      <div class="nav-item">Results</div>
-      <div class="nav-item">History</div>
+      <div class="nav-item active" data-panel="upload">📤 Upload</div>
+      <div class="nav-item" data-panel="ocr">🔍 OCR</div>
+      <div class="nav-item" data-panel="parsed">📊 Parsed</div>
+      <div class="nav-item" data-panel="history">🕘 History</div>
+      <div class="nav-item" data-panel="settings">⚙️ Settings</div>
     </nav>
-
-    <button class="collapse-btn">⇤</button>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
-    <div class="topbar">
-      <select id="themeSelect">
-        <option value="theme-default">Default</option>
-        <option value="theme-pink">Pink</option>
-        <option value="theme-galaxy">Galaxy</option>
-        <option value="theme-fairy">Fairy</option>
-        <option value="theme-dark">Dark</option>
-      </select>
-
-      <select id="layoutSelect">
-        <option value="layout-dashboard">Dashboard</option>
-        <option value="layout-focus">Focus</option>
-        <option value="layout-wide">Wide</option>
-      </select>
-    </div>
-
-    <section class="panel-grid">
-      <div class="panel">
-        <h2>Upload</h2>
-        <div class="drop-zone">Drop file here</div>
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="top-left">
+        <span class="brand">ANJ</span>
       </div>
 
-      <div class="panel">
-        <h2>OCR Output</h2>
-        <pre></pre>
-      </div>
+      <div class="top-controls">
+        <select id="themeSelect">
+          <option value="default">Default</option>
+          <option value="galaxy">Galaxy</option>
+          <option value="fairy">Fairy</option>
+          <option value="pink">Pink</option>
+          <option value="dark">Dark</option>
+        </select>
 
-      <div class="panel">
-        <h2>Parsed Data</h2>
-        <pre></pre>
+        <select id="layoutSelect">
+          <option value="dashboard">Dashboard</option>
+          <option value="focus">Focus</option>
+          <option value="vertical">Vertical</option>
+        </select>
+
+        <span id="statusBar">Ready ✓</span>
       </div>
+    </header>
+
+    <!-- PANELS -->
+    <section class="grid">
+
+      <!-- UPLOAD -->
+      <section class="panel" id="uploadPanel">
+        <h2>Upload Bill</h2>
+
+        <input type="file" id="fileInput" />
+
+        <div class="drop-zone">
+          Tap or drop file
+        </div>
+
+        <div class="actions">
+          <button id="dualOCRBtn">Dual OCR</button>
+          <button id="ocrOnlyBtn">Quick OCR</button>
+          <button id="parseBtn">Parse</button>
+        </div>
+      </section>
+
+      <!-- RAW -->
+      <section class="panel">
+        <h2>Raw OCR / Extracted Text</h2>
+        <pre id="rawText"></pre>
+      </section>
+
+      <!-- CLEAN -->
+      <section class="panel">
+        <h2>Cleaned Text</h2>
+        <pre id="cleanedText"></pre>
+      </section>
+
+      <!-- JSON -->
+      <section class="panel">
+        <h2>Parsed JSON</h2>
+        <pre id="jsonPreview"></pre>
+      </section>
+
     </section>
-
   </main>
 </div>
 
-<div id="processingIndicator" class="processing hidden">
-  <div class="spinner"></div>
-  <span>Processing…</span>
-</div>
+<!-- THEME + LAYOUT CONTROLLER (SAFE) -->
+<script>
+  const themeSelect = document.getElementById("themeSelect");
+  const layoutSelect = document.getElementById("layoutSelect");
 
+  const savedTheme = localStorage.getItem("theme") || "default";
+  const savedLayout = localStorage.getItem("layout") || "dashboard";
+
+  themeSelect.value = savedTheme;
+  layoutSelect.value = savedLayout;
+
+  document.body.className = `theme-${savedTheme} layout-${savedLayout}`;
+
+  themeSelect.onchange = () => {
+    document.body.className = `theme-${themeSelect.value} layout-${layoutSelect.value}`;
+    localStorage.setItem("theme", themeSelect.value);
+  };
+
+  layoutSelect.onchange = () => {
+    document.body.className = `theme-${themeSelect.value} layout-${layoutSelect.value}`;
+    localStorage.setItem("layout", layoutSelect.value);
+  };
+</script>
+
+<script src="script.js"></script>
 </body>
 </html>
