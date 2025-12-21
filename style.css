@@ -131,3 +131,100 @@ pre:empty::before {
 @media(max-width:768px){
   .sidebar{display:none;}
     }
+/* ===============================
+   SMART APP STYLE – FOCUS LAYOUT
+   (NO ID CHANGES)
+================================ */
+
+body.layout-focus {
+  --focus-radius: 28px;
+  --focus-padding: 26px;
+}
+
+/* One card per screen */
+body.layout-focus .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* App-style cards */
+body.layout-focus .panel {
+  border-radius: var(--focus-radius);
+  padding: var(--focus-padding);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.14),
+      rgba(255,255,255,0.05)
+    ),
+    var(--card);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.45),
+    inset 0 1px 1px rgba(255,255,255,0.25);
+
+  transform: none;
+}
+
+/* Remove hover lift on mobile-style UI */
+body.layout-focus .panel:hover {
+  transform: none;
+}
+
+/* App-style headers */
+body.layout-focus .panel h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* INPUT + BUTTON polish */
+body.layout-focus input[type="file"] {
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+/* Rounded pill buttons (Smart App style) */
+body.layout-focus .actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+body.layout-focus .actions button {
+  flex: 1;
+  min-width: 110px;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* App-style text boxes */
+body.layout-focus pre {
+  border-radius: 22px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  background: rgba(255,255,255,0.06);
+}
+
+/* Subtle glow for focus mode */
+body.layout-focus .panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 35%, transparent);
+  opacity: 0.35;
+}
+
+/* Mobile-first polish */
+@media (max-width: 480px) {
+  body.layout-focus .grid {
+    padding-bottom: 40px;
+  }
+  }
