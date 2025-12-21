@@ -228,3 +228,113 @@ body.layout-focus .panel::after {
     padding-bottom: 40px;
   }
   }
+/* =========================================
+   FOCUS LAYOUT – VISUAL POLISH (APP STYLE)
+========================================= */
+
+body.layout-focus {
+  --panel-radius: 30px;
+  --panel-pad: 28px;
+}
+
+/* Centered app column */
+body.layout-focus .grid {
+  max-width: 420px;
+  margin: 0 auto;
+  gap: 30px;
+}
+
+/* Softer premium glass cards */
+body.layout-focus .panel {
+  border-radius: var(--panel-radius);
+  padding: var(--panel-pad);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.06)
+    ),
+    var(--card);
+
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 25px 55px rgba(0,0,0,0.45),
+    inset 0 1px 1px rgba(255,255,255,0.25);
+}
+
+/* App-like section titles */
+body.layout-focus .panel h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 14px;
+}
+
+/* Output blocks – lighter & readable */
+body.layout-focus pre {
+  background: rgba(255,255,255,0.08);
+  border-radius: 22px;
+  padding: 18px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.92);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+/* Buttons – soft pill style */
+body.layout-focus .actions button {
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 600;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+}
+
+/* Subtle glow */
+body.layout-focus .panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 40%, transparent);
+  opacity: 0.35;
+}
+
+/* =========================================
+   NEW THEMES (CSS ONLY)
+========================================= */
+
+/* 🌊 AQUA */
+body.theme-aqua {
+  --bg: radial-gradient(circle at top, #1ddfd3, #0b2c3d 70%);
+  --accent: #1ddfd3;
+  --card: rgba(40, 180, 190, 0.18);
+}
+
+/* 🌿 MINT */
+body.theme-mint {
+  --bg: radial-gradient(circle at top, #7fffd4, #0f3d2e 70%);
+  --accent: #7fffd4;
+  --card: rgba(120, 255, 210, 0.16);
+}
+
+/* 🌅 SUNSET */
+body.theme-sunset {
+  --bg: radial-gradient(circle at top, #ff8a65, #3b1c2a 70%);
+  --accent: #ff8a65;
+  --card: rgba(255, 140, 100, 0.18);
+}
+
+/* 💎 NEON BLUE */
+body.theme-neon {
+  --bg: radial-gradient(circle at top, #3ea6ff, #081b33 70%);
+  --accent: #3ea6ff;
+  --card: rgba(80, 150, 255, 0.16);
+}
+
+/* 🌌 MIDNIGHT */
+body.theme-midnight {
+  --bg: radial-gradient(circle at top, #5b6cff, #050812 70%);
+  --accent: #5b6cff;
+  --card: rgba(90, 110, 255, 0.15);
+}
