@@ -15,28 +15,24 @@ body.theme-default {
   --text: #e5e7eb;
   --accent: #8b5cf6;
 }
-
 body.theme-galaxy {
   --bg: radial-gradient(circle at top, #2d1b69, #07000f);
-  --card: rgba(255,255,255,0.09);
+  --card: rgba(255,255,255,0.1);
   --text: #f5f3ff;
   --accent: #c084fc;
 }
-
 body.theme-fairy {
   --bg: linear-gradient(135deg, #2e026d, #a21caf);
-  --card: rgba(255,255,255,0.1);
+  --card: rgba(255,255,255,0.12);
   --text: #fdf4ff;
   --accent: #f0abfc;
 }
-
 body.theme-pink {
   --bg: linear-gradient(135deg, #3b021f, #831843);
-  --card: rgba(255,255,255,0.12);
+  --card: rgba(255,255,255,0.14);
   --text: #ffe4f1;
   --accent: #fb7185;
 }
-
 body.theme-dark {
   --bg: #020617;
   --card: rgba(255,255,255,0.06);
@@ -52,13 +48,17 @@ body.theme-dark {
   width: 220px;
   padding: 20px;
   backdrop-filter: blur(20px);
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.45);
 }
-.logo { font-size: 1.3rem; font-weight: 800; margin-bottom: 30px; }
+.logo {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 28px;
+}
 .nav-item {
   padding: 14px 16px;
-  margin-bottom: 10px;
   border-radius: 14px;
+  margin-bottom: 10px;
   cursor: pointer;
   opacity: 0.7;
   transition: 0.3s;
@@ -67,7 +67,7 @@ body.theme-dark {
 .nav-item.active {
   opacity: 1;
   background: var(--card);
-  box-shadow: 0 0 16px var(--accent);
+  box-shadow: 0 0 18px var(--accent);
 }
 
 /* MAIN */
@@ -79,16 +79,29 @@ body.theme-dark {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  gap: 10px;
 }
 
-/* GRID */
-.grid {
+/* LAYOUTS */
+body.layout-dashboard .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
 }
 
-/* PANEL */
+body.layout-focus .grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+body.layout-vertical .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* PANELS */
 .panel {
   background: var(--card);
   border-radius: 22px;
@@ -101,12 +114,12 @@ body.theme-dark {
 }
 .panel:hover { transform: translateY(-4px); }
 
-/* EMPTY ANIMATION */
+/* EMPTY STATE */
 pre {
   min-height: 130px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 14px;
   padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
   white-space: pre-wrap;
 }
 pre:empty::before {
@@ -122,7 +135,6 @@ pre:empty::before {
   border: none;
   cursor: pointer;
   background: var(--accent);
-  color: #000;
   font-weight: 600;
 }
 
