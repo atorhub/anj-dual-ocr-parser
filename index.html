@@ -3,74 +3,107 @@
 <head>
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- LIBRARIES -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-fairy layout-dashboard">
+<body class="theme-default layout-dashboard">
 
-  <!-- 🔹 SIDEBAR TOGGLE (CSS ONLY) -->
-  <input type="checkbox" id="sidebarToggle" hidden>
-  <label for="sidebarToggle" class="sidebar-toggle-btn">☰</label>
+<div class="app-shell">
 
-  <div class="app-shell">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="logo">ANJ</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">ANJ</div>
+    <nav class="nav">
       <div class="nav-item active">📤 Upload</div>
       <div class="nav-item">🔍 OCR</div>
       <div class="nav-item">📊 Parsed</div>
       <div class="nav-item">🕘 History</div>
       <div class="nav-item">⚙️ Settings</div>
-    </aside>
+    </nav>
+  </aside>
 
-    <!-- MAIN -->
-    <main class="main main-content">
+  <!-- MAIN -->
+  <main class="main">
 
-      <!-- TOP BAR -->
-      <div class="topbar">
-        <div>ANJ</div>
-        <div>
-          <select id="themeSelect"></select>
-          <select id="layoutSelect"></select>
-          <span id="statusBar">Ready ✓</span>
-        </div>
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="brand">ANJ Dual OCR</div>
+
+      <div class="top-controls">
+        <select id="themeSelect">
+          <option value="default">Default</option>
+          <option value="galaxy">Galaxy</option>
+          <option value="fairy">Fairy</option>
+          <option value="pink">Pink</option>
+          <option value="dark">Dark</option>
+        </select>
+
+        <span id="statusBar">Ready ✓</span>
       </div>
+    </header>
 
-      <!-- GRID -->
-      <div class="grid">
+    <!-- GRID -->
+    <section class="grid">
 
-        <div class="panel">
-          <h2>Upload Bill</h2>
-          <input type="file" id="fileInput">
-          <div class="drop-zone">Tap or drop file</div>
-          <div class="actions">
-            <button id="dualOCRBtn">Dual OCR</button>
-            <button id="quickOCRBtn">Quick OCR</button>
-            <button id="parseBtn">Parse</button>
-          </div>
+      <!-- UPLOAD -->
+      <section class="panel">
+        <h2>Upload Invoice</h2>
+        <input type="file" id="fileInput" />
+        <div class="actions">
+          <button id="dualOCRBtn">Dual OCR</button>
+          <button id="ocrOnlyBtn">Quick OCR</button>
+          <button id="parseBtn">Parse</button>
         </div>
+      </section>
 
-        <div class="panel">
-          <h2>Raw OCR / Extracted Text</h2>
-          <pre id="rawText"></pre>
-        </div>
+      <!-- RAW -->
+      <section class="panel">
+        <h2>Raw Text</h2>
+        <pre id="rawText"></pre>
+      </section>
 
-        <div class="panel">
-          <h2>Cleaned Text</h2>
-          <pre id="cleanedText"></pre>
-        </div>
+      <!-- CLEAN -->
+      <section class="panel">
+        <h2>Cleaned Text</h2>
+        <pre id="cleanedText"></pre>
+      </section>
 
-        <div class="panel">
-          <h2>Parsed JSON</h2>
-          <pre id="parsedJson"></pre>
-        </div>
+      <!-- JSON -->
+      <section class="panel">
+        <h2>Parsed JSON</h2>
+        <pre id="jsonPreview"></pre>
+      </section>
 
-      </div>
-    </main>
-  </div>
+    </section>
+  </main>
+</div>
 
-  <script src="script.js"></script>
+<!-- THEME CONTROLLER (SAFE – DOES NOT BREAK LAYOUT) -->
+<script>
+  const themeSelect = document.getElementById("themeSelect");
+  const savedTheme = localStorage.getItem("theme") || "default";
+
+  themeSelect.value = savedTheme;
+  document.body.classList.remove(
+    "theme-default","theme-galaxy","theme-fairy","theme-pink","theme-dark"
+  );
+  document.body.classList.add(`theme-${savedTheme}`);
+
+  themeSelect.onchange = () => {
+    document.body.classList.remove(
+      "theme-default","theme-galaxy","theme-fairy","theme-pink","theme-dark"
+    );
+    document.body.classList.add(`theme-${themeSelect.value}`);
+    localStorage.setItem("theme", themeSelect.value);
+  };
+</script>
+
+<script src="script.js"></script>
 </body>
 </html>
