@@ -44,6 +44,12 @@
           <option value="dark">Dark</option>
         </select>
 
+        <select id="layoutSelect">
+          <option value="dashboard">Dashboard</option>
+          <option value="focus">Focus</option>
+          <option value="vertical">Vertical</option>
+        </select>
+
         <span id="statusBar">Ready ✓</span>
       </div>
     </header>
@@ -51,7 +57,6 @@
     <!-- GRID -->
     <section class="grid">
 
-      <!-- UPLOAD -->
       <section class="panel">
         <h2>Upload Invoice</h2>
         <input type="file" id="fileInput" />
@@ -62,19 +67,16 @@
         </div>
       </section>
 
-      <!-- RAW -->
       <section class="panel">
         <h2>Raw Text</h2>
         <pre id="rawText"></pre>
       </section>
 
-      <!-- CLEAN -->
       <section class="panel">
         <h2>Cleaned Text</h2>
         <pre id="cleanedText"></pre>
       </section>
 
-      <!-- JSON -->
       <section class="panel">
         <h2>Parsed JSON</h2>
         <pre id="jsonPreview"></pre>
@@ -84,23 +86,32 @@
   </main>
 </div>
 
-<!-- THEME CONTROLLER (SAFE – DOES NOT BREAK LAYOUT) -->
+<!-- THEME + LAYOUT CONTROLLER (GITHUB PAGES SAFE) -->
 <script>
   const themeSelect = document.getElementById("themeSelect");
+  const layoutSelect = document.getElementById("layoutSelect");
+
+  const themes = ["default","galaxy","fairy","pink","dark"];
+  const layouts = ["dashboard","focus","vertical"];
+
   const savedTheme = localStorage.getItem("theme") || "default";
+  const savedLayout = localStorage.getItem("layout") || "dashboard";
 
   themeSelect.value = savedTheme;
-  document.body.classList.remove(
-    "theme-default","theme-galaxy","theme-fairy","theme-pink","theme-dark"
-  );
-  document.body.classList.add(`theme-${savedTheme}`);
+  layoutSelect.value = savedLayout;
+
+  document.body.classList.add(`theme-${savedTheme}`, `layout-${savedLayout}`);
 
   themeSelect.onchange = () => {
-    document.body.classList.remove(
-      "theme-default","theme-galaxy","theme-fairy","theme-pink","theme-dark"
-    );
+    themes.forEach(t => document.body.classList.remove(`theme-${t}`));
     document.body.classList.add(`theme-${themeSelect.value}`);
     localStorage.setItem("theme", themeSelect.value);
+  };
+
+  layoutSelect.onchange = () => {
+    layouts.forEach(l => document.body.classList.remove(`layout-${l}`));
+    document.body.classList.add(`layout-${layoutSelect.value}`);
+    localStorage.setItem("layout", layoutSelect.value);
   };
 </script>
 
