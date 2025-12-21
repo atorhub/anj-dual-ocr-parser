@@ -137,6 +137,34 @@ pre:empty::before {
   opacity: 0.6;
   animation: textPulse 1.8s infinite;
 }
+/* ============================
+   FIX TOPBAR INTERACTION (MOBILE)
+   ============================ */
+
+/* Ensure topbar is always above toggle */
+.topbar {
+  position: relative;
+  z-index: 1002;
+}
+
+/* Reduce toggle hit-area to icon only */
+.sidebar-toggle-btn {
+  z-index: 1001;
+  pointer-events: auto;
+}
+
+/* Prevent invisible overlay from blocking taps */
+.sidebar-toggle-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Extra safety: allow selects to receive taps */
+.topbar select {
+  pointer-events: auto;
+}
 
 /* ========================
    SIDEBAR TOGGLE BUTTON
