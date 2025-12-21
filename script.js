@@ -206,5 +206,17 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus("Parsed ✓");
   };
 
+  /* ===============================
+     SIDEBAR TOGGLE (ADDED – SAFE)
+  =============================== */
+  const sidebarToggle = document.getElementById("sidebarToggle");
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener("click", () => {
+      document.body.classList.toggle("sidebar-hidden");
+    });
+  }
+
   setStatus("Ready ✓");
 });
+             
