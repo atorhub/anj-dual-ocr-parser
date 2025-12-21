@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     dual: document.getElementById("dualOCRBtn"),
     ocr: document.getElementById("ocrOnlyBtn"),
     parse: document.getElementById("parseBtn"),
-    theme: document.getElementById("themeSelect")
+    theme: document.getElementById("themeSelect"),
+    layout: document.getElementById("layoutSelect") // ✅ ADDED
   };
 
   /* ===============================
@@ -34,18 +35,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===============================
-     THEME (SAFE, NO SIDE EFFECTS)
+     THEME (SAFE, NON-DESTRUCTIVE)
   =============================== */
   el.theme.addEventListener("change", () => {
-document.body.classList.forEach(cls => {
-  if (cls.startsWith("theme-")) {
-    document.body.classList.remove(cls);
-  }
-});
+    const classes = document.body.className.split(" ").filter(
+      c => !c.startsWith("theme-")
+    );
+    classes.push(`theme-${el.theme.value}`);
+    document.body.className = classes.join(" ");
+  });
 
-// add the selected theme
-document.body.classList.add(`theme-${el.theme.value}`);
-    
+  /* ===============================
+     LAYOUT (ADDED – SAFE)
+  =============================== */
+  el.layout.addEventListener("change", () => {
+    const classes = document.body.className.split(" ").filter(
+      c => !c.startsWith("layout-")
+    );
+    classes.push(`layout-${el.layout.value}`);
+    document.body.className = classes.join(" ");
+  });
 
   /* ===============================
      OCR (IMAGE ONLY)
@@ -83,7 +92,6 @@ document.body.classList.add(`theme-${el.theme.value}`);
     const name = file.name.toLowerCase();
 
     try {
-      /* ZIP */
       if (name.endsWith(".zip")) {
         setStatus("Reading ZIP…");
         const zip = await JSZip.loadAsync(file);
@@ -97,13 +105,8 @@ document.body.classList.add(`theme-${el.theme.value}`);
         return text;
       }
 
-      /* PDF */
       if (name.endsWith(".pdf")) {
         setStatus("Reading PDF…");
-
-        if (!window.pdfjsLib) {
-          throw new Error("pdfjsLib not available");
-        }
 
         pdfjsLib.GlobalWorkerOptions.workerSrc =
           "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -129,7 +132,7 @@ document.body.classList.add(`theme-${el.theme.value}`);
   }
 
   /* ===============================
-     CLEANER (SAFE)
+     CLEANER
   =============================== */
   function cleanText(txt) {
     if (!txt) return "";
@@ -141,14 +144,10 @@ document.body.classList.add(`theme-${el.theme.value}`);
   }
 
   /* ===============================
-     PARSER (RULE BASED, NO AI)
+     PARSER
   =============================== */
   function parseInvoice(text) {
-    const out = {
-      merchant: null,
-      date: null,
-      total: null
-    };
+    const out = { merchant: null, date: null, total: null };
 
     const totalMatch = text.match(/total[:\s]*₹?\s*([\d,.]+)/i);
     if (totalMatch) out.total = totalMatch[1];
@@ -163,7 +162,7 @@ document.body.classList.add(`theme-${el.theme.value}`);
   }
 
   /* ===============================
-     MAIN PIPELINE (NO COUPLING)
+     MAIN PIPELINE
   =============================== */
   async function processFile(useOCR) {
     if (!el.file.files[0]) {
@@ -172,31 +171,22 @@ document.body.classList.add(`theme-${el.theme.value}`);
     }
 
     const file = el.file.files[0];
-
-    state.ocrText = "";
-    state.extractedText = "";
-    state.finalText = "";
-    state.parsed = null;
-
     setStatus("Processing…");
 
-    /* IMAGE → OCR ONLY */
+    let text = "";
+
     if (file.type.startsWith("image/") && useOCR) {
-      state.finalText = await runOCR(file);
+      text = await runOCR(file);
+    } else {
+      text = await extractText(file);
     }
 
-    /* PDF / ZIP → TEXT ONLY */
-    if (!file.type.startsWith("image/")) {
-      state.finalText = await extractText(file);
-    }
+    text = cleanText(text);
+    el.raw.textContent = text || "--";
+    el.clean.textContent = text || "--";
 
-    state.finalText = cleanText(state.finalText);
-
-    el.raw.textContent = state.finalText || "--";
-    el.clean.textContent = state.finalText || "--";
-
-    state.parsed = parseInvoice(state.finalText);
-    el.json.textContent = JSON.stringify(state.parsed, null, 2);
+    const parsed = parseInvoice(text);
+    el.json.textContent = JSON.stringify(parsed, null, 2);
 
     setStatus("Done ✓");
   }
@@ -207,15 +197,14 @@ document.body.classList.add(`theme-${el.theme.value}`);
   el.dual.onclick = () => processFile(true);
   el.ocr.onclick = () => processFile(true);
   el.parse.onclick = () => {
-    if (!state.finalText) {
+    if (!el.clean.textContent || el.clean.textContent === "--") {
       setStatus("Nothing to parse", true);
       return;
     }
-    state.parsed = parseInvoice(state.finalText);
-    el.json.textContent = JSON.stringify(state.parsed, null, 2);
+    const parsed = parseInvoice(el.clean.textContent);
+    el.json.textContent = JSON.stringify(parsed, null, 2);
     setStatus("Parsed ✓");
   };
 
   setStatus("Ready ✓");
 });
-    
