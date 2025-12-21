@@ -2,246 +2,269 @@
    RESET
 ======================== */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
-/* ========================
-   BASE
-======================== */
+html {
+  font-size: 16px;
+}
+
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Ubuntu, sans-serif;
-  background: radial-gradient(circle at top, #2a0040, #12001c);
-  color: #fff;
-  min-height: 100vh;
+  margin: 0;
+  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background 0.6s ease, color 0.3s ease;
+  overflow-x: hidden;
 }
 
 /* ========================
    TYPOGRAPHY
 ======================== */
-h1 {
-  font-size: 1.9rem;
+h1, h2, h3 {
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 h2 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 12px;
+  font-size: 1.25rem;
 }
 
-h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-p {
+p, pre, span, button, select, input {
   font-size: 0.95rem;
-  opacity: 0.9;
 }
 
 /* ========================
-   LAYOUT
+   THEMES
 ======================== */
-.app {
+body.theme-default {
+  --bg: radial-gradient(1200px 600px at top, #1b1f3b, #05070f);
+  --card: rgba(255,255,255,0.06);
+  --text: #e5e7eb;
+  --accent: #8b5cf6;
+}
+
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #2d1b69, #07000f);
+  --card: rgba(255,255,255,0.08);
+  --text: #f5f3ff;
+  --accent: #c084fc;
+}
+
+body.theme-fairy {
+  --bg: linear-gradient(135deg, #1a002b, #3b0764);
+  --card: rgba(255,255,255,0.09);
+  --text: #fdf4ff;
+  --accent: #f0abfc;
+}
+
+body.theme-pink {
+  --bg: linear-gradient(135deg, #2b0a1f, #3f072a);
+  --card: rgba(255,255,255,0.1);
+  --text: #ffe4f1;
+  --accent: #fb7185;
+}
+
+body.theme-dark {
+  --bg: #020617;
+  --card: rgba(255,255,255,0.05);
+  --text: #e5e7eb;
+  --accent: #38bdf8;
+}
+
+/* ========================
+   APP SHELL
+======================== */
+.app-shell {
   display: flex;
   min-height: 100vh;
-}
-
-.sidebar {
-  width: 240px;
-  background: linear-gradient(180deg, #1b002b, #12001c);
-  padding: 16px;
-}
-
-.main {
-  flex: 1;
-  padding: 20px;
+  position: relative;
 }
 
 /* ========================
    SIDEBAR
 ======================== */
-.sidebar h1 {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
+.sidebar {
+  width: 220px;
+  padding: 20px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(18px);
+  transition: transform 0.35s ease;
+  z-index: 50;
 }
 
-.sidebar button {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.25s ease, transform 0.15s ease;
-}
-
-.sidebar button:hover {
-  background: rgba(255, 255, 255, 0.14);
-  transform: translateY(-1px);
+.logo {
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin-bottom: 26px;
 }
 
 /* ========================
-   HEADER / TOPBAR
+   NAV
 ======================== */
-header,
+.nav-item {
+  padding: 14px 16px;
+  border-radius: 14px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  background: var(--card);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.nav-item.active {
+  opacity: 1;
+  background: var(--card);
+  box-shadow: 0 0 20px var(--accent);
+  animation: sidebarPulse 2.4s ease-in-out infinite;
+}
+
+/* ========================
+   MAIN
+======================== */
+.main {
+  flex: 1;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================
+   TOPBAR
+======================== */
 .topbar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  align-items: center;
+  margin-bottom: 26px;
+  gap: 12px;
+  position: relative;
+  z-index: 10;
+}
+
+.topbar select {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 8px 12px;
 }
 
 /* ========================
-   CARDS
+   GRID
 ======================== */
-.card {
-  background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-  border-radius: 24px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-  position: relative;
-  overflow: hidden;
+body.layout-dashboard .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
 }
 
-/* subtle animated shimmer */
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.08),
-    transparent
-  );
-  animation: shimmer 6s infinite;
+/* ========================
+   PANELS
+======================== */
+.panel {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 22px;
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.25),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+  animation: cardEnter 0.45s ease both;
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+.panel h2 {
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+}
+
+/* ========================
+   OCR TEXT (SAFE)
+======================== */
+pre,
+#rawText,
+#cleanedText,
+#jsonPreview {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  background: rgba(255,255,255,0.04);
+  padding: 16px;
+  border-radius: 14px;
+  min-height: 140px;
+}
+
+/* EMPTY STATE */
+pre:empty::before {
+  content: "Waiting for output …";
+  animation: textPulse 1.8s ease-in-out infinite;
 }
 
 /* ========================
    BUTTONS
 ======================== */
-button {
+.actions button {
+  padding: 10px 18px;
   border-radius: 999px;
-  padding: 8px 14px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-button.primary {
-  background: linear-gradient(135deg, #ff8ff2, #b76cff);
-  color: #1a001f;
 }
 
 /* ========================
-   OUTPUT BOXES
-======================== */
-pre,
-textarea {
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 16px;
-  padding: 14px;
-  color: #eaeaea;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.85rem;
-  max-height: 300px;
-  overflow: auto;
-}
-
-/* ========================
-   RESPONSIVE
+   MOBILE FIXES (SCOPED)
 ======================== */
 @media (max-width: 768px) {
+
+  html {
+    font-size: 17px;
+  }
+
   .sidebar {
     position: fixed;
-    height: 100%;
     left: 0;
     top: 0;
-  }
-
-  .main {
-    padding: 16px;
-  }
-}
-
-/* =========================================================
-   FINAL SAFE PATCH — DO NOT REMOVE
-   Fixes header clicks, dropdowns, sidebar toggle, OCR text
-   ========================================================= */
-
-/* Allow visual layers to be non-blocking */
-.glow,
-.overlay,
-.card::before,
-.card::after {
-  pointer-events: none;
-}
-
-/* Restore header & dropdown interactivity */
-header,
-.topbar,
-select,
-.dropdown,
-.status {
-  position: relative;
-  z-index: 50;
-  pointer-events: auto;
-}
-
-/* Sidebar toggle always clickable */
-#sidebarToggle,
-.menu-toggle,
-.hamburger {
-  position: relative;
-  z-index: 100;
-  pointer-events: auto;
-}
-
-/* Sidebar layering */
-.sidebar {
-  z-index: 40;
-}
-
-/* Main content safe clicks */
-.main,
-.app {
-  position: relative;
-  z-index: 10;
-}
-
-/* OCR text wrapping fix */
-pre,
-textarea {
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-/* Mobile sidebar slide behavior */
-@media (max-width: 768px) {
-  .sidebar {
+    bottom: 0;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
   }
 
-  .sidebar.open {
+  body.sidebar-open .sidebar {
     transform: translateX(0);
   }
 
   .main {
-    margin-left: 0 !important;
+    padding: 18px;
+  }
+
+  body.layout-dashboard .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 20px;
   }
 }
+
+/* ========================
+   ANIMATIONS
+======================== */
+@keyframes sidebarPulse {
+  0% { box-shadow: 0 0 14px var(--accent); }
+  50% { box-shadow: 0 0 28px var(--accent); }
+  100% { box-shadow: 0 0 14px var(--accent); }
+}
+
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes textPulse {
+  0%,100% { opacity: 0.4; }
+  50% { opacity: 0.85; }
+}
+
