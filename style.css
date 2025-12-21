@@ -7,9 +7,11 @@ html, body {
   font-family: system-ui, sans-serif;
 }
 
-/* ================= GLOBAL THEME ENGINE ================= */
+/* =========================================================
+   GLOBAL THEME ENGINE (HTML + BODY SAFE)
+========================================================= */
 
-body {
+html, body {
   --bg-main: radial-gradient(circle at top left, #0f172a, #020617);
   --bg-sidebar: rgba(15,23,42,0.96);
   --panel-bg: rgba(255,255,255,0.05);
@@ -24,25 +26,25 @@ body {
   transition: background .6s ease, color .3s ease;
 }
 
-/* ===== THEMES ===== */
+/* ===== THEMES (BOUND TO BOTH html + body) ===== */
 
-body.theme-pink {
+html.theme-pink, body.theme-pink {
   --bg-main: radial-gradient(circle at top right, #3b0764, #120018);
   --accent: #ec4899;
   --accent-glow: rgba(236,72,153,.6);
 }
 
-body.theme-galaxy {
+html.theme-galaxy, body.theme-galaxy {
   --bg-main: radial-gradient(circle at top, #020617, #000);
   --accent: #38bdf8;
 }
 
-body.theme-fairy {
+html.theme-fairy, body.theme-fairy {
   --bg-main: radial-gradient(circle at top, #1e293b, #020617);
   --accent: #c084fc;
 }
 
-body.theme-dark {
+html.theme-dark, body.theme-dark {
   --bg-main: #020617;
   --accent: #64748b;
 }
@@ -68,7 +70,6 @@ body.sidebar-collapsed .app-shell {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: width .4s ease;
 }
 
 .logo {
@@ -133,14 +134,17 @@ select {
   transition: all .5s ease;
 }
 
+html.layout-dashboard .panel-grid,
 body.layout-dashboard .panel-grid {
   grid-template-columns: repeat(2, 1fr);
 }
 
+html.layout-focus .panel-grid,
 body.layout-focus .panel-grid {
   grid-template-columns: 1fr;
 }
 
+html.layout-wide .panel-grid,
 body.layout-wide .panel-grid {
   grid-template-columns: repeat(3, 1fr);
 }
@@ -222,4 +226,5 @@ pre:empty::before {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
+  }
+                        
