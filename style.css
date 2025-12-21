@@ -1,75 +1,26 @@
 /* ========================
-   RESET
+   RESET + BASE
 ======================== */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  font-size: 16px;
-}
+html { font-size: 16px; }
 
 body {
   margin: 0;
-  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: ui-rounded, system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  transition: background 0.6s ease, color 0.3s ease;
-}
-
-/* ========================
-   TYPOGRAPHY SCALE
-======================== */
-h1, h2, h3 {
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-h2 {
-  font-size: 1.25rem;
-}
-
-p, pre, span, button, select, input {
-  font-size: 0.95rem;
 }
 
 /* ========================
    THEMES
 ======================== */
-body.theme-default {
-  --bg: radial-gradient(1200px 600px at top, #1b1f3b, #05070f);
-  --card: rgba(255,255,255,0.06);
-  --text: #e5e7eb;
-  --accent: #8b5cf6;
-}
-
-body.theme-galaxy {
-  --bg: radial-gradient(circle at top, #2d1b69, #07000f);
-  --card: rgba(255,255,255,0.08);
-  --text: #f5f3ff;
-  --accent: #c084fc;
-}
-
 body.theme-fairy {
   --bg: linear-gradient(135deg, #1a002b, #3b0764);
-  --card: rgba(255,255,255,0.09);
+  --card: rgba(255,255,255,0.1);
   --text: #fdf4ff;
   --accent: #f0abfc;
-}
-
-body.theme-pink {
-  --bg: linear-gradient(135deg, #2b0a1f, #3f072a);
-  --card: rgba(255,255,255,0.1);
-  --text: #ffe4f1;
-  --accent: #fb7185;
-}
-
-body.theme-dark {
-  --bg: #020617;
-  --card: rgba(255,255,255,0.05);
-  --text: #e5e7eb;
-  --accent: #38bdf8;
 }
 
 /* ========================
@@ -86,8 +37,15 @@ body.theme-dark {
 .sidebar {
   width: 220px;
   padding: 20px;
-  background: rgba(0,0,0,0.35);
+  background: linear-gradient(
+    180deg,
+    rgba(120,60,180,0.35),
+    rgba(40,10,80,0.6)
+  );
   backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 25px rgba(180,120,255,0.3),
+    inset 0 0 12px rgba(255,255,255,0.05);
 }
 
 .logo {
@@ -96,32 +54,27 @@ body.theme-dark {
   margin-bottom: 26px;
 }
 
-/* ========================
-   NAV
-======================== */
+/* NAV ITEMS */
 .nav-item {
-  position: relative;
   padding: 14px 16px;
   border-radius: 14px;
-  cursor: pointer;
   margin-bottom: 10px;
+  cursor: pointer;
   opacity: 0.7;
-  font-size: 1rem;
   transition: all 0.3s ease;
 }
 
 .nav-item:hover {
   opacity: 1;
-  transform: translateY(-2px);
+  transform: translateX(4px);
   background: var(--card);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
+  box-shadow: 0 0 14px rgba(200,140,255,0.6);
 }
 
 .nav-item.active {
   opacity: 1;
   background: var(--card);
-  box-shadow: 0 0 20px var(--accent);
-  animation: sidebarPulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 22px var(--accent);
 }
 
 /* ========================
@@ -138,28 +91,11 @@ body.theme-dark {
 .topbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 26px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.topbar select {
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 8px 12px;
-  font-size: 0.95rem;
-}
-
-#statusBar {
-  font-size: 0.9rem;
-  opacity: 0.85;
+  margin-bottom: 24px;
 }
 
 /* ========================
-   GRID + CARD LAYOUT
+   GRID + PANELS
 ======================== */
 body.layout-dashboard .grid {
   display: grid;
@@ -167,9 +103,6 @@ body.layout-dashboard .grid {
   gap: 24px;
 }
 
-/* ========================
-   PANELS
-======================== */
 .panel {
   background: var(--card);
   border-radius: 22px;
@@ -181,100 +114,82 @@ body.layout-dashboard .grid {
   animation: cardEnter 0.45s ease both;
 }
 
-.panel:hover {
-  transform: translateY(-4px);
-}
-
-.panel h2 {
-  font-size: 1.2rem;
-  margin-bottom: 14px;
-}
-
 /* ========================
-   EMPTY STATE (KEEP ANIMATION)
+   OCR OUTPUT FIX
 ======================== */
-.panel pre {
-  min-height: 130px;
+pre,
+#rawText,
+#cleanedText,
+#parsedJson {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
   background: rgba(255,255,255,0.04);
   padding: 16px;
   border-radius: 14px;
-  font-size: 0.9rem;
+  min-height: 130px;
 }
 
+/* EMPTY STATE */
 pre:empty::before {
   content: "Waiting for output …";
-  animation: textPulse 1.8s ease-in-out infinite;
+  opacity: 0.6;
+  animation: textPulse 1.8s infinite;
 }
 
 /* ========================
-   BUTTONS
+   SIDEBAR TOGGLE BUTTON
 ======================== */
-.actions button {
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  border-radius: 999px;
+.sidebar-toggle-btn {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 1001;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(180,120,255,0.5);
 }
 
 /* ========================
-   MOBILE UX
+   MOBILE BEHAVIOR
 ======================== */
 @media (max-width: 768px) {
 
-  html {
-    font-size: 17px;
+  .sidebar-toggle-btn {
+    display: block;
   }
 
   .sidebar {
-    display: none;
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.35s ease;
   }
 
-  .main {
-    padding: 18px;
+  #sidebarToggle:checked ~ .app-shell .sidebar {
+    left: 0;
   }
 
   body.layout-dashboard .grid {
     grid-template-columns: 1fr;
   }
 
-  .panel {
-    padding: 20px;
-  }
-
-  .topbar {
-    justify-content: center;
-  }
-}
-/* OCR / TEXT OUTPUT FIX */
-pre,
-.output-box,
-#rawText,
-#cleanedText,
-#parsedJson {
-  white-space: pre-wrap;        /* Keeps formatting but allows wrap */
-  word-break: break-word;       /* Break long invoice strings */
-  overflow-wrap: anywhere;      /* Mobile-safe breaking */
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-/* Mobile specific tightening */
-@media (max-width: 768px) {
-  pre,
-  .output-box {
-    font-size: 0.95rem;
-    line-height: 1.5;
+  .main {
+    padding: 18px;
   }
 }
 
 /* ========================
    ANIMATIONS
 ======================== */
-@keyframes sidebarPulse {
-  0% { box-shadow: 0 0 14px var(--accent); }
-  50% { box-shadow: 0 0 28px var(--accent); }
-  100% { box-shadow: 0 0 14px var(--accent); }
-}
-
 @keyframes cardEnter {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -282,5 +197,5 @@ pre,
 
 @keyframes textPulse {
   0%,100% { opacity: 0.4; }
-  50% { opacity: 0.85; }
+  50% { opacity: 0.9; }
 }
