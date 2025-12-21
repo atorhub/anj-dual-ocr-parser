@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-default layout-dashboard">
 <head>
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
@@ -11,7 +11,7 @@
 <div class="app-shell">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="logo">ANJ OCR</div>
 
     <nav class="nav">
@@ -21,16 +21,13 @@
       <div class="nav-item">History</div>
     </nav>
 
-    <button id="collapseSidebar" class="collapse-btn">⇤</button>
+    <button class="collapse-btn">⇤</button>
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
-    <!-- TOPBAR -->
     <div class="topbar">
-
-      <!-- THEME SWITCH -->
       <select id="themeSelect">
         <option value="theme-default">Default</option>
         <option value="theme-pink">Pink</option>
@@ -39,18 +36,14 @@
         <option value="theme-dark">Dark</option>
       </select>
 
-      <!-- LAYOUT SWITCH -->
       <select id="layoutSelect">
         <option value="layout-dashboard">Dashboard</option>
         <option value="layout-focus">Focus</option>
         <option value="layout-wide">Wide</option>
       </select>
-
     </div>
 
-    <!-- CONTENT -->
     <section class="panel-grid">
-
       <div class="panel">
         <h2>Upload</h2>
         <div class="drop-zone">Drop file here</div>
@@ -65,13 +58,11 @@
         <h2>Parsed Data</h2>
         <pre></pre>
       </div>
-
     </section>
 
   </main>
 </div>
 
-<!-- PROCESSING INDICATOR -->
 <div id="processingIndicator" class="processing hidden">
   <div class="spinner"></div>
   <span>Processing…</span>
