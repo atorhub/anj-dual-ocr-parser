@@ -5,12 +5,33 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 16px;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
+  line-height: 1.6;
   transition: background 0.6s ease, color 0.3s ease;
+}
+
+/* ========================
+   TYPOGRAPHY SCALE
+======================== */
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+p, pre, span, button, select, input {
+  font-size: 0.95rem;
 }
 
 /* ========================
@@ -60,7 +81,7 @@ body.theme-dark {
 }
 
 /* ========================
-   SIDEBAR (FROM PREVIOUS STEP)
+   SIDEBAR
 ======================== */
 .sidebar {
   width: 220px;
@@ -71,16 +92,21 @@ body.theme-dark {
 
 .logo {
   font-weight: 800;
+  font-size: 1.1rem;
   margin-bottom: 26px;
 }
 
+/* ========================
+   NAV
+======================== */
 .nav-item {
   position: relative;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: 14px;
   cursor: pointer;
-  margin-bottom: 8px;
-  opacity: 0.65;
+  margin-bottom: 10px;
+  opacity: 0.7;
+  font-size: 1rem;
   transition: all 0.3s ease;
 }
 
@@ -114,122 +140,109 @@ body.theme-dark {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 26px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .topbar select {
   background: rgba(255,255,255,0.08);
   color: var(--text);
   border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 6px 10px;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
 }
 
 #statusBar {
-  margin-left: 10px;
+  font-size: 0.9rem;
   opacity: 0.85;
 }
 
 /* ========================
-   GRID + LAYOUTS
+   GRID + CARD LAYOUT
 ======================== */
-.grid {
-  transition: all 0.45s cubic-bezier(.4,0,.2,1);
-}
-
-/* 🔥 CARD DASHBOARD LAYOUT */
 body.layout-dashboard .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 24px;
-  align-items: stretch;
 }
 
 /* ========================
-   PANELS (CARD STYLE)
+   PANELS
 ======================== */
 .panel {
-  position: relative;
   background: var(--card);
   border-radius: 22px;
-  padding: 20px;
+  padding: 22px;
   backdrop-filter: blur(16px);
   box-shadow:
     0 8px 24px rgba(0,0,0,0.25),
     inset 0 0 0 1px rgba(255,255,255,0.08);
   animation: cardEnter 0.45s ease both;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
-/* Hover = subtle lift */
 .panel:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 16px 40px rgba(0,0,0,0.35),
-    inset 0 0 0 1px rgba(255,255,255,0.14);
 }
 
 .panel h2 {
+  font-size: 1.2rem;
   margin-bottom: 14px;
-  font-weight: 600;
 }
 
 /* ========================
-   EMPTY STATE ANIMATION (IMPORTANT)
+   EMPTY STATE (KEEP ANIMATION)
 ======================== */
 .panel pre {
-  display: block;
-  white-space: pre-wrap;
-  word-break: break-word;
+  min-height: 130px;
   background: rgba(255,255,255,0.04);
   padding: 16px;
   border-radius: 14px;
-  margin-top: 16px;
-  font-size: 13px;
-  min-height: 120px;
-  position: relative;
-  overflow: hidden;
+  font-size: 0.9rem;
 }
 
-/* ✨ Animated shimmer for empty panels */
 pre:empty::before {
   content: "Waiting for output …";
-  opacity: 0.6;
   animation: textPulse 1.8s ease-in-out infinite;
 }
 
-pre:empty::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.12),
-    transparent
-  );
-  animation: shimmer 2.2s infinite;
+/* ========================
+   BUTTONS
+======================== */
+.actions button {
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  border-radius: 999px;
 }
 
 /* ========================
-   UPLOAD
+   MOBILE UX
 ======================== */
-.drop-zone {
-  margin: 14px 0;
-  padding: 20px;
-  border: 2px dashed rgba(255,255,255,0.2);
-  border-radius: 16px;
-  text-align: center;
-  opacity: 0.8;
-}
+@media (max-width: 768px) {
 
-.actions button {
-  background: linear-gradient(135deg, var(--accent), #9333ea);
-  border: none;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 999px;
-  margin-right: 6px;
-  cursor: pointer;
+  html {
+    font-size: 17px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .main {
+    padding: 18px;
+  }
+
+  body.layout-dashboard .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 20px;
+  }
+
+  .topbar {
+    justify-content: center;
+  }
 }
 
 /* ========================
@@ -242,22 +255,11 @@ pre:empty::after {
 }
 
 @keyframes cardEnter {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes textPulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0%,100% { opacity: 0.4; }
+  50% { opacity: 0.85; }
 }
