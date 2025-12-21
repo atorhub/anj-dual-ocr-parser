@@ -1,270 +1,143 @@
-/* ========================
-   RESET
-======================== */
-* {
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 16px;
-}
-
+/* RESET */
+* { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  line-height: 1.6;
   transition: background 0.6s ease, color 0.3s ease;
-  overflow-x: hidden;
 }
 
-/* ========================
-   TYPOGRAPHY
-======================== */
-h1, h2, h3 {
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-h2 {
-  font-size: 1.25rem;
-}
-
-p, pre, span, button, select, input {
-  font-size: 0.95rem;
-}
-
-/* ========================
-   THEMES
-======================== */
+/* THEMES */
 body.theme-default {
-  --bg: radial-gradient(1200px 600px at top, #1b1f3b, #05070f);
-  --card: rgba(255,255,255,0.06);
+  --bg: radial-gradient(circle at top, #1e1b4b, #020617);
+  --card: rgba(255,255,255,0.08);
   --text: #e5e7eb;
   --accent: #8b5cf6;
 }
 
 body.theme-galaxy {
   --bg: radial-gradient(circle at top, #2d1b69, #07000f);
-  --card: rgba(255,255,255,0.08);
+  --card: rgba(255,255,255,0.09);
   --text: #f5f3ff;
   --accent: #c084fc;
 }
 
 body.theme-fairy {
-  --bg: linear-gradient(135deg, #1a002b, #3b0764);
-  --card: rgba(255,255,255,0.09);
+  --bg: linear-gradient(135deg, #2e026d, #a21caf);
+  --card: rgba(255,255,255,0.1);
   --text: #fdf4ff;
   --accent: #f0abfc;
 }
 
 body.theme-pink {
-  --bg: linear-gradient(135deg, #2b0a1f, #3f072a);
-  --card: rgba(255,255,255,0.1);
+  --bg: linear-gradient(135deg, #3b021f, #831843);
+  --card: rgba(255,255,255,0.12);
   --text: #ffe4f1;
   --accent: #fb7185;
 }
 
 body.theme-dark {
   --bg: #020617;
-  --card: rgba(255,255,255,0.05);
+  --card: rgba(255,255,255,0.06);
   --text: #e5e7eb;
   --accent: #38bdf8;
 }
 
-/* ========================
-   APP SHELL
-======================== */
-.app-shell {
-  display: flex;
-  min-height: 100vh;
-  position: relative;
-}
+/* APP */
+.app-shell { display: flex; min-height: 100vh; }
 
-/* ========================
-   SIDEBAR
-======================== */
+/* SIDEBAR */
 .sidebar {
   width: 220px;
   padding: 20px;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(18px);
-  transition: transform 0.35s ease;
-  z-index: 50;
+  backdrop-filter: blur(20px);
+  background: rgba(0,0,0,0.4);
 }
-
-.logo {
-  font-weight: 800;
-  font-size: 1.1rem;
-  margin-bottom: 26px;
-}
-
-/* ========================
-   NAV
-======================== */
+.logo { font-size: 1.3rem; font-weight: 800; margin-bottom: 30px; }
 .nav-item {
   padding: 14px 16px;
+  margin-bottom: 10px;
   border-radius: 14px;
   cursor: pointer;
-  margin-bottom: 10px;
   opacity: 0.7;
-  transition: all 0.3s ease;
+  transition: 0.3s;
 }
-
-.nav-item:hover {
-  opacity: 1;
-  transform: translateY(-2px);
-  background: var(--card);
-  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
-}
-
+.nav-item:hover,
 .nav-item.active {
   opacity: 1;
   background: var(--card);
-  box-shadow: 0 0 20px var(--accent);
-  animation: sidebarPulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 16px var(--accent);
 }
 
-/* ========================
-   MAIN
-======================== */
-.main {
-  flex: 1;
-  padding: 24px;
-  position: relative;
-  z-index: 1;
-}
+/* MAIN */
+.main { flex: 1; padding: 24px; }
 
-/* ========================
-   TOPBAR
-======================== */
+/* TOPBAR */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 26px;
-  gap: 12px;
-  position: relative;
-  z-index: 10;
+  margin-bottom: 24px;
 }
 
-.topbar select {
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 8px 12px;
-}
-
-/* ========================
-   GRID
-======================== */
-body.layout-dashboard .grid {
+/* GRID */
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
 }
 
-/* ========================
-   PANELS
-======================== */
+/* PANEL */
 .panel {
   background: var(--card);
   border-radius: 22px;
   padding: 22px;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
   box-shadow:
-    0 8px 24px rgba(0,0,0,0.25),
+    0 8px 30px rgba(0,0,0,0.35),
     inset 0 0 0 1px rgba(255,255,255,0.08);
-  animation: cardEnter 0.45s ease both;
+  animation: fadeUp 0.5s ease both;
 }
+.panel:hover { transform: translateY(-4px); }
 
-.panel h2 {
-  font-size: 1.2rem;
-  margin-bottom: 14px;
-}
-
-/* ========================
-   OCR TEXT (SAFE)
-======================== */
-pre,
-#rawText,
-#cleanedText,
-#jsonPreview {
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  background: rgba(255,255,255,0.04);
-  padding: 16px;
+/* EMPTY ANIMATION */
+pre {
+  min-height: 130px;
+  background: rgba(255,255,255,0.05);
   border-radius: 14px;
-  min-height: 140px;
+  padding: 16px;
+  white-space: pre-wrap;
 }
-
-/* EMPTY STATE */
 pre:empty::before {
-  content: "Waiting for output …";
-  animation: textPulse 1.8s ease-in-out infinite;
+  content: "Waiting for output…";
+  animation: pulse 1.6s infinite;
 }
 
-/* ========================
-   BUTTONS
-======================== */
+/* BUTTONS */
 .actions button {
+  margin-top: 10px;
   padding: 10px 18px;
   border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
 }
 
-/* ========================
-   MOBILE FIXES (SCOPED)
-======================== */
-@media (max-width: 768px) {
-
-  html {
-    font-size: 17px;
-  }
-
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    transform: translateX(-100%);
-  }
-
-  body.sidebar-open .sidebar {
-    transform: translateX(0);
-  }
-
-  .main {
-    padding: 18px;
-  }
-
-  body.layout-dashboard .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .panel {
-    padding: 20px;
-  }
-}
-
-/* ========================
-   ANIMATIONS
-======================== */
-@keyframes sidebarPulse {
-  0% { box-shadow: 0 0 14px var(--accent); }
-  50% { box-shadow: 0 0 28px var(--accent); }
-  100% { box-shadow: 0 0 14px var(--accent); }
-}
-
-@keyframes cardEnter {
+/* ANIMATIONS */
+@keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes textPulse {
+@keyframes pulse {
   0%,100% { opacity: 0.4; }
-  50% { opacity: 0.85; }
+  50% { opacity: 0.9; }
 }
 
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { padding: 18px; }
+}
