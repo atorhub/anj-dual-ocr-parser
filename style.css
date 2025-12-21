@@ -99,26 +99,39 @@ body.theme-dark {
 }
 
 /* ========================
-   TOPBAR
+   TOPBAR VISIBILITY FIX
 ======================== */
 .topbar {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.top-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  margin-bottom: 20px;
 }
 
+/* Make selects stand out */
 .topbar select {
-  background: rgba(255,255,255,0.08);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 6px 10px;
+  min-width: 110px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
 }
 
-#statusBar {
-  margin-left: 10px;
-  opacity: 0.8;
+/* Mobile stacking */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .top-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 /* ========================
@@ -214,5 +227,35 @@ pre:empty::before {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+/* ========================
+   PROCESSING INDICATOR
+======================== */
+.processing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.processing.hidden {
+  display: none;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
