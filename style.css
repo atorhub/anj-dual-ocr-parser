@@ -244,6 +244,27 @@ pre:empty::before {
     justify-content: center;
   }
 }
+/* OCR / TEXT OUTPUT FIX */
+pre,
+.output-box,
+#rawText,
+#cleanedText,
+#parsedJson {
+  white-space: pre-wrap;        /* Keeps formatting but allows wrap */
+  word-break: break-word;       /* Break long invoice strings */
+  overflow-wrap: anywhere;      /* Mobile-safe breaking */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mobile specific tightening */
+@media (max-width: 768px) {
+  pre,
+  .output-box {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
 
 /* ========================
    ANIMATIONS
