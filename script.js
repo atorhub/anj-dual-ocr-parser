@@ -37,8 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
      THEME (SAFE, NO SIDE EFFECTS)
   =============================== */
   el.theme.addEventListener("change", () => {
-    document.body.className = `theme-${el.theme.value}`;
-  });
+document.body.classList.forEach(cls => {
+  if (cls.startsWith("theme-")) {
+    document.body.classList.remove(cls);
+  }
+});
+
+// add the selected theme
+document.body.classList.add(`theme-${el.theme.value}`);
+    
 
   /* ===============================
      OCR (IMAGE ONLY)
