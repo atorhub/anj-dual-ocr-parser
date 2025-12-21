@@ -9,19 +9,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
+  <!-- STYLES -->
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-default">
-<div class="app-shell layout-dashboard">
+<body class="theme-default layout-dashboard">
+
+<div class="app-shell">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">ANJ</div>
-
     <nav class="nav">
-      <div class="nav-item active" data-panel="upload">📤 Upload</div>
-      <div class="nav-item" data-panel="ocr">🧠 OCR</div>
+      <div class="nav-item active" data-panel="upload">🔥 Upload</div>
+      <div class="nav-item" data-panel="ocr">📄 OCR</div>
       <div class="nav-item" data-panel="parsed">📊 Parsed</div>
       <div class="nav-item" data-panel="history">🕒 History</div>
       <div class="nav-item" data-panel="settings">⚙️ Settings</div>
@@ -31,7 +32,7 @@
   <!-- MAIN -->
   <main class="main">
 
-    <!-- HEADER -->
+    <!-- TOPBAR -->
     <header class="topbar">
       <select id="themeSelect">
         <option value="default">Default</option>
@@ -44,14 +45,14 @@
       <select id="layoutSelect">
         <option value="dashboard">Dashboard</option>
         <option value="focus">Focus</option>
-        <option value="wide">Wide</option>
+        <option value="vertical">Vertical</option>
       </select>
 
       <span id="statusBar">Ready ✓</span>
     </header>
 
-    <!-- CONTENT -->
-    <section class="panel-grid">
+    <!-- CONTENT GRID -->
+    <section class="grid">
 
       <!-- UPLOAD -->
       <section class="panel" id="uploadPanel">
@@ -71,28 +72,41 @@
       </section>
 
       <!-- RAW -->
-      <section class="panel">
+      <section class="panel" id="rawPanel">
         <h2>Raw OCR / Extracted Text</h2>
-        <pre id="rawText"></pre>
+        <pre id="rawText">Waiting for output …</pre>
       </section>
 
       <!-- CLEAN -->
-      <section class="panel">
+      <section class="panel" id="cleanPanel">
         <h2>Cleaned Text</h2>
-        <pre id="cleanedText"></pre>
+        <pre id="cleanText">Waiting for output …</pre>
       </section>
 
       <!-- JSON -->
-      <section class="panel">
+      <section class="panel" id="jsonPanel">
         <h2>Parsed JSON</h2>
-        <pre id="jsonPreview"></pre>
+        <pre id="jsonText">Waiting for output …</pre>
       </section>
 
     </section>
   </main>
 </div>
 
-<script src="script.js"></script>
+<!-- ✅ LAYOUT SWITCHER SCRIPT (ONLY THIS JS ADDED) -->
+<script>
+  const layoutSelect = document.getElementById("layoutSelect");
+
+  layoutSelect.addEventListener("change", () => {
+    document.body.classList.remove(
+      "layout-dashboard",
+      "layout-focus",
+      "layout-vertical"
+    );
+
+    document.body.classList.add("layout-" + layoutSelect.value);
+  });
+</script>
+
 </body>
-  </html>
-  
+</html>
