@@ -241,3 +241,68 @@ button:hover {
   50% { opacity: 1; }
   100% { opacity: 0.4; }
    }
+body.layout-dashboard .grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+body.layout-dashboard #uploadPanel {
+  grid-column: span 1;
+}
+
+body.layout-dashboard #rawPanel,
+body.layout-dashboard #cleanPanel,
+body.layout-dashboard #jsonPanel {
+  min-height: 220px;
+}
+body.layout-focus .grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 22px;
+}
+
+body.layout-focus #uploadPanel {
+  grid-column: 1 / -1;
+}
+
+body.layout-focus #uploadPanel {
+  min-height: 260px;
+}
+
+body.layout-focus #rawPanel,
+body.layout-focus #cleanPanel,
+body.layout-focus #jsonPanel {
+  min-height: 280px;
+   }
+body.layout-vertical .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+body.layout-vertical .panel {
+  min-height: 200px;
+}
+
+body.layout-vertical #uploadPanel {
+  order: 1;
+}
+
+body.layout-vertical #rawPanel {
+  order: 2;
+}
+
+body.layout-vertical #cleanPanel {
+  order: 3;
+}
+
+body.layout-vertical #jsonPanel {
+  order: 4;
+}
+@media (max-width: 900px) {
+  .grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
