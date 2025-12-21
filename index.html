@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
 
-  <!-- LIBRARIES -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -16,10 +15,9 @@
 
 <div class="app-shell">
 
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">ANJ</div>
-    <nav class="nav">
+    <nav>
       <div class="nav-item active">📤 Upload</div>
       <div class="nav-item">🔍 OCR</div>
       <div class="nav-item">📊 Parsed</div>
@@ -28,12 +26,10 @@
     </nav>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
 
-    <!-- TOPBAR -->
     <header class="topbar">
-      <div class="brand">ANJ Dual OCR</div>
+      <span class="brand">ANJ Dual OCR</span>
 
       <div class="top-controls">
         <select id="themeSelect">
@@ -44,6 +40,7 @@
           <option value="dark">Dark</option>
         </select>
 
+        <!-- ✅ RESTORED -->
         <select id="layoutSelect">
           <option value="dashboard">Dashboard</option>
           <option value="focus">Focus</option>
@@ -54,9 +51,7 @@
       </div>
     </header>
 
-    <!-- GRID -->
     <section class="grid">
-
       <section class="panel">
         <h2>Upload Invoice</h2>
         <input type="file" id="fileInput" />
@@ -81,12 +76,11 @@
         <h2>Parsed JSON</h2>
         <pre id="jsonPreview"></pre>
       </section>
-
     </section>
   </main>
 </div>
 
-<!-- THEME + LAYOUT CONTROLLER (GITHUB PAGES SAFE) -->
+<!-- ✅ SAFE THEME + LAYOUT CONTROLLER -->
 <script>
   const themeSelect = document.getElementById("themeSelect");
   const layoutSelect = document.getElementById("layoutSelect");
