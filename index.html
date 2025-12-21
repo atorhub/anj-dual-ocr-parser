@@ -3,101 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <title>ANJ Dual OCR Parser</title>
-
-  <!-- LIBS -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-default">
+<body class="theme-default layout-dashboard">
 
-  <div class="app-shell layout-dashboard">
+<div class="app-shell">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="logo">ANJ</div>
-      <nav class="nav">
-        <div class="nav-item active" data-panel="upload">Upload</div>
-        <div class="nav-item" data-panel="ocr">OCR</div>
-        <div class="nav-item" data-panel="parsed">Parsed</div>
-        <div class="nav-item" data-panel="history">History</div>
-        <div class="nav-item" data-panel="settings">Settings</div>
-      </nav>
-    </aside>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">ANJ OCR</div>
 
-    <!-- MAIN -->
-    <main class="main">
+    <nav class="nav">
+      <div class="nav-item active">Upload</div>
+      <div class="nav-item">OCR</div>
+      <div class="nav-item">Results</div>
+      <div class="nav-item">History</div>
+    </nav>
 
-      <!-- TOP BAR -->
-      <header class="topbar">
-        <select id="themeSelect">
-          <option value="default">Default</option>
-          <option value="fairy">Fairy</option>
-          <option value="galaxy">Galaxy</option>
-          <option value="pink">Pink</option>
-          <option value="dark">Dark</option>
-        </select>
+    <button id="collapseSidebar" class="collapse-btn">⇤</button>
+  </aside>
 
-        <select id="layoutSelect">
-          <option value="dashboard">Dashboard</option>
-          <option value="focus">Focus</option>
-          <option value="wide">Wide</option>
-        </select>
+  <!-- MAIN -->
+  <main class="main">
 
-        <span id="statusBar">Ready ✓</span>
-      </header>
+    <!-- TOPBAR -->
+    <div class="topbar">
 
-      <!-- CONTENT -->
-      <section class="panel-grid">
+      <!-- THEME SWITCH -->
+      <select id="themeSelect">
+        <option value="theme-default">Default</option>
+        <option value="theme-pink">Pink</option>
+        <option value="theme-galaxy">Galaxy</option>
+        <option value="theme-fairy">Fairy</option>
+        <option value="theme-dark">Dark</option>
+      </select>
 
-        <!-- UPLOAD -->
-        <section class="panel" id="uploadPanel">
-          <h2>Upload Bill</h2>
+      <!-- LAYOUT SWITCH -->
+      <select id="layoutSelect">
+        <option value="layout-dashboard">Dashboard</option>
+        <option value="layout-focus">Focus</option>
+        <option value="layout-wide">Wide</option>
+      </select>
 
-          <input type="file" id="fileInput" />
+    </div>
 
-          <div class="drop-zone">
-            Tap or drop file
-          </div>
+    <!-- CONTENT -->
+    <section class="panel-grid">
 
-          <div class="actions">
-            <button id="dualOCRBtn">Dual OCR</button>
-            <button id="ocrOnlyBtn">Quick OCR</button>
-            <button id="parseBtn">Parse</button>
-          </div>
-        </section>
+      <div class="panel">
+        <h2>Upload</h2>
+        <div class="drop-zone">Drop file here</div>
+      </div>
 
-        <!-- RAW -->
-        <section class="panel">
-          <h2>Raw OCR / Extracted Text</h2>
-          <pre id="rawText"></pre>
-        </section>
+      <div class="panel">
+        <h2>OCR Output</h2>
+        <pre></pre>
+      </div>
 
-        <!-- CLEANED -->
-        <section class="panel">
-          <h2>Cleaned Text</h2>
-          <pre id="cleanedText"></pre>
-        </section>
+      <div class="panel">
+        <h2>Parsed Data</h2>
+        <pre></pre>
+      </div>
 
-        <!-- JSON -->
-        <section class="panel">
-          <h2>Parsed JSON</h2>
-          <pre id="jsonPreview"></pre>
-        </section>
+    </section>
 
-      </section>
-    </main>
-  </div>
+  </main>
+</div>
 
-  <!-- ✅ PROCESSING INDICATOR (ADDED) -->
-  <div id="processingIndicator" class="processing hidden">
-    <div class="spinner"></div>
-    <span>Processing…</span>
-  </div>
+<!-- PROCESSING INDICATOR -->
+<div id="processingIndicator" class="processing hidden">
+  <div class="spinner"></div>
+  <span>Processing…</span>
+</div>
 
-  <script src="script.js"></script>
 </body>
 </html>
