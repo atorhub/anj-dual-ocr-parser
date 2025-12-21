@@ -1,57 +1,44 @@
-/* =========================================================
-   GLOBAL RESET
-========================================================= */
-* {
-  box-sizing: border-box;
-}
+/* ================= RESET ================= */
+* { box-sizing: border-box; }
 
 html, body {
   margin: 0;
-  padding: 0;
   height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: system-ui, sans-serif;
 }
 
-/* =========================================================
-   THEME ROOT (THIS FIXES FULL-SCREEN THEMES)
-========================================================= */
+/* ================= GLOBAL THEME ENGINE ================= */
 
 body {
-  --bg-main: radial-gradient(1200px at top left, #0f172a, #020617);
-  --bg-sidebar: rgba(15, 23, 42, 0.95);
+  --bg-main: radial-gradient(circle at top left, #0f172a, #020617);
+  --bg-sidebar: rgba(15,23,42,0.96);
   --panel-bg: rgba(255,255,255,0.05);
   --panel-border: rgba(255,255,255,0.08);
   --text-main: #e5e7eb;
   --text-muted: #9ca3af;
   --accent: #8b5cf6;
-  --accent-glow: rgba(139,92,246,0.6);
-  --danger: #ef4444;
+  --accent-glow: rgba(139,92,246,.6);
 
   background: var(--bg-main);
   color: var(--text-main);
-  transition: background 0.6s ease, color 0.3s ease;
+  transition: background .6s ease, color .3s ease;
 }
 
 /* ===== THEMES ===== */
 
-body.theme-default {
-  --accent: #8b5cf6;
-}
-
 body.theme-pink {
-  --bg-main: radial-gradient(1200px at top right, #3b0764, #120018);
+  --bg-main: radial-gradient(circle at top right, #3b0764, #120018);
   --accent: #ec4899;
-  --accent-glow: rgba(236,72,153,0.6);
+  --accent-glow: rgba(236,72,153,.6);
 }
 
 body.theme-galaxy {
-  --bg-main: radial-gradient(1200px at top, #020617, #000000);
+  --bg-main: radial-gradient(circle at top, #020617, #000);
   --accent: #38bdf8;
-  --accent-glow: rgba(56,189,248,0.6);
 }
 
 body.theme-fairy {
-  --bg-main: radial-gradient(1200px at top, #1e293b, #020617);
+  --bg-main: radial-gradient(circle at top, #1e293b, #020617);
   --accent: #c084fc;
 }
 
@@ -60,51 +47,41 @@ body.theme-dark {
   --accent: #64748b;
 }
 
-/* =========================================================
-   APP SHELL
-========================================================= */
+/* ================= APP SHELL ================= */
 
 .app-shell {
   display: grid;
   grid-template-columns: 240px 1fr;
   height: 100vh;
-  transition: grid-template-columns 0.4s ease;
+  transition: grid-template-columns .4s ease;
 }
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+body.sidebar-collapsed .app-shell {
+  grid-template-columns: 72px 1fr;
+}
+
+/* ================= SIDEBAR ================= */
 
 .sidebar {
   background: var(--bg-sidebar);
-  padding: 20px 14px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  transition: width .4s ease;
 }
 
 .logo {
   font-weight: 800;
   letter-spacing: 1px;
-  margin-bottom: 10px;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .nav-item {
-  padding: 12px 14px;
+  padding: 12px;
   border-radius: 12px;
   cursor: pointer;
   color: var(--text-muted);
-  transition: all 0.25s ease;
-}
-
-.nav-item:hover {
-  background: rgba(255,255,255,0.05);
+  transition: all .25s ease;
 }
 
 .nav-item.active {
@@ -113,64 +90,60 @@ body.theme-dark {
   box-shadow: 0 0 22px var(--accent-glow);
 }
 
-/* =========================================================
-   MAIN AREA
-========================================================= */
+.collapse-btn {
+  margin-top: auto;
+  border: none;
+  border-radius: 12px;
+  padding: 8px;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  cursor: pointer;
+}
+
+/* ================= MAIN ================= */
 
 .main {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
-/* =========================================================
-   TOP BAR
-========================================================= */
+/* ================= TOPBAR ================= */
 
 .topbar {
   display: flex;
   gap: 12px;
-  align-items: center;
   padding: 14px 18px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 select {
   background: rgba(255,255,255,0.05);
-  color: var(--text-main);
+  color: white;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   padding: 6px 10px;
 }
 
-/* =========================================================
-   PANEL GRID (LAYOUT ENGINE)
-========================================================= */
+/* ================= PANELS & LAYOUT ================= */
 
 .panel-grid {
   padding: 22px;
   display: grid;
   gap: 18px;
-  transition: all 0.5s ease;
+  transition: all .5s ease;
 }
 
-/* ===== LAYOUTS ===== */
-
-.layout-dashboard .panel-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+body.layout-dashboard .panel-grid {
+  grid-template-columns: repeat(2, 1fr);
 }
 
-.layout-focus .panel-grid {
+body.layout-focus .panel-grid {
   grid-template-columns: 1fr;
 }
 
-.layout-wide .panel-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+body.layout-wide .panel-grid {
+  grid-template-columns: repeat(3, 1fr);
 }
-
-/* =========================================================
-   PANELS
-========================================================= */
 
 .panel {
   background: var(--panel-bg);
@@ -178,84 +151,38 @@ select {
   border-radius: 18px;
   padding: 18px;
   backdrop-filter: blur(18px);
-  animation: fadeUp 0.6s ease both;
-  overflow-y: auto;
+  animation: fadeUp .6s ease both;
 }
 
-.panel h2 {
-  margin: 0 0 14px;
-  font-weight: 600;
-}
-
-/* =========================================================
-   UPLOAD DROP ZONE (GLOW RESTORED)
-========================================================= */
+/* ================= UPLOAD ================= */
 
 .drop-zone {
   border: 2px dashed rgba(255,255,255,0.15);
   border-radius: 16px;
   padding: 26px;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all .3s ease;
 }
 
 .drop-zone:hover {
   border-color: var(--accent);
   box-shadow: 0 0 30px var(--accent-glow);
-  background: rgba(255,255,255,0.03);
 }
 
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-button {
-  background: linear-gradient(135deg, var(--accent), transparent);
-  color: white;
-  border: none;
-  border-radius: 999px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px var(--accent-glow);
-}
-
-/* =========================================================
-   RESULT VISIBILITY + EMPTY STATE (FIXED)
-========================================================= */
+/* ================= RESULTS ================= */
 
 .panel pre {
-  display: block;
-  white-space: pre-wrap;
-  word-break: break-word;
-  background: rgba(255,255,255,0.04);
-  padding: 16px;
-  border-radius: 14px;
-  color: #e5e7eb;
-  font-size: 13px;
-  line-height: 1.5;
   min-height: 120px;
+  white-space: pre-wrap;
 }
 
 pre:empty::before {
-  content: "Waiting for output …";
+  content: "Waiting for output…";
   color: var(--text-muted);
   animation: pulse 1.4s infinite;
 }
 
-/* =========================================================
-   PROCESSING INDICATOR (BOTTOM)
-========================================================= */
+/* ================= PROCESSING ================= */
 
 .processing {
   position: fixed;
@@ -263,17 +190,13 @@ pre:empty::before {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  align-items: center;
   gap: 10px;
   background: rgba(0,0,0,0.6);
   padding: 10px 18px;
   border-radius: 999px;
-  backdrop-filter: blur(10px);
 }
 
-.processing.hidden {
-  display: none;
-}
+.processing.hidden { display: none; }
 
 .spinner {
   width: 18px;
@@ -284,25 +207,17 @@ pre:empty::before {
   animation: spin 1s linear infinite;
 }
 
-/* =========================================================
-   ANIMATIONS
-========================================================= */
+/* ================= ANIMATIONS ================= */
 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes pulse {
-  0% { opacity: 0.4; }
+  0% { opacity: .4; }
   50% { opacity: 1; }
-  100% { opacity: 0.4; }
+  100% { opacity: .4; }
 }
 
 @keyframes spin {
