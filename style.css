@@ -1,308 +1,218 @@
-/* =========================================================
-   ROOT + THEME SYSTEM (FIXED — ALL COLORS NOW SWITCH)
-========================================================= */
-
-:root {
-  --bg-main: #0b1020;
-  --bg-sidebar: #0e152b;
-  --bg-panel: rgba(255, 255, 255, 0.04);
-
-  --text-main: #e5e7eb;
-  --text-muted: #9ca3af;
-
-  --accent: #8b5cf6;
-  --accent-soft: rgba(139, 92, 246, 0.25);
-  --accent-glow: rgba(139, 92, 246, 0.45);
-
-  --border-soft: rgba(255, 255, 255, 0.08);
-  --radius-lg: 18px;
-  --radius-md: 14px;
-
-  --blur: blur(18px);
-  --transition: 0.35s ease;
+/* ========================
+   RESET
+======================== */
+* {
+  box-sizing: border-box;
 }
-
-/* === ALT THEMES === */
-body.theme-pink {
-  --accent: #ec4899;
-  --accent-soft: rgba(236, 72, 153, 0.25);
-  --accent-glow: rgba(236, 72, 153, 0.45);
-}
-
-body.theme-cyan {
-  --accent: #22d3ee;
-  --accent-soft: rgba(34, 211, 238, 0.25);
-  --accent-glow: rgba(34, 211, 238, 0.45);
-}
-
-/* =========================================================
-   BASE
-========================================================= */
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: radial-gradient(circle at top, #10172f, var(--bg-main));
-  color: var(--text-main);
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.5s ease, color 0.3s ease;
 }
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-.sidebar {
-  width: 230px;
-  background: linear-gradient(180deg, #0c132a, var(--bg-sidebar));
-  padding: 18px 14px;
-  border-right: 1px solid var(--border-soft);
+/* ========================
+   THEMES
+======================== */
+body.theme-default {
+  --bg: radial-gradient(1200px 600px at top, #1b1f3b, #05070f);
+  --card: rgba(255,255,255,0.06);
+  --text: #e5e7eb;
+  --accent: #8b5cf6;
 }
 
-.sidebar .nav-item {
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #2d1b69, #07000f);
+  --card: rgba(255,255,255,0.08);
+  --text: #f5f3ff;
+  --accent: #c084fc;
+}
+
+body.theme-fairy {
+  --bg: linear-gradient(135deg, #1a002b, #3b0764);
+  --card: rgba(255,255,255,0.09);
+  --text: #fdf4ff;
+  --accent: #f0abfc;
+}
+
+body.theme-pink {
+  --bg: linear-gradient(135deg, #2b0a1f, #3f072a);
+  --card: rgba(255,255,255,0.1);
+  --text: #ffe4f1;
+  --accent: #fb7185;
+}
+
+body.theme-dark {
+  --bg: #020617;
+  --card: rgba(255,255,255,0.05);
+  --text: #e5e7eb;
+  --accent: #38bdf8;
+}
+
+/* ========================
+   APP SHELL
+======================== */
+.app-shell {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  color: var(--text-muted);
-  cursor: pointer;
-  position: relative;
-  transition: var(--transition);
+  min-height: 100vh;
 }
 
-.sidebar .nav-item:hover {
-  color: var(--text-main);
-  background: rgba(255,255,255,0.04);
-}
-
-.sidebar .nav-item.active {
-  color: white;
-  background: linear-gradient(
-    90deg,
-    var(--accent-soft),
-    transparent
-  );
-  box-shadow: inset 4px 0 0 var(--accent);
-}
-
-/* === ICON GLOW === */
-.sidebar .nav-item.active::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 0 22px var(--accent-glow);
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-/* =========================================================
-   MAIN AREA
-========================================================= */
-
-.main {
-  padding: 24px;
-}
-
-/* =========================================================
-   PANELS / CARDS
-========================================================= */
-
-.panel {
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,0.06),
-    rgba(255,255,255,0.02)
-  );
-  backdrop-filter: var(--blur);
-  border-radius: var(--radius-lg);
+/* ========================
+   SIDEBAR
+======================== */
+.sidebar {
+  width: 220px;
   padding: 20px;
-  border: 1px solid var(--border-soft);
-  transition: var(--transition);
-  overflow-y: auto;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(16px);
 }
 
-.panel:hover {
-  border-color: var(--accent-soft);
+.logo {
+  font-weight: 800;
+  margin-bottom: 24px;
 }
 
-/* === PANEL HEADERS === */
+.nav-item {
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: var(--card);
+  opacity: 1;
+  box-shadow: 0 0 14px var(--accent);
+}
+
+/* ========================
+   MAIN
+======================== */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* ========================
+   TOPBAR
+======================== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.topbar select {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+
+#statusBar {
+  margin-left: 10px;
+  opacity: 0.8;
+}
+
+/* ========================
+   GRID + LAYOUTS
+======================== */
+.grid {
+  transition: all 0.45s cubic-bezier(.4,0,.2,1);
+}
+
+body.layout-dashboard .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+body.layout-focus .grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+body.layout-vertical .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ========================
+   PANELS
+======================== */
+.panel {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 18px;
+  backdrop-filter: blur(14px);
+  animation: fadeUp 0.4s ease both;
+}
+
 .panel h2 {
-  margin: 0 0 16px;
-  font-size: 15px;
+  margin-bottom: 16px;
   font-weight: 600;
-  color: white;
-  letter-spacing: 0.3px;
 }
 
-/* =========================================================
-   RESULT VISIBILITY (FIX)
-========================================================= */
-
+/* ========================
+   RESULTS VISIBILITY FIX
+======================== */
 .panel pre {
   display: block;
   white-space: pre-wrap;
   word-break: break-word;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(255,255,255,0.04);
   padding: 16px;
   border-radius: 14px;
-  margin-top: 14px;
-  color: #e5e7eb;
+  margin-top: 16px;
   font-size: 13px;
-  line-height: 1.55;
 }
 
-/* Upload panel safety */
-#uploadPanel pre {
-  display: block;
-}
-
-/* Empty state */
 pre:empty::before {
   content: "Waiting for output …";
-  color: var(--text-muted);
-  animation: pulse 1.6s infinite;
+  opacity: 0.5;
 }
 
-/* =========================================================
-   PROCESSING FEEL (NO JS)
-========================================================= */
-
-.panel.processing {
-  position: relative;
-  overflow: hidden;
-}
-
-.panel.processing::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.08),
-    transparent
-  );
-  animation: shimmer 1.6s infinite;
-}
-
-/* =========================================================
-   BUTTONS (VISUAL ONLY)
-========================================================= */
-
-button {
-  background: linear-gradient(
-    135deg,
-    var(--accent),
-    #6d28d9
-  );
-  border: none;
-  border-radius: 999px;
-  padding: 8px 16px;
-  color: white;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px var(--accent-glow);
-}
-
-/* =========================================================
-   FILE DROP ZONE (VISUAL ONLY)
-========================================================= */
-
-.dropzone {
-  border: 2px dashed var(--border-soft);
-  border-radius: var(--radius-lg);
-  padding: 28px;
+/* ========================
+   UPLOAD
+======================== */
+.drop-zone {
+  margin: 14px 0;
+  padding: 20px;
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 14px;
   text-align: center;
-  color: var(--text-muted);
-  transition: var(--transition);
+  opacity: 0.8;
 }
 
-.dropzone:hover {
-  border-color: var(--accent);
+.actions button {
+  background: linear-gradient(135deg, var(--accent), #9333ea);
+  border: none;
   color: white;
-  background: rgba(255,255,255,0.03);
+  padding: 8px 14px;
+  border-radius: 999px;
+  margin-right: 6px;
+  cursor: pointer;
 }
 
-/* =========================================================
+/* ========================
    ANIMATIONS
-========================================================= */
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-@keyframes pulse {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
-   }
-body.layout-dashboard .grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
-body.layout-dashboard #uploadPanel {
-  grid-column: span 1;
-}
-
-body.layout-dashboard #rawPanel,
-body.layout-dashboard #cleanPanel,
-body.layout-dashboard #jsonPanel {
-  min-height: 220px;
-}
-body.layout-focus .grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 22px;
-}
-
-body.layout-focus #uploadPanel {
-  grid-column: 1 / -1;
-}
-
-body.layout-focus #uploadPanel {
-  min-height: 260px;
-}
-
-body.layout-focus #rawPanel,
-body.layout-focus #cleanPanel,
-body.layout-focus #jsonPanel {
-  min-height: 280px;
-   }
-body.layout-vertical .grid {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-body.layout-vertical .panel {
-  min-height: 200px;
-}
-
-body.layout-vertical #uploadPanel {
-  order: 1;
-}
-
-body.layout-vertical #rawPanel {
-  order: 2;
-}
-
-body.layout-vertical #cleanPanel {
-  order: 3;
-}
-
-body.layout-vertical #jsonPanel {
-  order: 4;
-}
-@media (max-width: 900px) {
-  .grid {
-    display: flex !important;
-    flex-direction: column !important;
+======================== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
