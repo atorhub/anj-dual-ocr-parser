@@ -1,230 +1,218 @@
-/* ================= RESET ================= */
-* { box-sizing: border-box; }
+/* ========================
+   RESET
+======================== */
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+body {
   margin: 0;
-  height: 100%;
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.5s ease, color 0.3s ease;
 }
 
-/* =========================================================
-   GLOBAL THEME ENGINE (HTML + BODY SAFE)
-========================================================= */
-
-html, body {
-  --bg-main: radial-gradient(circle at top left, #0f172a, #020617);
-  --bg-sidebar: rgba(15,23,42,0.96);
-  --panel-bg: rgba(255,255,255,0.05);
-  --panel-border: rgba(255,255,255,0.08);
-  --text-main: #e5e7eb;
-  --text-muted: #9ca3af;
+/* ========================
+   THEMES
+======================== */
+body.theme-default {
+  --bg: radial-gradient(1200px 600px at top, #1b1f3b, #05070f);
+  --card: rgba(255,255,255,0.06);
+  --text: #e5e7eb;
   --accent: #8b5cf6;
-  --accent-glow: rgba(139,92,246,.6);
-
-  background: var(--bg-main);
-  color: var(--text-main);
-  transition: background .6s ease, color .3s ease;
 }
 
-/* ===== THEMES (BOUND TO BOTH html + body) ===== */
-
-html.theme-pink, body.theme-pink {
-  --bg-main: radial-gradient(circle at top right, #3b0764, #120018);
-  --accent: #ec4899;
-  --accent-glow: rgba(236,72,153,.6);
-}
-
-html.theme-galaxy, body.theme-galaxy {
-  --bg-main: radial-gradient(circle at top, #020617, #000);
-  --accent: #38bdf8;
-}
-
-html.theme-fairy, body.theme-fairy {
-  --bg-main: radial-gradient(circle at top, #1e293b, #020617);
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #2d1b69, #07000f);
+  --card: rgba(255,255,255,0.08);
+  --text: #f5f3ff;
   --accent: #c084fc;
 }
 
-html.theme-dark, body.theme-dark {
-  --bg-main: #020617;
-  --accent: #64748b;
+body.theme-fairy {
+  --bg: linear-gradient(135deg, #1a002b, #3b0764);
+  --card: rgba(255,255,255,0.09);
+  --text: #fdf4ff;
+  --accent: #f0abfc;
 }
 
-/* ================= APP SHELL ================= */
+body.theme-pink {
+  --bg: linear-gradient(135deg, #2b0a1f, #3f072a);
+  --card: rgba(255,255,255,0.1);
+  --text: #ffe4f1;
+  --accent: #fb7185;
+}
 
+body.theme-dark {
+  --bg: #020617;
+  --card: rgba(255,255,255,0.05);
+  --text: #e5e7eb;
+  --accent: #38bdf8;
+}
+
+/* ========================
+   APP SHELL
+======================== */
 .app-shell {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  height: 100vh;
-  transition: grid-template-columns .4s ease;
-}
-
-body.sidebar-collapsed .app-shell {
-  grid-template-columns: 72px 1fr;
-}
-
-/* ================= SIDEBAR ================= */
-
-.sidebar {
-  background: var(--bg-sidebar);
-  padding: 18px;
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  min-height: 100vh;
+}
+
+/* ========================
+   SIDEBAR
+======================== */
+.sidebar {
+  width: 220px;
+  padding: 20px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(16px);
 }
 
 .logo {
   font-weight: 800;
-  letter-spacing: 1px;
+  margin-bottom: 24px;
 }
 
 .nav-item {
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 12px;
   cursor: pointer;
-  color: var(--text-muted);
-  transition: all .25s ease;
+  margin-bottom: 6px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
 }
 
+.nav-item:hover,
 .nav-item.active {
-  background: linear-gradient(135deg, var(--accent), transparent);
-  color: white;
-  box-shadow: 0 0 22px var(--accent-glow);
+  background: var(--card);
+  opacity: 1;
+  box-shadow: 0 0 14px var(--accent);
 }
 
-.collapse-btn {
-  margin-top: auto;
-  border: none;
-  border-radius: 12px;
-  padding: 8px;
-  background: rgba(255,255,255,0.08);
-  color: white;
-  cursor: pointer;
-}
-
-/* ================= MAIN ================= */
-
+/* ========================
+   MAIN
+======================== */
 .main {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
+  padding: 20px;
 }
 
-/* ================= TOPBAR ================= */
-
+/* ========================
+   TOPBAR
+======================== */
 .topbar {
   display: flex;
-  gap: 12px;
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-select {
-  background: rgba(255,255,255,0.05);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.1);
+.topbar select {
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 6px 10px;
 }
 
-/* ================= PANELS & LAYOUT ================= */
+#statusBar {
+  margin-left: 10px;
+  opacity: 0.8;
+}
 
-.panel-grid {
-  padding: 22px;
+/* ========================
+   GRID + LAYOUTS
+======================== */
+.grid {
+  transition: all 0.45s cubic-bezier(.4,0,.2,1);
+}
+
+body.layout-dashboard .grid {
   display: grid;
-  gap: 18px;
-  transition: all .5s ease;
-}
-
-html.layout-dashboard .panel-grid,
-body.layout-dashboard .panel-grid {
   grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
-html.layout-focus .panel-grid,
-body.layout-focus .panel-grid {
+body.layout-focus .grid {
+  display: grid;
   grid-template-columns: 1fr;
+  gap: 24px;
 }
 
-html.layout-wide .panel-grid,
-body.layout-wide .panel-grid {
-  grid-template-columns: repeat(3, 1fr);
+body.layout-vertical .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
+/* ========================
+   PANELS
+======================== */
 .panel {
-  background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  background: var(--card);
   border-radius: 18px;
   padding: 18px;
-  backdrop-filter: blur(18px);
-  animation: fadeUp .6s ease both;
+  backdrop-filter: blur(14px);
+  animation: fadeUp 0.4s ease both;
 }
 
-/* ================= UPLOAD ================= */
-
-.drop-zone {
-  border: 2px dashed rgba(255,255,255,0.15);
-  border-radius: 16px;
-  padding: 26px;
-  text-align: center;
-  transition: all .3s ease;
+.panel h2 {
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
-.drop-zone:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 30px var(--accent-glow);
-}
-
-/* ================= RESULTS ================= */
-
+/* ========================
+   RESULTS VISIBILITY FIX
+======================== */
 .panel pre {
-  min-height: 120px;
+  display: block;
   white-space: pre-wrap;
+  word-break: break-word;
+  background: rgba(255,255,255,0.04);
+  padding: 16px;
+  border-radius: 14px;
+  margin-top: 16px;
+  font-size: 13px;
 }
 
 pre:empty::before {
-  content: "Waiting for output…";
-  color: var(--text-muted);
-  animation: pulse 1.4s infinite;
+  content: "Waiting for output …";
+  opacity: 0.5;
 }
 
-/* ================= PROCESSING ================= */
+/* ========================
+   UPLOAD
+======================== */
+.drop-zone {
+  margin: 14px 0;
+  padding: 20px;
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 14px;
+  text-align: center;
+  opacity: 0.8;
+}
 
-.processing {
-  position: fixed;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  background: rgba(0,0,0,0.6);
-  padding: 10px 18px;
+.actions button {
+  background: linear-gradient(135deg, var(--accent), #9333ea);
+  border: none;
+  color: white;
+  padding: 8px 14px;
   border-radius: 999px;
+  margin-right: 6px;
+  cursor: pointer;
 }
 
-.processing.hidden { display: none; }
-
-.spinner {
-  width: 18px;
-  height: 18px;
-  border: 3px solid rgba(255,255,255,0.2);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-/* ================= ANIMATIONS ================= */
-
+/* ========================
+   ANIMATIONS
+======================== */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: none; }
-}
-
-@keyframes pulse {
-  0% { opacity: .4; }
-  50% { opacity: 1; }
-  100% { opacity: .4; }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-                        
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
