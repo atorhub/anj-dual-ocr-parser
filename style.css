@@ -338,3 +338,28 @@ body.theme-midnight {
   --accent: #5b6cff;
   --card: rgba(90, 110, 255, 0.15);
 }
+/* ===============================
+   SIDEBAR TOGGLE
+================================ */
+
+#sidebarToggle {
+  background: var(--card);
+  color: var(--text);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+}
+
+/* Hidden sidebar state */
+body.sidebar-hidden .sidebar {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Expand main area when sidebar is hidden */
+body.sidebar-hidden .main {
+  margin-left: 0;
+}
