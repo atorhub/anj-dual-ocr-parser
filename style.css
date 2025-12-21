@@ -1,229 +1,247 @@
 /* ========================
-   RESET + BASE
+   RESET
 ======================== */
-* { box-sizing: border-box; }
-
-html { font-size: 16px; }
-
-body {
+* {
   margin: 0;
-  font-family: ui-rounded, system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* ========================
-   THEMES
+   BASE
 ======================== */
-body.theme-fairy {
-  --bg: linear-gradient(135deg, #1a002b, #3b0764);
-  --card: rgba(255,255,255,0.1);
-  --text: #fdf4ff;
-  --accent: #f0abfc;
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Ubuntu, sans-serif;
+  background: radial-gradient(circle at top, #2a0040, #12001c);
+  color: #fff;
+  min-height: 100vh;
 }
 
 /* ========================
-   APP SHELL
+   TYPOGRAPHY
 ======================== */
-.app-shell {
+h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+p {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* ========================
+   LAYOUT
+======================== */
+.app {
   display: flex;
   min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #1b002b, #12001c);
+  padding: 16px;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
 }
 
 /* ========================
    SIDEBAR
 ======================== */
-.sidebar {
-  width: 220px;
-  padding: 20px;
-  background: linear-gradient(
-    180deg,
-    rgba(120,60,180,0.35),
-    rgba(40,10,80,0.6)
-  );
-  backdrop-filter: blur(18px);
-  box-shadow:
-    0 0 25px rgba(180,120,255,0.3),
-    inset 0 0 12px rgba(255,255,255,0.05);
+.sidebar h1 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
 }
 
-.logo {
-  font-weight: 800;
-  font-size: 1.1rem;
-  margin-bottom: 26px;
-}
-
-/* NAV ITEMS */
-.nav-item {
-  padding: 14px 16px;
-  border-radius: 14px;
+.sidebar button {
+  width: 100%;
   margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
   cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.3s ease;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
 
-.nav-item:hover {
-  opacity: 1;
-  transform: translateX(4px);
-  background: var(--card);
-  box-shadow: 0 0 14px rgba(200,140,255,0.6);
-}
-
-.nav-item.active {
-  opacity: 1;
-  background: var(--card);
-  box-shadow: 0 0 22px var(--accent);
+.sidebar button:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
 }
 
 /* ========================
-   MAIN
+   HEADER / TOPBAR
 ======================== */
-.main {
-  flex: 1;
-  padding: 24px;
-}
-
-/* ========================
-   TOPBAR
-======================== */
+header,
 .topbar {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 /* ========================
-   GRID + PANELS
+   CARDS
 ======================== */
-body.layout-dashboard .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 24px;
-}
-
-.panel {
-  background: var(--card);
-  border-radius: 22px;
-  padding: 22px;
-  backdrop-filter: blur(16px);
-  box-shadow:
-    0 8px 24px rgba(0,0,0,0.25),
-    inset 0 0 0 1px rgba(255,255,255,0.08);
-  animation: cardEnter 0.45s ease both;
-}
-
-/* ========================
-   OCR OUTPUT FIX
-======================== */
-pre,
-#rawText,
-#cleanedText,
-#parsedJson {
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  max-width: 100%;
-  background: rgba(255,255,255,0.04);
-  padding: 16px;
-  border-radius: 14px;
-  min-height: 130px;
-}
-
-/* EMPTY STATE */
-pre:empty::before {
-  content: "Waiting for output …";
-  opacity: 0.6;
-  animation: textPulse 1.8s infinite;
-}
-/* ============================
-   FIX TOPBAR INTERACTION (MOBILE)
-   ============================ */
-
-/* Ensure topbar is always above toggle */
-.topbar {
+.card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   position: relative;
-  z-index: 1002;
+  overflow: hidden;
 }
 
-/* Reduce toggle hit-area to icon only */
-.sidebar-toggle-btn {
-  z-index: 1001;
-  pointer-events: auto;
-}
-
-/* Prevent invisible overlay from blocking taps */
-.sidebar-toggle-btn::after {
+/* subtle animated shimmer */
+.card::after {
   content: "";
   position: absolute;
   inset: 0;
-  pointer-events: none;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.08),
+    transparent
+  );
+  animation: shimmer 6s infinite;
 }
 
-/* Extra safety: allow selects to receive taps */
-.topbar select {
-  pointer-events: auto;
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* ========================
-   SIDEBAR TOGGLE BUTTON
+   BUTTONS
 ======================== */
-.sidebar-toggle-btn {
-  display: none;
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 1001;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(12px);
-  font-size: 1.2rem;
+button {
+  border-radius: 999px;
+  padding: 8px 14px;
+  border: none;
   cursor: pointer;
-  box-shadow: 0 0 18px rgba(180,120,255,0.5);
+  font-weight: 600;
+}
+
+button.primary {
+  background: linear-gradient(135deg, #ff8ff2, #b76cff);
+  color: #1a001f;
 }
 
 /* ========================
-   MOBILE BEHAVIOR
+   OUTPUT BOXES
+======================== */
+pre,
+textarea {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  padding: 14px;
+  color: #eaeaea;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  max-height: 300px;
+  overflow: auto;
+}
+
+/* ========================
+   RESPONSIVE
 ======================== */
 @media (max-width: 768px) {
-
-  .sidebar-toggle-btn {
-    display: block;
-  }
-
   .sidebar {
     position: fixed;
-    left: -260px;
-    top: 0;
-    height: 100vh;
-    z-index: 1000;
-    transition: left 0.35s ease;
-  }
-
-  #sidebarToggle:checked ~ .app-shell .sidebar {
+    height: 100%;
     left: 0;
-  }
-
-  body.layout-dashboard .grid {
-    grid-template-columns: 1fr;
+    top: 0;
   }
 
   .main {
-    padding: 18px;
+    padding: 16px;
   }
 }
 
-/* ========================
-   ANIMATIONS
-======================== */
-@keyframes cardEnter {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+/* =========================================================
+   FINAL SAFE PATCH — DO NOT REMOVE
+   Fixes header clicks, dropdowns, sidebar toggle, OCR text
+   ========================================================= */
+
+/* Allow visual layers to be non-blocking */
+.glow,
+.overlay,
+.card::before,
+.card::after {
+  pointer-events: none;
 }
 
-@keyframes textPulse {
-  0%,100% { opacity: 0.4; }
-  50% { opacity: 0.9; }
+/* Restore header & dropdown interactivity */
+header,
+.topbar,
+select,
+.dropdown,
+.status {
+  position: relative;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+/* Sidebar toggle always clickable */
+#sidebarToggle,
+.menu-toggle,
+.hamburger {
+  position: relative;
+  z-index: 100;
+  pointer-events: auto;
+}
+
+/* Sidebar layering */
+.sidebar {
+  z-index: 40;
+}
+
+/* Main content safe clicks */
+.main,
+.app {
+  position: relative;
+  z-index: 10;
+}
+
+/* OCR text wrapping fix */
+pre,
+textarea {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Mobile sidebar slide behavior */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0 !important;
+  }
 }
