@@ -32,20 +32,23 @@
       <span class="brand">ANJ Dual OCR</span>
 
       <div class="top-controls">
+        <!-- THEME SELECT (UPDATED ONLY HERE) -->
         <select id="themeSelect">
           <option value="default">Default</option>
           <option value="galaxy">Galaxy</option>
           <option value="fairy">Fairy</option>
           <option value="pink">Pink</option>
           <option value="dark">Dark</option>
+
+          <!-- ✅ NEW THEMES -->
           <option value="aqua">Aqua</option>
-<option value="mint">Mint</option>
-<option value="sunset">Sunset</option>
-<option value="neon">Neon</option>
-<option value="midnight">Midnight</option>
+          <option value="mint">Mint</option>
+          <option value="sunset">Sunset</option>
+          <option value="neon">Neon</option>
+          <option value="midnight">Midnight</option>
         </select>
 
-        <!-- ✅ RESTORED -->
+        <!-- LAYOUT SELECT (UNCHANGED) -->
         <select id="layoutSelect">
           <option value="dashboard">Dashboard</option>
           <option value="focus">Focus</option>
@@ -82,37 +85,9 @@
         <pre id="jsonPreview"></pre>
       </section>
     </section>
+
   </main>
 </div>
-
-<!-- ✅ SAFE THEME + LAYOUT CONTROLLER -->
-<script>
-  const themeSelect = document.getElementById("themeSelect");
-  const layoutSelect = document.getElementById("layoutSelect");
-
-  const themes = ["default","galaxy","fairy","pink","dark"];
-  const layouts = ["dashboard","focus","vertical"];
-
-  const savedTheme = localStorage.getItem("theme") || "default";
-  const savedLayout = localStorage.getItem("layout") || "dashboard";
-
-  themeSelect.value = savedTheme;
-  layoutSelect.value = savedLayout;
-
-  document.body.classList.add(`theme-${savedTheme}`, `layout-${savedLayout}`);
-
-  themeSelect.onchange = () => {
-    themes.forEach(t => document.body.classList.remove(`theme-${t}`));
-    document.body.classList.add(`theme-${themeSelect.value}`);
-    localStorage.setItem("theme", themeSelect.value);
-  };
-
-  layoutSelect.onchange = () => {
-    layouts.forEach(l => document.body.classList.remove(`layout-${l}`));
-    document.body.classList.add(`layout-${layoutSelect.value}`);
-    localStorage.setItem("layout", layoutSelect.value);
-  };
-</script>
 
 <script src="script.js"></script>
 </body>
