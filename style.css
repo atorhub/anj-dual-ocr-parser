@@ -1,231 +1,243 @@
-/* ===============================
-   ROOT DEFAULTS
-================================ */
+/* =========================================================
+   ROOT + THEME SYSTEM (FIXED — ALL COLORS NOW SWITCH)
+========================================================= */
+
 :root {
-  --bg: #0b1020;
-  --sidebar: #0f172a;
-  --card: rgba(255,255,255,0.05);
-  --border: rgba(255,255,255,0.08);
-  --text: #e5e7eb;
-  --muted: #9ca3af;
+  --bg-main: #0b1020;
+  --bg-sidebar: #0e152b;
+  --bg-panel: rgba(255, 255, 255, 0.04);
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
   --accent: #8b5cf6;
-  --glow: 0 0 16px rgba(139,92,246,0.6);
+  --accent-soft: rgba(139, 92, 246, 0.25);
+  --accent-glow: rgba(139, 92, 246, 0.45);
+
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --radius-lg: 18px;
+  --radius-md: 14px;
+
+  --blur: blur(18px);
+  --transition: 0.35s ease;
 }
 
-/* ===============================
-   THEMES
-================================ */
-body.theme-default { }
-
-body.theme-fairy {
-  --bg: radial-gradient(circle at top, #fde2ff, #c7d2fe);
-  --sidebar: rgba(255,255,255,0.6);
-  --card: rgba(255,255,255,0.6);
-  --border: rgba(0,0,0,0.08);
-  --text: #3b0764;
-  --muted: #6b21a8;
-  --accent: #ec4899;
-}
-
-body.theme-galaxy {
-  --bg: radial-gradient(circle at top, #1e1b4b, #020617);
-  --sidebar: #020617;
-  --card: rgba(99,102,241,0.12);
-  --border: rgba(99,102,241,0.3);
-  --text: #e0e7ff;
-  --muted: #a5b4fc;
-  --accent: #6366f1;
-}
-
+/* === ALT THEMES === */
 body.theme-pink {
-  --bg: linear-gradient(135deg, #fdf2f8, #fbcfe8);
-  --sidebar: #fff1f2;
-  --card: #ffffff;
-  --border: #f9a8d4;
-  --text: #831843;
-  --muted: #be185d;
-  --accent: #db2777;
+  --accent: #ec4899;
+  --accent-soft: rgba(236, 72, 153, 0.25);
+  --accent-glow: rgba(236, 72, 153, 0.45);
 }
 
-body.theme-dark {
-  --bg: #020617;
-  --sidebar: #020617;
-  --card: rgba(255,255,255,0.03);
-  --border: rgba(255,255,255,0.06);
-  --text: #f9fafb;
-  --muted: #9ca3af;
+body.theme-cyan {
   --accent: #22d3ee;
+  --accent-soft: rgba(34, 211, 238, 0.25);
+  --accent-glow: rgba(34, 211, 238, 0.45);
 }
 
-/* ===============================
+/* =========================================================
    BASE
-================================ */
+========================================================= */
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #10172f, var(--bg-main));
+  color: var(--text-main);
 }
 
-.app-shell {
-  display: flex;
-  height: 100vh;
-}
-
-/* ===============================
+/* =========================================================
    SIDEBAR
-================================ */
+========================================================= */
+
 .sidebar {
-  width: 220px;
-  background: var(--sidebar);
-  padding: 16px;
+  width: 230px;
+  background: linear-gradient(180deg, #0c132a, var(--bg-sidebar));
+  padding: 18px 14px;
+  border-right: 1px solid var(--border-soft);
+}
+
+.sidebar .nav-item {
   display: flex;
-  flex-direction: column;
-  transition: width 0.3s ease;
-}
-
-.logo {
-  font-weight: 800;
-  letter-spacing: 2px;
-  margin-bottom: 24px;
-}
-
-.nav-item {
-  padding: 12px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  margin-bottom: 8px;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-item:hover {
-  background: var(--card);
-  transform: translateX(4px);
-}
-
-.nav-item.active {
-  background: var(--card);
-  box-shadow: var(--glow);
-  animation: pulse 1.8s infinite;
-}
-
-/* Glow pulse */
-@keyframes pulse {
-  0% { box-shadow: 0 0 8px var(--accent); }
-  50% { box-shadow: 0 0 22px var(--accent); }
-  100% { box-shadow: 0 0 8px var(--accent); }
-}
-
-/* ===============================
-   MAIN
-================================ */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.topbar {
-  padding: 12px 16px;
-  display: flex;
-  gap: 12px;
   align-items: center;
-  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
 }
 
-.panel-grid {
-  padding: 16px;
-  display: grid;
-  gap: 16px;
+.sidebar .nav-item:hover {
+  color: var(--text-main);
+  background: rgba(255,255,255,0.04);
 }
 
-/* ===============================
-   LAYOUT MODES
-================================ */
-.layout-dashboard .panel-grid {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+.sidebar .nav-item.active {
+  color: white;
+  background: linear-gradient(
+    90deg,
+    var(--accent-soft),
+    transparent
+  );
+  box-shadow: inset 4px 0 0 var(--accent);
 }
 
-.layout-focus .panel-grid {
-  grid-template-columns: 1fr;
+/* === ICON GLOW === */
+.sidebar .nav-item.active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 22px var(--accent-glow);
+  opacity: 0.55;
+  pointer-events: none;
 }
 
-.layout-wide .panel-grid {
-  grid-template-columns: repeat(3, 1fr);
+/* =========================================================
+   MAIN AREA
+========================================================= */
+
+.main {
+  padding: 24px;
 }
 
-/* ===============================
-   PANELS
-================================ */
+/* =========================================================
+   PANELS / CARDS
+========================================================= */
+
 .panel {
-  background: var(--card);
-  border-radius: 18px;
-  padding: 16px;
-  border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.06),
+    rgba(255,255,255,0.02)
+  );
+  backdrop-filter: var(--blur);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--border-soft);
+  transition: var(--transition);
   overflow-y: auto;
-  animation: fadeUp 0.4s ease both;
 }
 
+.panel:hover {
+  border-color: var(--accent-soft);
+}
+
+/* === PANEL HEADERS === */
 .panel h2 {
-  margin-bottom: 16px;
+  margin: 0 0 16px;
+  font-size: 15px;
   font-weight: 600;
+  color: white;
+  letter-spacing: 0.3px;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* =========================================================
+   RESULT VISIBILITY (FIX)
+========================================================= */
 
-/* ===============================
-   RESULT VISIBILITY FIX
-================================ */
 .panel pre {
   display: block;
   white-space: pre-wrap;
   word-break: break-word;
-  background: rgba(255,255,255,0.04);
+  background: rgba(0, 0, 0, 0.35);
   padding: 16px;
   border-radius: 14px;
-  margin-top: 16px;
-  color: var(--text);
+  margin-top: 14px;
+  color: #e5e7eb;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
+/* Upload panel safety */
+#uploadPanel pre {
+  display: block;
+}
+
+/* Empty state */
 pre:empty::before {
   content: "Waiting for output …";
-  color: var(--muted);
+  color: var(--text-muted);
+  animation: pulse 1.6s infinite;
 }
 
-/* ===============================
-   BUTTONS
-================================ */
+/* =========================================================
+   PROCESSING FEEL (NO JS)
+========================================================= */
+
+.panel.processing {
+  position: relative;
+  overflow: hidden;
+}
+
+.panel.processing::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.08),
+    transparent
+  );
+  animation: shimmer 1.6s infinite;
+}
+
+/* =========================================================
+   BUTTONS (VISUAL ONLY)
+========================================================= */
+
 button {
-  appearance: none;
+  background: linear-gradient(
+    135deg,
+    var(--accent),
+    #6d28d9
+  );
   border: none;
   border-radius: 999px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, var(--accent), #a78bfa);
   color: white;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: var(--transition);
 }
 
 button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--glow);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--accent-glow);
 }
 
-/* ===============================
-   DROP ZONE
-================================ */
-.drop-zone {
-  margin-top: 12px;
-  padding: 24px;
-  border-radius: 16px;
-  border: 2px dashed var(--border);
+/* =========================================================
+   FILE DROP ZONE (VISUAL ONLY)
+========================================================= */
+
+.dropzone {
+  border: 2px dashed var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 28px;
   text-align: center;
-  color: var(--muted);
-     }
-     
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.dropzone:hover {
+  border-color: var(--accent);
+  color: white;
+  background: rgba(255,255,255,0.03);
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+   }
