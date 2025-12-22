@@ -1,16 +1,18 @@
 /* ===============================
    RESET
 ================================ */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 /* ===============================
-   BODY + FALLBACK VARIABLES
+   BODY + GLOBAL VARIABLES
 ================================ */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
 
-  /* fallback vars */
+  /* DEFAULT FALLBACKS (VERY IMPORTANT) */
   --bg: #020617;
   --card: rgba(255,255,255,.08);
   --text: #e5e7eb;
@@ -31,34 +33,79 @@ body {
 }
 
 /* ===============================
-   THEMES (VARIABLE ONLY — SAFE)
+   THEMES (VARIABLES ONLY – SAFE)
 ================================ */
+
+/* Default */
 body.theme-default {
-  --bg: radial-gradient(circle at top,#1e1b4b,#020617);
+  --bg: radial-gradient(circle at top, #1e1b4b, #020617);
+  --card: rgba(255,255,255,.08);
+  --text: #e5e7eb;
   --accent: #8b5cf6;
 }
 
+/* Dark */
 body.theme-dark {
   --bg: #020617;
+  --card: rgba(255,255,255,.06);
+  --text: #e5e7eb;
   --accent: #38bdf8;
 }
 
+/* Galaxy */
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #2d1b69, #07000f 70%);
+  --card: rgba(255,255,255,.12);
+  --text: #f5f3ff;
+  --accent: #c084fc;
+}
+
+/* Fairy */
+body.theme-fairy {
+  --bg: linear-gradient(135deg, #2e026d, #a21caf);
+  --card: rgba(255,255,255,.14);
+  --text: #fdf4ff;
+  --accent: #f0abfc;
+}
+
+/* Pink */
+body.theme-pink {
+  --bg: linear-gradient(135deg, #3b021f, #831843);
+  --card: rgba(255,255,255,.16);
+  --text: #ffe4f1;
+  --accent: #fb7185;
+}
+
+/* Aqua */
 body.theme-aqua {
-  --bg: radial-gradient(circle at top,#7cecff 0%,#0a2a3a 55%,#03141c 100%);
+  --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
+  --card: rgba(35,110,130,.25);
+  --text: #e6fcff;
   --accent: #7cecff;
-  --card: rgba(35,110,130,.22);
 }
 
+/* Mint */
 body.theme-mint {
-  --bg: radial-gradient(circle at top,#9affdd 0%,#0b2f26 55%,#041714 100%);
+  --bg: radial-gradient(circle at top, #9affdd 0%, #0b2f26 55%, #041714 100%);
+  --card: rgba(40,120,95,.25);
+  --text: #eafff6;
   --accent: #9affdd;
-  --card: rgba(40,120,95,.22);
 }
 
-body.theme-midnight {
-  --bg: radial-gradient(circle at top,#6b6fff 0%,#070a1e 55%,#02030a 100%);
-  --accent: #7a7fff;
-  --card: rgba(32,36,90,.30);
+/* Sunset */
+body.theme-sunset {
+  --bg: radial-gradient(circle at top, #ff8a65, #3b1c2a 70%);
+  --card: rgba(255,140,100,.22);
+  --text: #fff1eb;
+  --accent: #ff8a65;
+}
+
+/* Neon */
+body.theme-neon {
+  --bg: radial-gradient(circle at top, #3ea6ff, #081b33 70%);
+  --card: rgba(80,150,255,.20);
+  --text: #eaf4ff;
+  --accent: #3ea6ff;
 }
 
 /* ===============================
@@ -66,10 +113,8 @@ body.theme-midnight {
 ================================ */
 .sidebar {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0 auto 0 0;
   width: 220px;
-  height: 100vh;
   padding: 20px;
   background: rgba(0,0,0,.45);
   backdrop-filter: blur(18px);
@@ -96,19 +141,19 @@ body.sidebar-hidden .main {
 }
 
 /* ===============================
-   LAYOUT MODES
+   GRID LAYOUTS
 ================================ */
 body.layout-dashboard .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
 }
 
 body.layout-focus .grid {
   display: grid;
-  grid-template-columns: minmax(0,720px);
+  grid-template-columns: minmax(0, 420px);
   justify-content: center;
-  gap: 24px;
+  gap: 28px;
 }
 
 body.layout-vertical .grid {
@@ -118,73 +163,98 @@ body.layout-vertical .grid {
 }
 
 /* ===============================
-   PANELS (TEXT SAFE)
+   PANELS
 ================================ */
 .panel {
+  position: relative;
   background: var(--card);
   border-radius: 22px;
   padding: 22px;
   backdrop-filter: blur(18px);
-  overflow: hidden;
 
   box-shadow:
-    0 8px 28px rgba(0,0,0,.35),
-    inset 0 0 0 1px rgba(255,255,255,.08);
+    0 10px 30px rgba(0,0,0,.4),
+    inset 0 0 0 1px rgba(255,255,255,.12);
+
+  animation: panel-breathe 7s ease-in-out infinite;
+  transition: box-shadow .35s ease;
 }
 
-/* text never escapes */
+/* Hover */
+.panel:hover {
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.6),
+    inset 0 0 0 1px rgba(255,255,255,.2);
+}
+
+/* Text safety */
 .panel pre {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 /* ===============================
-   PANEL MOTION (MOBILE SAFE)
+   PANEL EMPTY GLOW / SHEEN
+================================ */
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 25%,
+      rgba(255,255,255,.18),
+      transparent 75%
+    );
+
+  opacity: .45;
+  transform: translateX(-120%);
+  animation: panel-sheen 6s ease-in-out infinite;
+}
+
+/* ===============================
+   PANEL ANIMATIONS
 ================================ */
 @keyframes panel-breathe {
   0%,100% {
     box-shadow:
-      0 8px 28px rgba(0,0,0,.35),
-      inset 0 0 0 1px rgba(255,255,255,.08);
+      0 10px 30px rgba(0,0,0,.4),
+      inset 0 0 0 1px rgba(255,255,255,.12);
   }
   50% {
     box-shadow:
-      0 14px 40px rgba(0,0,0,.45),
-      inset 0 0 0 1px rgba(255,255,255,.14);
+      0 16px 46px rgba(0,0,0,.6),
+      inset 0 0 0 1px rgba(255,255,255,.22);
   }
 }
 
-.panel {
-  animation: panel-breathe 7s ease-in-out infinite;
-  transition: box-shadow .35s ease, background .35s ease;
-}
-
-.panel:hover,
-.panel:active {
-  box-shadow:
-    0 20px 50px rgba(0,0,0,.55),
-    inset 0 0 0 1px rgba(255,255,255,.18);
+@keyframes panel-sheen {
+  0%   { transform: translateX(-120%); opacity: .2; }
+  45%  { transform: translateX(120%); opacity: .5; }
+  100% { transform: translateX(120%); opacity: .2; }
 }
 
 /* ===============================
-   MIDNIGHT SKY (ONLY MIDNIGHT)
+   MIDNIGHT SKY (SPECIAL)
 ================================ */
 body.theme-midnight {
+  --bg: radial-gradient(circle at top, #6b6fff 0%, #070a1e 55%, #02030a 100%);
+  --card: rgba(32,36,90,.3);
+  --text: #eef0ff;
+  --accent: #7a7fff;
+
   background:
-    /* stars */
-    radial-gradient(rgba(255,255,255,0.45) 1px, transparent 1px) 0 0 / 140px 140px,
-    radial-gradient(rgba(180,200,255,0.35) 1px, transparent 1px) 60px 80px / 220px 220px,
-
-    /* clouds */
-    radial-gradient(ellipse at 20% 30%, rgba(140,150,255,.14), transparent 60%) 0 0 / 180% 180%,
-    radial-gradient(ellipse at 70% 50%, rgba(120,130,255,.12), transparent 65%) 0 0 / 200% 200%,
-
+    radial-gradient(rgba(255,255,255,.45) 1px, transparent 1px) 0 0 / 140px 140px,
+    radial-gradient(rgba(180,200,255,.35) 1px, transparent 1px) 60px 80px / 220px 220px,
     var(--bg);
 
   animation: midnight-sky 90s linear infinite;
 }
 
-/* moving cloud layer */
 body.theme-midnight::before {
   content: "";
   position: fixed;
@@ -193,13 +263,12 @@ body.theme-midnight::before {
   z-index: 0;
 
   background:
-    radial-gradient(ellipse at 30% 40%, rgba(150,160,255,.12), transparent 65%),
-    radial-gradient(ellipse at 75% 60%, rgba(120,130,255,.10), transparent 70%);
+    radial-gradient(ellipse at 30% 40%, rgba(150,160,255,.14), transparent 65%),
+    radial-gradient(ellipse at 75% 60%, rgba(120,130,255,.12), transparent 70%);
 
   animation: cloud-drift 140s linear infinite;
 }
 
-/* moon */
 body.theme-midnight::after {
   content: "";
   position: fixed;
@@ -223,7 +292,7 @@ body.theme-midnight::after {
   animation: moon-glow 6s ease-in-out infinite;
 }
 
-/* keep UI above visuals */
+/* Keep UI above effects */
 .sidebar,
 .main {
   position: relative;
@@ -231,11 +300,11 @@ body.theme-midnight::after {
 }
 
 /* ===============================
-   ANIMATIONS
+   SKY ANIMATIONS
 ================================ */
 @keyframes midnight-sky {
-  from { background-position: 0 0,60px 80px,0 0,0 0,center; }
-  to   { background-position: 300px 600px,400px 300px,10% 0,-10% 0,center; }
+  from { background-position: 0 0, 60px 80px, center; }
+  to   { background-position: 300px 600px, 400px 300px, center; }
 }
 
 @keyframes cloud-drift {
@@ -260,36 +329,7 @@ body.theme-midnight::after {
    MOBILE
 ================================ */
 @media (max-width:768px) {
-  .main { margin-left: 0; }
-   }
-/* ===============================
-   EMPTY PANEL VISUAL MOTION FIX
-   (guaranteed visible)
-================================ */
-
-.panel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-
-  background:
-    linear-gradient(
-      120deg,
-      transparent 20%,
-      rgba(255,255,255,.06),
-      transparent 80%
-    );
-
-  opacity: .35;
-  transform: translateX(-100%);
-  animation: panel-sheen 6s ease-in-out infinite;
-}
-
-/* subtle moving sheen */
-@keyframes panel-sheen {
-  0%   { transform: translateX(-100%); opacity: .2; }
-  40%  { transform: translateX(100%);  opacity: .45; }
-  100% { transform: translateX(100%);  opacity: .2; }
+  .main {
+    margin-left: 0;
+  }
 }
