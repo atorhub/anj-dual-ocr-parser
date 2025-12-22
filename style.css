@@ -1,52 +1,54 @@
 /* ===============================
-   RESET
+   RESET + FALLBACK VARIABLES
 ================================ */
-* {
-  box-sizing: border-box;
-}
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  transition: background 0.4s ease;
+  transition: background .4s ease;
+  position: relative;
+
+  /* fallback so NO theme becomes white */
+  --bg: #020617;
+  --card: rgba(255,255,255,.08);
+  --text: #e5e7eb;
+  --accent: #38bdf8;
 }
 
 /* ===============================
-   THEMES (UNCHANGED)
+   THEMES (ALL SAFE)
 ================================ */
 
 body.theme-default {
   --bg: radial-gradient(circle at top,#1e1b4b,#020617);
-  --card: rgba(255,255,255,.08);
-  --text: #e5e7eb;
   --accent: #8b5cf6;
 }
 
 body.theme-dark {
   --bg: #020617;
-  --card: rgba(255,255,255,.06);
-  --text: #e5e7eb;
   --accent: #38bdf8;
 }
 
 body.theme-aqua {
-  --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
+  --bg: radial-gradient(circle at top,#7cecff 0%,#0a2a3a 55%,#03141c 100%);
   --accent: #7cecff;
-  --card: rgba(35,110,130,0.22);
+  --card: rgba(35,110,130,.22);
 }
 
 body.theme-mint {
-  --bg: radial-gradient(circle at top, #9affdd 0%, #0b2f26 55%, #041714 100%);
+  --bg: radial-gradient(circle at top,#9affdd 0%,#0b2f26 55%,#041714 100%);
   --accent: #9affdd;
-  --card: rgba(40,120,95,0.22);
+  --card: rgba(40,120,95,.22);
 }
 
 body.theme-midnight {
-  --bg: radial-gradient(circle at top, #7a7fff 0%, #0a0d24 55%, #03040d 100%);
+  --bg: radial-gradient(circle at top,#7a7fff 0%,#0a0d24 55%,#03040d 100%);
   --accent: #7a7fff;
-  --card: rgba(45,50,120,0.22);
+  --card: rgba(45,50,120,.22);
 }
 
 /* ===============================
@@ -65,34 +67,32 @@ body.theme-midnight {
 
 .sidebar {
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   height: 100vh;
   width: 220px;
   padding: 20px;
   background: rgba(0,0,0,.45);
   backdrop-filter: blur(18px);
-  transition: transform 0.35s ease;
+  transition: transform .35s ease;
   z-index: 1000;
 }
 
-/* CLOSED STATE */
 body.sidebar-hidden .sidebar {
   transform: translateX(-100%);
 }
 
 /* ===============================
-   MAIN CONTENT
+   MAIN
 ================================ */
 
 .main {
   flex: 1;
   padding: 24px;
   margin-left: 220px;
-  transition: margin-left 0.35s ease;
+  transition: margin-left .35s ease;
 }
 
-/* SHIFT MAIN WHEN SIDEBAR CLOSED */
 body.sidebar-hidden .main {
   margin-left: 0;
 }
@@ -105,32 +105,36 @@ body.sidebar-hidden .main {
   padding: 14px;
   border-radius: 14px;
   margin-bottom: 10px;
-  opacity: 0.75;
+  opacity: .75;
 }
 
-.nav-item.active,
-.nav-item:hover {
+.nav-item:hover,
+.nav-item.active {
   opacity: 1;
   background: var(--card);
   box-shadow: 0 0 18px var(--accent);
 }
 
 /* ===============================
-   GRID LAYOUTS
+   GRID MODES
 ================================ */
 
+/* Dashboard = responsive grid */
 body.layout-dashboard .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
   gap: 24px;
 }
 
+/* Focus = centered reading mode */
 body.layout-focus .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0,720px);
+  justify-content: center;
   gap: 24px;
 }
 
+/* Vertical = stacked workflow */
 body.layout-vertical .grid {
   display: flex;
   flex-direction: column;
@@ -153,7 +157,7 @@ body.layout-vertical .grid {
 }
 
 /* ===============================
-   TEXT BLOCKS
+   CODE / OUTPUT
 ================================ */
 
 pre {
@@ -182,29 +186,54 @@ pre:empty::before {
 }
 
 /* ===============================
+   MIDNIGHT MOON (REAL & VISIBLE)
+================================ */
+
+body.theme-midnight .main::before {
+  content: "";
+  position: fixed;
+  top: -160px;
+  right: -140px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+
+  background:
+    radial-gradient(circle at 30% 30%,
+      rgba(255,255,255,.95) 0%,
+      rgba(200,210,255,.85) 28%,
+      rgba(120,140,255,.55) 48%,
+      rgba(70,80,160,.25) 62%,
+      transparent 68%
+    );
+
+  box-shadow:
+    0 0 140px rgba(140,160,255,.45),
+    0 0 320px rgba(90,110,255,.28);
+
+  filter: blur(.6px);
+}
+
+/* ===============================
    ANIMATIONS
 ================================ */
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: none; }
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:none; }
 }
 
 @keyframes pulse {
-  0%,100% { opacity: .4; }
-  50% { opacity: .9; }
+  0%,100% { opacity:.4; }
+  50% { opacity:.9; }
 }
 
 /* ===============================
-   MOBILE FIX (IMPORTANT)
+   MOBILE
 ================================ */
 
-@media (max-width: 768px) {
-  .main {
-    margin-left: 0;
-  }
-
-  .sidebar {
-    width: 220px;
-  }
+@media (max-width:768px) {
+  .main { margin-left: 0; }
 }
