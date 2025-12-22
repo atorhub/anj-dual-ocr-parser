@@ -7,70 +7,72 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: background .4s ease;
-  position: relative;
-
-  /* fallback so NO theme becomes white */
-  --bg: #020617;
-  --card: rgba(255,255,255,.08);
-  --text: #e5e7eb;
-  --accent: #38bdf8;
+  background: #020617;
+  color: #e5e7eb;
 }
 
 /* ===============================
-   THEMES (ALL SAFE)
-================================ */
-
-body.theme-default {
-  --bg: radial-gradient(circle at top,#1e1b4b,#020617);
-  --accent: #8b5cf6;
-}
-
-body.theme-dark {
-  --bg: #020617;
-  --accent: #38bdf8;
-}
-
-body.theme-aqua {
-  --bg: radial-gradient(circle at top,#7cecff 0%,#0a2a3a 55%,#03141c 100%);
-  --accent: #7cecff;
-  --card: rgba(35,110,130,.22);
-}
-
-body.theme-mint {
-  --bg: radial-gradient(circle at top,#9affdd 0%,#0b2f26 55%,#041714 100%);
-  --accent: #9affdd;
-  --card: rgba(40,120,95,.22);
-}
-
-body.theme-midnight {
-  --bg: radial-gradient(circle at top,#7a7fff 0%,#0a0d24 55%,#03040d 100%);
-  --accent: #7a7fff;
-  --card: rgba(45,50,120,.22);
-}
-
-/* ===============================
-   APP SHELL
+   APP SHELL (THE REAL ROOT)
 ================================ */
 
 .app-shell {
   display: flex;
   min-height: 100vh;
   position: relative;
+
+  /* fallback variables */
+  --bg: #020617;
+  --card: rgba(255,255,255,.08);
+  --text: #e5e7eb;
+  --accent: #38bdf8;
+
+  background: var(--bg);
+  color: var(--text);
+  transition: background .4s ease;
 }
 
 /* ===============================
-   SIDEBAR (FIXED)
+   THEMES (CORRECT TARGET)
+================================ */
+
+.app-shell.theme-default {
+  --bg: radial-gradient(circle at top,#1e1b4b,#020617);
+  --accent: #8b5cf6;
+}
+
+.app-shell.theme-dark {
+  --bg: #020617;
+  --accent: #38bdf8;
+}
+
+.app-shell.theme-aqua {
+  --bg: radial-gradient(circle at top,#7cecff 0%,#0a2a3a 55%,#03141c 100%);
+  --accent: #7cecff;
+  --card: rgba(35,110,130,.22);
+}
+
+.app-shell.theme-mint {
+  --bg: radial-gradient(circle at top,#9affdd 0%,#0b2f26 55%,#041714 100%);
+  --accent: #9affdd;
+  --card: rgba(40,120,95,.22);
+}
+
+.app-shell.theme-midnight {
+  --bg: radial-gradient(circle at top,#7a7fff 0%,#0a0d24 55%,#03040d 100%);
+  --accent: #7a7fff;
+  --card: rgba(45,50,120,.22);
+}
+
+/* ===============================
+   SIDEBAR
 ================================ */
 
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  height: 100vh;
   width: 220px;
+  height: 100vh;
   padding: 20px;
   background: rgba(0,0,0,.45);
   backdrop-filter: blur(18px);
@@ -98,44 +100,23 @@ body.sidebar-hidden .main {
 }
 
 /* ===============================
-   NAV ITEMS
-================================ */
-
-.nav-item {
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  opacity: .75;
-}
-
-.nav-item:hover,
-.nav-item.active {
-  opacity: 1;
-  background: var(--card);
-  box-shadow: 0 0 18px var(--accent);
-}
-
-/* ===============================
    GRID MODES
 ================================ */
 
-/* Dashboard = responsive grid */
-body.layout-dashboard .grid {
+.app-shell.layout-dashboard .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
   gap: 24px;
 }
 
-/* Focus = centered reading mode */
-body.layout-focus .grid {
+.app-shell.layout-focus .grid {
   display: grid;
   grid-template-columns: minmax(0,720px);
   justify-content: center;
   gap: 24px;
 }
 
-/* Vertical = stacked workflow */
-body.layout-vertical .grid {
+.app-shell.layout-vertical .grid {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -153,43 +134,13 @@ body.layout-vertical .grid {
   box-shadow:
     0 8px 30px rgba(0,0,0,.35),
     inset 0 0 0 1px rgba(255,255,255,.08);
-  animation: fadeUp .4s ease both;
 }
 
 /* ===============================
-   CODE / OUTPUT
+   MIDNIGHT MOON (NOW IT WORKS)
 ================================ */
 
-pre {
-  min-height: 130px;
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.05);
-  white-space: pre-wrap;
-}
-
-pre:empty::before {
-  content: "Waiting for output…";
-  animation: pulse 1.6s infinite;
-}
-
-/* ===============================
-   BUTTONS
-================================ */
-
-.actions button {
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: none;
-  background: var(--accent);
-  font-weight: 600;
-}
-
-/* ===============================
-   MIDNIGHT MOON (REAL & VISIBLE)
-================================ */
-
-body.theme-midnight .main::before {
+.app-shell.theme-midnight::after {
   content: "";
   position: fixed;
   top: -160px;
@@ -198,7 +149,7 @@ body.theme-midnight .main::before {
   height: 520px;
   border-radius: 50%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 
   background:
     radial-gradient(circle at 30% 30%,
@@ -212,28 +163,19 @@ body.theme-midnight .main::before {
   box-shadow:
     0 0 140px rgba(140,160,255,.45),
     0 0 320px rgba(90,110,255,.28);
-
-  filter: blur(.6px);
 }
 
-/* ===============================
-   ANIMATIONS
-================================ */
-
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:none; }
-}
-
-@keyframes pulse {
-  0%,100% { opacity:.4; }
-  50% { opacity:.9; }
+/* keep UI above moon */
+.sidebar,
+.main {
+  position: relative;
+  z-index: 1;
 }
 
 /* ===============================
    MOBILE
 ================================ */
 
-@media (max-width:768px) {
+@media(max-width:768px){
   .main { margin-left: 0; }
 }
