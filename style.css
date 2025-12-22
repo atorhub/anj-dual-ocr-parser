@@ -1,24 +1,27 @@
 /* ===============================
    RESET
 ================================ */
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 /* ===============================
-   BODY + GLOBAL VARIABLES
+   BODY + FALLBACK VARIABLES
 ================================ */
+html, body {
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
 
-  /* DEFAULT FALLBACKS (VERY IMPORTANT) */
+  /* global defaults */
   --bg: #020617;
   --card: rgba(255,255,255,.08);
   --text: #e5e7eb;
   --accent: #38bdf8;
 
   background: var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   overflow-x: hidden;
 }
@@ -33,12 +36,12 @@ body {
 }
 
 /* ===============================
-   THEMES (VARIABLES ONLY – SAFE)
+   THEMES (COLOR PATCHED ONLY)
 ================================ */
 
 /* Default */
 body.theme-default {
-  --bg: radial-gradient(circle at top, #1e1b4b, #020617);
+  --bg: radial-gradient(circle at top,#1e1b4b,#020617);
   --card: rgba(255,255,255,.08);
   --text: #e5e7eb;
   --accent: #8b5cf6;
@@ -52,60 +55,60 @@ body.theme-dark {
   --accent: #38bdf8;
 }
 
-/* Galaxy */
-body.theme-galaxy {
-  --bg: radial-gradient(circle at top, #2d1b69, #07000f 70%);
-  --card: rgba(255,255,255,.12);
-  --text: #f5f3ff;
-  --accent: #c084fc;
-}
-
-/* Fairy */
-body.theme-fairy {
-  --bg: linear-gradient(135deg, #2e026d, #a21caf);
-  --card: rgba(255,255,255,.14);
-  --text: #fdf4ff;
-  --accent: #f0abfc;
-}
-
-/* Pink */
+/* 🌸 Pink → Rose Quartz */
 body.theme-pink {
-  --bg: linear-gradient(135deg, #3b021f, #831843);
-  --card: rgba(255,255,255,.16);
-  --text: #ffe4f1;
-  --accent: #fb7185;
+  --bg: radial-gradient(circle at top,#ffb3c7 0%,#6b1d3b 65%,#2a0715 100%);
+  --card: rgba(255,255,255,.22);
+  --text: #fff1f6;
+  --accent: #ff6fa1;
+}
+
+/* 🌌 Galaxy → Cosmic Violet */
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top,#8b7dff 0%,#2a145a 65%,#0c041c 100%);
+  --card: rgba(255,255,255,.18);
+  --text: #f4f1ff;
+  --accent: #c4b5fd;
+}
+
+/* 🧚 Fairy → Aurora Bloom */
+body.theme-fairy {
+  --bg: radial-gradient(circle at top,#f3c6ff 0%,#6a4fb3 60%,#201033 100%);
+  --card: rgba(255,255,255,.20);
+  --text: #fdf6ff;
+  --accent: #e9b7ff;
+}
+
+/* ⚡ Neon → Electric Blue */
+body.theme-neon {
+  --bg: radial-gradient(circle at top,#4cc9ff 0%,#0b2a4a 65%,#020b16 100%);
+  --card: rgba(255,255,255,.18);
+  --text: #ecf9ff;
+  --accent: #38e8ff;
+}
+
+/* 🌅 Sunset → Golden Hour */
+body.theme-sunset {
+  --bg: radial-gradient(circle at top,#ffb07c 0%,#7a2f2f 65%,#260b0b 100%);
+  --card: rgba(255,255,255,.22);
+  --text: #fff4ec;
+  --accent: #ff8a4c;
 }
 
 /* Aqua */
 body.theme-aqua {
-  --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
-  --card: rgba(35,110,130,.25);
+  --bg: radial-gradient(circle at top,#7cecff 0%,#0a2a3a 55%,#03141c 100%);
+  --card: rgba(35,110,130,.22);
   --text: #e6fcff;
   --accent: #7cecff;
 }
 
 /* Mint */
 body.theme-mint {
-  --bg: radial-gradient(circle at top, #9affdd 0%, #0b2f26 55%, #041714 100%);
-  --card: rgba(40,120,95,.25);
+  --bg: radial-gradient(circle at top,#9affdd 0%,#0b2f26 55%,#041714 100%);
+  --card: rgba(40,120,95,.22);
   --text: #eafff6;
   --accent: #9affdd;
-}
-
-/* Sunset */
-body.theme-sunset {
-  --bg: radial-gradient(circle at top, #ff8a65, #3b1c2a 70%);
-  --card: rgba(255,140,100,.22);
-  --text: #fff1eb;
-  --accent: #ff8a65;
-}
-
-/* Neon */
-body.theme-neon {
-  --bg: radial-gradient(circle at top, #3ea6ff, #081b33 70%);
-  --card: rgba(80,150,255,.20);
-  --text: #eaf4ff;
-  --accent: #3ea6ff;
 }
 
 /* ===============================
@@ -113,8 +116,10 @@ body.theme-neon {
 ================================ */
 .sidebar {
   position: fixed;
-  inset: 0 auto 0 0;
+  top: 0;
+  left: 0;
   width: 220px;
+  height: 100vh;
   padding: 20px;
   background: rgba(0,0,0,.45);
   backdrop-filter: blur(18px);
@@ -141,17 +146,17 @@ body.sidebar-hidden .main {
 }
 
 /* ===============================
-   GRID LAYOUTS
+   LAYOUT MODES
 ================================ */
 body.layout-dashboard .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
   gap: 24px;
 }
 
 body.layout-focus .grid {
   display: grid;
-  grid-template-columns: minmax(0, 420px);
+  grid-template-columns: minmax(0,420px);
   justify-content: center;
   gap: 28px;
 }
@@ -177,47 +182,49 @@ body.layout-vertical .grid {
     inset 0 0 0 1px rgba(255,255,255,.12);
 
   animation: panel-breathe 7s ease-in-out infinite;
-  transition: box-shadow .35s ease;
 }
 
-/* Hover */
-.panel:hover {
-  box-shadow:
-    0 18px 50px rgba(0,0,0,.6),
-    inset 0 0 0 1px rgba(255,255,255,.2);
-}
-
-/* Text safety */
+/* text safety */
 .panel pre {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 /* ===============================
-   PANEL EMPTY GLOW / SHEEN
+   EMPTY TEXT ANIMATION
+================================ */
+.panel pre:empty::before {
+  content: "Waiting for output…";
+  display: block;
+  font-size: .85rem;
+  letter-spacing: .3px;
+  color: rgba(255,255,255,.6);
+  animation: empty-pulse 1.6s ease-in-out infinite;
+}
+
+/* ===============================
+   PANEL SHEEN
 ================================ */
 .panel::after {
   content: "";
   position: absolute;
   inset: -1px;
-  border-radius: inherit;
   pointer-events: none;
+  border-radius: inherit;
 
-  background:
-    linear-gradient(
-      120deg,
-      transparent 25%,
-      rgba(255,255,255,.18),
-      transparent 75%
-    );
+  background: linear-gradient(
+    120deg,
+    transparent 25%,
+    rgba(255,255,255,.22),
+    transparent 75%
+  );
 
-  opacity: .45;
   transform: translateX(-120%);
   animation: panel-sheen 6s ease-in-out infinite;
 }
 
 /* ===============================
-   PANEL ANIMATIONS
+   ANIMATIONS
 ================================ */
 @keyframes panel-breathe {
   0%,100% {
@@ -234,102 +241,19 @@ body.layout-vertical .grid {
 
 @keyframes panel-sheen {
   0%   { transform: translateX(-120%); opacity: .2; }
-  45%  { transform: translateX(120%); opacity: .5; }
-  100% { transform: translateX(120%); opacity: .2; }
+  45%  { transform: translateX(120%);  opacity: .55; }
+  100% { transform: translateX(120%);  opacity: .2; }
 }
 
-/* ===============================
-   MIDNIGHT SKY (SPECIAL)
-================================ */
-body.theme-midnight {
-  --bg: radial-gradient(circle at top, #6b6fff 0%, #070a1e 55%, #02030a 100%);
-  --card: rgba(32,36,90,.3);
-  --text: #eef0ff;
-  --accent: #7a7fff;
-
-  background:
-    radial-gradient(rgba(255,255,255,.45) 1px, transparent 1px) 0 0 / 140px 140px,
-    radial-gradient(rgba(180,200,255,.35) 1px, transparent 1px) 60px 80px / 220px 220px,
-    var(--bg);
-
-  animation: midnight-sky 90s linear infinite;
-}
-
-body.theme-midnight::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-
-  background:
-    radial-gradient(ellipse at 30% 40%, rgba(150,160,255,.14), transparent 65%),
-    radial-gradient(ellipse at 75% 60%, rgba(120,130,255,.12), transparent 70%);
-
-  animation: cloud-drift 140s linear infinite;
-}
-
-body.theme-midnight::after {
-  content: "";
-  position: fixed;
-  top: -160px;
-  right: -140px;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-
-  background:
-    radial-gradient(circle at 30% 30%,
-      rgba(255,255,255,.95),
-      rgba(200,210,255,.85) 28%,
-      rgba(120,140,255,.55) 48%,
-      rgba(70,80,160,.25) 62%,
-      transparent 68%
-    );
-
-  animation: moon-glow 6s ease-in-out infinite;
-}
-
-/* Keep UI above effects */
-.sidebar,
-.main {
-  position: relative;
-  z-index: 1;
-}
-
-/* ===============================
-   SKY ANIMATIONS
-================================ */
-@keyframes midnight-sky {
-  from { background-position: 0 0, 60px 80px, center; }
-  to   { background-position: 300px 600px, 400px 300px, center; }
-}
-
-@keyframes cloud-drift {
-  from { transform: translateX(-6%); }
-  to   { transform: translateX(6%); }
-}
-
-@keyframes moon-glow {
-  0%,100% {
-    box-shadow:
-      0 0 180px rgba(200,210,255,.45),
-      0 0 380px rgba(120,140,255,.25);
-  }
-  50% {
-    box-shadow:
-      0 0 260px rgba(220,230,255,.7),
-      0 0 520px rgba(150,170,255,.45);
-  }
+@keyframes empty-pulse {
+  0%,100% { opacity: .35; }
+  50% { opacity: .85; }
 }
 
 /* ===============================
    MOBILE
 ================================ */
 @media (max-width:768px) {
-  .main {
-    margin-left: 0;
-  }
+  .main { margin-left: 0; }
+  .panel::after { opacity: .6; }
 }
