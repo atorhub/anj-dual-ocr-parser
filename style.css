@@ -1,105 +1,147 @@
-/* ===============================
-   RESET
-================================ */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-/* ===============================
-   BODY + FALLBACK VARIABLES
-================================ */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-
-  --bg: #020617;
-  --card: rgba(255,255,255,.08);
-  --text: #e5e7eb;
-  --accent: #38bdf8;
-
   background: var(--bg);
   color: var(--text);
-  overflow-x: hidden;
-}
-
-/* ===============================
-   APP SHELL
-================================ */
-.app-shell {
-  display: flex;
-  min-height: 100vh;
+  transition: background 0.5s ease;
 }
 
 /* ===============================
    THEMES
 ================================ */
+
 body.theme-default {
-  --bg: radial-gradient(circle at top,#1e1b4b,#020617);
+  --bg: radial-gradient(circle at top, #1e1b4b, #020617);
+  --card: rgba(255, 255, 255, 0.08);
+  --text: #e5e7eb;
   --accent: #8b5cf6;
+}
+
+body.theme-galaxy {
+  --bg: radial-gradient(circle at top, #2d1b69, #07000f);
+  --card: rgba(255, 255, 255, 0.1);
+  --text: #f5f3ff;
+  --accent: #c084fc;
+}
+
+body.theme-fairy {
+  --bg: linear-gradient(135deg, #2e026d, #a21caf);
+  --card: rgba(255, 255, 255, 0.12);
+  --text: #fdf4ff;
+  --accent: #f0abfc;
+}
+
+body.theme-pink {
+  --bg: linear-gradient(135deg, #3b021f, #831843);
+  --card: rgba(255, 255, 255, 0.14);
+  --text: #ffe4f1;
+  --accent: #fb7185;
 }
 
 body.theme-dark {
   --bg: #020617;
+  --card: rgba(255, 255, 255, 0.06);
+  --text: #e5e7eb;
   --accent: #38bdf8;
 }
 
+/* NEW THEMES */
+
 body.theme-aqua {
-  --bg: radial-gradient(circle at top,#7cecff,#03141c);
-  --accent: #7cecff;
+  --bg: radial-gradient(circle at top, #1ddfd3, #0b2c3d 70%);
+  --accent: #1ddfd3;
+  --card: rgba(40, 180, 190, 0.18);
 }
 
 body.theme-mint {
-  --bg: radial-gradient(circle at top,#9affdd,#041714);
-  --accent: #9affdd;
+  --bg: radial-gradient(circle at top, #7fffd4, #0f3d2e 70%);
+  --accent: #7fffd4;
+  --card: rgba(120, 255, 210, 0.16);
 }
 
 body.theme-sunset {
-  --bg: radial-gradient(circle at top,#ff9a9e,#1b0c12);
-  --accent: #ff758c;
+  --bg: radial-gradient(circle at top, #ff8a65, #3b1c2a 70%);
+  --accent: #ff8a65;
+  --card: rgba(255, 140, 100, 0.18);
 }
 
 body.theme-neon {
-  --bg: radial-gradient(circle at top,#00ffe7,#020617);
-  --accent: #00ffe7;
+  --bg: radial-gradient(circle at top, #3ea6ff, #081b33 70%);
+  --accent: #3ea6ff;
+  --card: rgba(80, 150, 255, 0.16);
 }
 
 body.theme-midnight {
-  --bg: radial-gradient(circle at top,#6b6fff,#02030a);
-  --accent: #7a7fff;
+  --bg: radial-gradient(circle at top, #5b6cff, #050812 70%);
+  --accent: #5b6cff;
+  --card: rgba(90, 110, 255, 0.15);
 }
 
 /* ===============================
-   SIDEBAR
+   LAYOUT
 ================================ */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
 .sidebar {
   width: 220px;
   padding: 20px;
-  background: rgba(0,0,0,.45);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(18px);
 }
 
-/* ===============================
-   MAIN
-================================ */
+.nav-item {
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  opacity: 1;
+  background: var(--card);
+  box-shadow: 0 0 18px var(--accent);
+}
+
 .main {
   flex: 1;
   padding: 24px;
 }
 
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
 /* ===============================
-   LAYOUTS
+   GRID MODES
 ================================ */
-.layout-dashboard .grid {
+
+body.layout-dashboard .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
 }
 
-.layout-focus .grid {
-  display: grid;
-  justify-content: center;
-  gap: 24px;
+body.layout-focus .grid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
-.layout-vertical .grid {
+body.layout-vertical .grid {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -108,73 +150,142 @@ body.theme-midnight {
 /* ===============================
    PANELS
 ================================ */
+
 .panel {
   background: var(--card);
   border-radius: 22px;
   padding: 22px;
   backdrop-filter: blur(18px);
-  position: relative;
-  animation: panel-breathe 7s ease-in-out infinite;
-}
-
-@keyframes panel-breathe {
-  0%,100% { box-shadow: 0 8px 28px rgba(0,0,0,.35); }
-  50% { box-shadow: 0 14px 40px rgba(0,0,0,.45); }
-}
-
-/* =========================================================
-   ADDITIVE VISUAL ENHANCEMENTS (SAFE LAYER)
-========================================================= */
-
-/* hover / touch glow */
-button:hover,
-button:active {
-  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 45%, transparent);
-}
-
-/* empty panel sheen */
-.panel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(120deg,transparent,rgba(255,255,255,.08),transparent);
-  transform: translateX(-120%);
-  animation: panel-sheen 6s ease-in-out infinite;
-}
-
-@keyframes panel-sheen {
-  0% { transform: translateX(-120%); }
-  45% { transform: translateX(120%); }
-  100% { transform: translateX(120%); }
-}
-
-/* midnight moon */
-body.theme-midnight::after {
-  content: "";
-  position: fixed;
-  top: -160px;
-  right: -140px;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle at 30% 30%,
-    rgba(255,255,255,.95),
-    rgba(120,140,255,.55),
-    transparent 70%);
   box-shadow:
-    0 0 180px rgba(200,210,255,.45),
-    0 0 360px rgba(120,140,255,.25);
-  animation: moon-glow 6s ease-in-out infinite;
+    0 8px 30px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  animation: fadeUp 0.4s ease both;
+  position: relative;
 }
 
-@keyframes moon-glow {
-  0%,100% {
-    box-shadow: 0 0 180px rgba(200,210,255,.45);
+pre {
+  min-height: 130px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  white-space: pre-wrap;
+}
+
+pre:empty::before {
+  content: "Waiting for output…";
+  animation: pulse 1.6s infinite;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+
+.actions button {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  font-weight: 600;
+}
+
+/* ===============================
+   SIDEBAR TOGGLE
+================================ */
+
+#sidebarToggle {
+  background: var(--card);
+  color: var(--text);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+}
+
+body.sidebar-hidden .sidebar {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body.sidebar-hidden .main {
+  margin-left: 0;
+}
+
+/* ===============================
+   ANIMATIONS
+================================ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  50% {
-    box-shadow: 0 0 260px rgba(220,230,255,.7);
+  to {
+    opacity: 1;
+    transform: none;
   }
-           }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+/* ===============================
+   MOBILE FIX (CRITICAL)
+================================ */
+
+@media (max-width: 768px) {
+
+  .sidebar {
+    display: none;
+  }
+
+  .app-shell {
+    display: block;
+  }
+
+  .main {
+    padding: 16px;
+  }
+
+  body .grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .panel {
+    width: 100%;
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .panel h2 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .actions button {
+    flex: 1;
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  pre {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  body {
+    background-attachment: fixed;
+  }
+}
