@@ -6,33 +6,41 @@ body {
   background: var(--bg);
   color: var(--text);
   transition: background .5s ease;
+  position: relative;
 }
 
-/* THEMES */
+/* ===============================
+   BASE THEMES (UNCHANGED)
+================================ */
+
 body.theme-default {
   --bg: radial-gradient(circle at top,#1e1b4b,#020617);
   --card: rgba(255,255,255,.08);
   --text: #e5e7eb;
   --accent: #8b5cf6;
 }
+
 body.theme-galaxy {
   --bg: radial-gradient(circle at top,#2d1b69,#07000f);
   --card: rgba(255,255,255,.1);
   --text: #f5f3ff;
   --accent: #c084fc;
 }
+
 body.theme-fairy {
   --bg: linear-gradient(135deg,#2e026d,#a21caf);
   --card: rgba(255,255,255,.12);
   --text: #fdf4ff;
   --accent: #f0abfc;
 }
+
 body.theme-pink {
   --bg: linear-gradient(135deg,#3b021f,#831843);
   --card: rgba(255,255,255,.14);
   --text: #ffe4f1;
   --accent: #fb7185;
 }
+
 body.theme-dark {
   --bg: #020617;
   --card: rgba(255,255,255,.06);
@@ -40,20 +48,48 @@ body.theme-dark {
   --accent: #38bdf8;
 }
 
-/* LAYOUT */
+/* ===============================
+   NEW THEMES (BASE COLORS)
+================================ */
+
+body.theme-aqua {
+  --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
+  --accent: #7cecff;
+  --card: rgba(35,110,130,0.22);
+}
+
+body.theme-mint {
+  --bg: radial-gradient(circle at top, #9affdd 0%, #0b2f26 55%, #041714 100%);
+  --accent: #9affdd;
+  --card: rgba(40,120,95,0.22);
+}
+
+body.theme-midnight {
+  --bg: radial-gradient(circle at top, #7a7fff 0%, #0a0d24 55%, #03040d 100%);
+  --accent: #7a7fff;
+  --card: rgba(45,50,120,0.22);
+}
+
+/* ===============================
+   LAYOUT (UNCHANGED)
+================================ */
+
 .app-shell { display:flex; min-height:100vh; }
+
 .sidebar {
   width:220px;
   padding:20px;
   background:rgba(0,0,0,.45);
   backdrop-filter:blur(18px);
 }
+
 .nav-item {
   padding:14px;
   border-radius:14px;
   margin-bottom:10px;
   opacity:.7;
 }
+
 .nav-item.active,
 .nav-item:hover {
   opacity:1;
@@ -70,24 +106,32 @@ body.theme-dark {
   margin-bottom:24px;
 }
 
-/* GRID MODES */
+/* ===============================
+   GRID MODES (UNCHANGED)
+================================ */
+
 body.layout-dashboard .grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
   gap:24px;
 }
+
 body.layout-focus .grid {
   display:grid;
   grid-template-columns:1fr;
   gap:24px;
 }
+
 body.layout-vertical .grid {
   display:flex;
   flex-direction:column;
   gap:20px;
 }
 
-/* PANELS */
+/* ===============================
+   PANELS (UNCHANGED)
+================================ */
+
 .panel {
   background:var(--card);
   border-radius:22px;
@@ -105,12 +149,16 @@ pre {
   background:rgba(255,255,255,.05);
   white-space:pre-wrap;
 }
+
 pre:empty::before {
   content:"Waiting for output…";
   animation:pulse 1.6s infinite;
 }
 
-/* BUTTONS */
+/* ===============================
+   BUTTONS (UNCHANGED)
+================================ */
+
 .actions button {
   padding:10px 18px;
   border-radius:999px;
@@ -119,344 +167,96 @@ pre:empty::before {
   font-weight:600;
 }
 
+/* ===============================
+   AMBIENT PARTICLES (ONLY 3 THEMES)
+================================ */
+
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0;
+}
+
+body.theme-mint::before,
+body.theme-aqua::before,
+body.theme-midnight::before {
+  opacity:0.35;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px);
+  background-size:5px 5px;
+  animation:twinkle 8s ease-in-out infinite alternate;
+}
+
+/* ===============================
+   🌕 VISIBLE MOON GLOW (KEY PART)
+================================ */
+
+body::after {
+  content:"";
+  position:fixed;
+  top:-20%;
+  left:50%;
+  transform:translateX(-50%);
+  width:90vmax;
+  height:90vmax;
+  border-radius:50%;
+  pointer-events:none;
+  opacity:0;
+  filter:blur(80px);
+}
+
+/* Mint Moon */
+body.theme-mint::after {
+  opacity:0.55;
+  background:radial-gradient(circle,
+    rgba(170,255,220,0.9) 0%,
+    rgba(170,255,220,0.4) 30%,
+    transparent 65%);
+}
+
+/* Aqua Light Pool */
+body.theme-aqua::after {
+  opacity:0.5;
+  background:radial-gradient(circle,
+    rgba(140,240,255,0.9) 0%,
+    rgba(140,240,255,0.4) 30%,
+    transparent 65%);
+}
+
+/* Midnight Moon */
+body.theme-midnight::after {
+  opacity:0.45;
+  background:radial-gradient(circle,
+    rgba(180,170,255,0.9) 0%,
+    rgba(180,170,255,0.4) 30%,
+    transparent 65%);
+}
+
+/* ===============================
+   ANIMATIONS
+================================ */
+
 @keyframes fadeUp {
   from { opacity:0; transform:translateY(10px); }
   to { opacity:1; transform:none; }
 }
+
 @keyframes pulse {
   0%,100% { opacity:.4; }
   50% { opacity:.9; }
 }
 
+@keyframes twinkle {
+  from { opacity:0.25; }
+  to { opacity:0.45; }
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
 @media(max-width:768px){
   .sidebar{display:none;}
-    }
-/* ===============================
-   SMART APP STYLE – FOCUS LAYOUT
-   (NO ID CHANGES)
-================================ */
-
-body.layout-focus {
-  --focus-radius: 28px;
-  --focus-padding: 26px;
-}
-
-/* One card per screen */
-body.layout-focus .grid {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  max-width: 420px;
-  margin: 0 auto;
-}
-
-/* App-style cards */
-body.layout-focus .panel {
-  border-radius: var(--focus-radius);
-  padding: var(--focus-padding);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.14),
-      rgba(255,255,255,0.05)
-    ),
-    var(--card);
-
-  box-shadow:
-    0 20px 40px rgba(0,0,0,0.45),
-    inset 0 1px 1px rgba(255,255,255,0.25);
-
-  transform: none;
-}
-
-/* Remove hover lift on mobile-style UI */
-body.layout-focus .panel:hover {
-  transform: none;
-}
-
-/* App-style headers */
-body.layout-focus .panel h2 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-
-/* INPUT + BUTTON polish */
-body.layout-focus input[type="file"] {
-  width: 100%;
-  margin-bottom: 14px;
-}
-
-/* Rounded pill buttons (Smart App style) */
-body.layout-focus .actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-body.layout-focus .actions button {
-  flex: 1;
-  min-width: 110px;
-  border-radius: 999px;
-  padding: 12px 18px;
-  font-size: 0.9rem;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-}
-
-/* App-style text boxes */
-body.layout-focus pre {
-  border-radius: 22px;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  background: rgba(255,255,255,0.06);
-}
-
-/* Subtle glow for focus mode */
-body.layout-focus .panel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow: 0 0 30px color-mix(in srgb, var(--accent) 35%, transparent);
-  opacity: 0.35;
-}
-
-/* Mobile-first polish */
-@media (max-width: 480px) {
-  body.layout-focus .grid {
-    padding-bottom: 40px;
-  }
-  }
-/* =========================================
-   FOCUS LAYOUT – VISUAL POLISH (APP STYLE)
-========================================= */
-
-body.layout-focus {
-  --panel-radius: 30px;
-  --panel-pad: 28px;
-}
-
-/* Centered app column */
-body.layout-focus .grid {
-  max-width: 420px;
-  margin: 0 auto;
-  gap: 30px;
-}
-
-/* Softer premium glass cards */
-body.layout-focus .panel {
-  border-radius: var(--panel-radius);
-  padding: var(--panel-pad);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.18),
-      rgba(255,255,255,0.06)
-    ),
-    var(--card);
-
-  backdrop-filter: blur(18px);
-  box-shadow:
-    0 25px 55px rgba(0,0,0,0.45),
-    inset 0 1px 1px rgba(255,255,255,0.25);
-}
-
-/* App-like section titles */
-body.layout-focus .panel h2 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  margin-bottom: 14px;
-}
-
-/* Output blocks – lighter & readable */
-body.layout-focus pre {
-  background: rgba(255,255,255,0.08);
-  border-radius: 22px;
-  padding: 18px;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: rgba(255,255,255,0.92);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-}
-
-/* Buttons – soft pill style */
-body.layout-focus .actions button {
-  border-radius: 999px;
-  padding: 12px 18px;
-  font-weight: 600;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
-}
-
-/* Subtle glow */
-body.layout-focus .panel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 40%, transparent);
-  opacity: 0.35;
-}
-
-/* =========================================
-   NEW THEMES (CSS ONLY)
-========================================= */
-/* =========================================
-   PREMIUM AMBIENCE LAYER
-   (Mint / Aqua / Midnight ONLY)
-========================================= */
-
-/* Default: OFF for all themes */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-}
-
-/* Shared particle texture */
-@keyframes ambientTwinkle {
-  from { opacity: 0.25; }
-  to   { opacity: 0.45; }
-}
-
-/* =========================
-   🌕 MINT — Green Moon
-========================= */
-body.theme-mint::before {
-  opacity: 0.35;
-  background-image:
-    radial-gradient(rgba(170,255,220,0.35) 1px, transparent 1px),
-    radial-gradient(circle at top,
-      rgba(140,255,210,0.25),
-      transparent 60%);
-  background-size: 5px 5px, 100% 100%;
-  animation: ambientTwinkle 6s ease-in-out infinite alternate;
-}
-
-/* =========================
-   🦋 AQUA — Blue Butterflies
-========================= */
-body.theme-aqua::before {
-  opacity: 0.32;
-  background-image:
-    radial-gradient(rgba(160,240,255,0.35) 1px, transparent 1px),
-    radial-gradient(circle at center,
-      rgba(80,200,255,0.28),
-      transparent 65%);
-  background-size: 6px 6px, 100% 100%;
-  animation: ambientTwinkle 7s ease-in-out infinite alternate;
-}
-
-/* =========================
-   🌙 MIDNIGHT — Crescent Moon
-========================= */
-body.theme-midnight::before {
-  opacity: 0.28;
-  background-image:
-    radial-gradient(rgba(200,190,255,0.3) 1px, transparent 1px),
-    radial-gradient(circle at top,
-      rgba(140,130,255,0.25),
-      transparent 70%);
-  background-size: 7px 7px, 100% 100%;
-  animation: ambientTwinkle 9s ease-in-out infinite alternate;
-}
-
-
-/* 🌅 SUNSET */
-body.theme-sunset {
-  --bg: radial-gradient(circle at top, #ff8a65, #3b1c2a 70%);
-  --accent: #ff8a65;
-  --card: rgba(255, 140, 100, 0.18);
-}
-
-/* 💎 NEON BLUE */
-body.theme-neon {
-  --bg: radial-gradient(circle at top, #3ea6ff, #081b33 70%);
-  --accent: #3ea6ff;
-  --card: rgba(80, 150, 255, 0.16);
-}
-/* ===============================
-   SIDEBAR TOGGLE
-================================ */
-
-#sidebarToggle {
-  background: var(--card);
-  color: var(--text);
-  border: none;
-  padding: 8px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-}
-
-/* Hidden sidebar state */
-body.sidebar-hidden .sidebar {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-/* Expand main area when sidebar is hidden */
-body.sidebar-hidden .main {
-  margin-left: 0;
-}
-/* =========================================
-   VISUAL TUNING PATCH
-   Mint / Aqua / Midnight ONLY
-   (Contrast + Depth Fix)
-========================================= */
-
-/* ---------- MINT : Green Moon ---------- */
-body.theme-mint {
-  --bg: radial-gradient(circle at top, #9affdd 0%, #0b2f26 55%, #041714 100%);
-  --card: rgba(40, 120, 95, 0.22);
-}
-
-/* ---------- AQUA : Blue Butterflies ---------- */
-body.theme-aqua {
-  --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
-  --card: rgba(35, 110, 130, 0.22);
-}
-
-/* ---------- MIDNIGHT : Crescent Moon ---------- */
-body.theme-midnight {
-  --bg: radial-gradient(circle at top, #7a7fff 0%, #0a0d24 55%, #03040d 100%);
-  --card: rgba(45, 50, 120, 0.22);
-}
-
-/* -----------------------------------------
-   Darken glass panels ONLY for these themes
------------------------------------------ */
-body.theme-mint .panel,
-body.theme-aqua .panel,
-body.theme-midnight .panel {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.12),
-      rgba(255,255,255,0.03)
-    ),
-    var(--card);
-}
-
-/* -----------------------------------------
-   Strengthen ambience visibility (still subtle)
------------------------------------------ */
-body.theme-mint::before,
-body.theme-aqua::before,
-body.theme-midnight::before {
-  opacity: 0.45;
-}
-
-/* -----------------------------------------
-   Reduce white fog in dashboard view
------------------------------------------ */
-body.layout-dashboard.theme-mint .panel,
-body.layout-dashboard.theme-aqua .panel,
-body.layout-dashboard.theme-midnight .panel {
-  backdrop-filter: blur(14px);
 }
