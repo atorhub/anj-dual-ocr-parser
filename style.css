@@ -404,3 +404,59 @@ body.sidebar-hidden .sidebar {
 body.sidebar-hidden .main {
   margin-left: 0;
 }
+/* =========================================
+   VISUAL TUNING PATCH
+   Mint / Aqua / Midnight ONLY
+   (Contrast + Depth Fix)
+========================================= */
+
+/* ---------- MINT : Green Moon ---------- */
+body.theme-mint {
+  --bg: radial-gradient(circle at top, #9affdd 0%, #0b2f26 55%, #041714 100%);
+  --card: rgba(40, 120, 95, 0.22);
+}
+
+/* ---------- AQUA : Blue Butterflies ---------- */
+body.theme-aqua {
+  --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
+  --card: rgba(35, 110, 130, 0.22);
+}
+
+/* ---------- MIDNIGHT : Crescent Moon ---------- */
+body.theme-midnight {
+  --bg: radial-gradient(circle at top, #7a7fff 0%, #0a0d24 55%, #03040d 100%);
+  --card: rgba(45, 50, 120, 0.22);
+}
+
+/* -----------------------------------------
+   Darken glass panels ONLY for these themes
+----------------------------------------- */
+body.theme-mint .panel,
+body.theme-aqua .panel,
+body.theme-midnight .panel {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.12),
+      rgba(255,255,255,0.03)
+    ),
+    var(--card);
+}
+
+/* -----------------------------------------
+   Strengthen ambience visibility (still subtle)
+----------------------------------------- */
+body.theme-mint::before,
+body.theme-aqua::before,
+body.theme-midnight::before {
+  opacity: 0.45;
+}
+
+/* -----------------------------------------
+   Reduce white fog in dashboard view
+----------------------------------------- */
+body.layout-dashboard.theme-mint .panel,
+body.layout-dashboard.theme-aqua .panel,
+body.layout-dashboard.theme-midnight .panel {
+  backdrop-filter: blur(14px);
+}
