@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- ✅ MOBILE VIEWPORT FIX (CRITICAL) -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
   <title>ANJ Dual OCR Parser</title>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
@@ -32,19 +37,14 @@
       <span class="brand">ANJ Dual OCR</span>
 
       <div class="top-controls">
+        <button id="sidebarToggle">☰</button>
 
-        <!-- ✅ SIDEBAR TOGGLE (ADDED – SAFE) -->
-        <button id="sidebarToggle" title="Toggle Sidebar">☰</button>
-
-        <!-- THEME SELECT (UPDATED ONLY HERE) -->
         <select id="themeSelect">
           <option value="default">Default</option>
           <option value="galaxy">Galaxy</option>
           <option value="fairy">Fairy</option>
           <option value="pink">Pink</option>
           <option value="dark">Dark</option>
-
-          <!-- ✅ NEW THEMES -->
           <option value="aqua">Aqua</option>
           <option value="mint">Mint</option>
           <option value="sunset">Sunset</option>
@@ -52,7 +52,6 @@
           <option value="midnight">Midnight</option>
         </select>
 
-        <!-- LAYOUT SELECT (UNCHANGED) -->
         <select id="layoutSelect">
           <option value="dashboard">Dashboard</option>
           <option value="focus">Focus</option>
