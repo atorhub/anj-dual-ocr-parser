@@ -53,9 +53,9 @@ body.theme-mint {
 }
 
 body.theme-midnight {
-  --bg: radial-gradient(circle at top,#7a7fff 0%,#0a0d24 55%,#03040d 100%);
+  --bg: radial-gradient(circle at top,#5f63d6 0%,#07091d 60%,#02030b 100%);
   --accent: #7a7fff;
-  --card: rgba(45,50,120,.22);
+  --card: rgba(35,40,90,.22);
 }
 
 /* ===============================
@@ -115,7 +115,7 @@ body.layout-vertical .grid {
 }
 
 /* ===============================
-   PANELS (TEXT FIX)
+   PANELS (TEXT SAFE)
 ================================ */
 .panel {
   background: var(--card);
@@ -132,23 +132,20 @@ body.layout-vertical .grid {
 .panel pre {
   white-space: pre-wrap;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* ===============================
-   MIDNIGHT SKY (ONE SOURCE)
+   MIDNIGHT SKY (STABLE BASE)
 ================================ */
 body.theme-midnight {
   background:
-    radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px) 0 0 / 120px 120px,
-    radial-gradient(rgba(180,200,255,0.4) 1px, transparent 1px) 60px 80px / 200px 200px,
-    radial-gradient(ellipse at 20% 30%, rgba(160,170,255,0.16), transparent 60%) 0 0 / 180% 180%,
-    radial-gradient(ellipse at 70% 40%, rgba(140,150,255,0.14), transparent 65%) 0 0 / 200% 200%,
+    radial-gradient(rgba(255,255,255,0.45) 1px, transparent 1px) 0 0 / 140px 140px,
+    radial-gradient(rgba(160,180,255,0.35) 1px, transparent 1px) 60px 80px / 220px 220px,
     var(--bg);
-
-  animation: midnight-sky 80s linear infinite;
 }
 
-/* ☁️ Clouds */
+/* ☁️ CLOUD LAYER (VISIBLE + SOFT) */
 body.theme-midnight::before {
   content: "";
   position: fixed;
@@ -157,13 +154,21 @@ body.theme-midnight::before {
   z-index: 0;
 
   background:
-    radial-gradient(ellipse at 30% 50%, rgba(150,160,255,.14), transparent 65%),
-    radial-gradient(ellipse at 70% 60%, rgba(120,130,255,.12), transparent 70%);
+    radial-gradient(ellipse at 15% 35%,
+      rgba(255,255,255,0.10),
+      transparent 65%),
+    radial-gradient(ellipse at 60% 45%,
+      rgba(200,210,255,0.08),
+      transparent 70%),
+    radial-gradient(ellipse at 85% 60%,
+      rgba(180,190,255,0.06),
+      transparent 75%);
 
-  animation: cloud-drift 120s linear infinite;
+  mix-blend-mode: overlay;
+  animation: cloud-drift 140s linear infinite;
 }
 
-/* 🌙 Moon */
+/* 🌙 MOON (GLOWING BUT CALM) */
 body.theme-midnight::after {
   content: "";
   position: fixed;
@@ -177,17 +182,17 @@ body.theme-midnight::after {
 
   background:
     radial-gradient(circle at 30% 30%,
-      rgba(255,255,255,.95),
-      rgba(200,210,255,.85) 28%,
-      rgba(120,140,255,.55) 48%,
-      rgba(70,80,160,.25) 62%,
+      rgba(255,255,255,.9),
+      rgba(200,210,255,.75) 28%,
+      rgba(110,130,255,.45) 48%,
+      rgba(50,60,120,.2) 62%,
       transparent 68%
     );
 
   animation: moon-glow 6s ease-in-out infinite;
 }
 
-/* keep UI above */
+/* keep UI above visuals */
 .sidebar,
 .main {
   position: relative;
@@ -197,24 +202,21 @@ body.theme-midnight::after {
 /* ===============================
    ANIMATIONS
 ================================ */
-@keyframes midnight-sky {
-  from { background-position: 0 0,60px 80px,0 0,0 0,center; }
-  to   { background-position: 300px 600px,400px 300px,10% 0,-10% 0,center; }
-}
-
 @keyframes cloud-drift {
-  from { transform: translateX(-5%); }
-  to   { transform: translateX(5%); }
+  from { transform: translateX(-6%); }
+  to   { transform: translateX(6%); }
 }
 
 @keyframes moon-glow {
   0%,100% {
-    box-shadow: 0 0 180px rgba(200,210,255,.55),
-                0 0 420px rgba(120,140,255,.28);
+    box-shadow:
+      0 0 160px rgba(200,210,255,.45),
+      0 0 360px rgba(120,140,255,.22);
   }
   50% {
-    box-shadow: 0 0 260px rgba(220,230,255,.8),
-                0 0 520px rgba(150,170,255,.45);
+    box-shadow:
+      0 0 240px rgba(220,230,255,.65),
+      0 0 480px rgba(150,170,255,.35);
   }
 }
 
