@@ -260,3 +260,16 @@ body.theme-midnight::after {
 @media(max-width:768px){
   .sidebar{display:none;}
 }
+/* =========================================
+   FIX: Moon glow stacking order
+========================================= */
+
+body::after,
+body::before {
+  z-index: 0;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
