@@ -179,3 +179,76 @@ body.sidebar-hidden .main {
 @media(max-width:768px){
   .main { margin-left: 0; }
 }
+/* =====================================
+   MIDNIGHT MOON ENHANCEMENTS
+   ===================================== */
+
+/* Stronger moon glow */
+.app-shell.theme-midnight::after {
+  box-shadow:
+    0 0 160px rgba(180,190,255,0.55),
+    0 0 320px rgba(120,140,255,0.35),
+    0 0 520px rgba(90,110,255,0.18);
+}
+
+/* ✨ Glitter / stars layer */
+.app-shell.theme-midnight::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(rgba(200,220,255,0.4) 1px, transparent 1px);
+  background-size: 120px 120px, 180px 180px;
+  background-position: 0 0, 60px 90px;
+
+  opacity: 0.35;
+  animation: midnight-twinkle 8s ease-in-out infinite alternate;
+}
+
+/* ☁️ Soft drifting clouds */
+.app-shell.theme-midnight .main::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 160%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+
+  background:
+    radial-gradient(ellipse at 20% 30%,
+      rgba(160,170,255,0.18),
+      transparent 60%),
+    radial-gradient(ellipse at 70% 40%,
+      rgba(140,150,255,0.14),
+      transparent 65%),
+    radial-gradient(ellipse at 50% 70%,
+      rgba(100,120,220,0.12),
+      transparent 70%);
+
+  filter: blur(60px);
+  animation: cloud-drift 60s linear infinite;
+}
+
+/* Keep UI above effects */
+.sidebar,
+.main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ✨ Animations */
+@keyframes midnight-twinkle {
+  from { opacity: 0.2; }
+  to   { opacity: 0.45; }
+}
+
+@keyframes cloud-drift {
+  from { transform: translateX(-10%); }
+  to   { transform: translateX(10%); }
+}
