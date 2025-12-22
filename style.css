@@ -282,3 +282,35 @@ body.theme-midnight .panel {
 body.theme-default .panel {
   background: rgba(255,255,255,.10);
 }
+/* ===============================
+   PANEL MOTION (REAL FIX)
+   works with backdrop-filter
+================================ */
+
+/* idle glow breathing */
+@keyframes panel-breathe {
+  0%, 100% {
+    box-shadow:
+      0 8px 28px rgba(0,0,0,.35),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  50% {
+    box-shadow:
+      0 14px 40px rgba(0,0,0,.45),
+      inset 0 0 0 1px rgba(255,255,255,.14);
+  }
+}
+
+/* apply idle animation */
+.panel {
+  animation: panel-breathe 7s ease-in-out infinite;
+  transition: box-shadow .35s ease, background .35s ease;
+}
+
+/* touch + hover support */
+.panel:active,
+.panel:hover {
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.55),
+    inset 0 0 0 1px rgba(255,255,255,.18);
+}
