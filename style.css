@@ -303,20 +303,68 @@ body.layout-focus .panel::after {
 /* =========================================
    NEW THEMES (CSS ONLY)
 ========================================= */
+/* =========================================
+   PREMIUM AMBIENCE LAYER
+   (Mint / Aqua / Midnight ONLY)
+========================================= */
 
-/* 🌊 AQUA */
-body.theme-aqua {
-  --bg: radial-gradient(circle at top, #1ddfd3, #0b2c3d 70%);
-  --accent: #1ddfd3;
-  --card: rgba(40, 180, 190, 0.18);
+/* Default: OFF for all themes */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
 }
 
-/* 🌿 MINT */
-body.theme-mint {
-  --bg: radial-gradient(circle at top, #7fffd4, #0f3d2e 70%);
-  --accent: #7fffd4;
-  --card: rgba(120, 255, 210, 0.16);
+/* Shared particle texture */
+@keyframes ambientTwinkle {
+  from { opacity: 0.25; }
+  to   { opacity: 0.45; }
 }
+
+/* =========================
+   🌕 MINT — Green Moon
+========================= */
+body.theme-mint::before {
+  opacity: 0.35;
+  background-image:
+    radial-gradient(rgba(170,255,220,0.35) 1px, transparent 1px),
+    radial-gradient(circle at top,
+      rgba(140,255,210,0.25),
+      transparent 60%);
+  background-size: 5px 5px, 100% 100%;
+  animation: ambientTwinkle 6s ease-in-out infinite alternate;
+}
+
+/* =========================
+   🦋 AQUA — Blue Butterflies
+========================= */
+body.theme-aqua::before {
+  opacity: 0.32;
+  background-image:
+    radial-gradient(rgba(160,240,255,0.35) 1px, transparent 1px),
+    radial-gradient(circle at center,
+      rgba(80,200,255,0.28),
+      transparent 65%);
+  background-size: 6px 6px, 100% 100%;
+  animation: ambientTwinkle 7s ease-in-out infinite alternate;
+}
+
+/* =========================
+   🌙 MIDNIGHT — Crescent Moon
+========================= */
+body.theme-midnight::before {
+  opacity: 0.28;
+  background-image:
+    radial-gradient(rgba(200,190,255,0.3) 1px, transparent 1px),
+    radial-gradient(circle at top,
+      rgba(140,130,255,0.25),
+      transparent 70%);
+  background-size: 7px 7px, 100% 100%;
+  animation: ambientTwinkle 9s ease-in-out infinite alternate;
+}
+
 
 /* 🌅 SUNSET */
 body.theme-sunset {
@@ -330,13 +378,6 @@ body.theme-neon {
   --bg: radial-gradient(circle at top, #3ea6ff, #081b33 70%);
   --accent: #3ea6ff;
   --card: rgba(80, 150, 255, 0.16);
-}
-
-/* 🌌 MIDNIGHT */
-body.theme-midnight {
-  --bg: radial-gradient(circle at top, #5b6cff, #050812 70%);
-  --accent: #5b6cff;
-  --card: rgba(90, 110, 255, 0.15);
 }
 /* ===============================
    SIDEBAR TOGGLE
