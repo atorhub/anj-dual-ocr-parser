@@ -1,16 +1,20 @@
-* { box-sizing: border-box; }
+/* ===============================
+   RESET
+================================ */
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
-  transition: background .5s ease;
-  position: relative;
+  transition: background 0.4s ease;
 }
 
 /* ===============================
-   BASE THEMES (UNCHANGED)
+   THEMES (UNCHANGED)
 ================================ */
 
 body.theme-default {
@@ -20,37 +24,12 @@ body.theme-default {
   --accent: #8b5cf6;
 }
 
-body.theme-galaxy {
-  --bg: radial-gradient(circle at top,#2d1b69,#07000f);
-  --card: rgba(255,255,255,.1);
-  --text: #f5f3ff;
-  --accent: #c084fc;
-}
-
-body.theme-fairy {
-  --bg: linear-gradient(135deg,#2e026d,#a21caf);
-  --card: rgba(255,255,255,.12);
-  --text: #fdf4ff;
-  --accent: #f0abfc;
-}
-
-body.theme-pink {
-  --bg: linear-gradient(135deg,#3b021f,#831843);
-  --card: rgba(255,255,255,.14);
-  --text: #ffe4f1;
-  --accent: #fb7185;
-}
-
 body.theme-dark {
   --bg: #020617;
   --card: rgba(255,255,255,.06);
   --text: #e5e7eb;
   --accent: #38bdf8;
 }
-
-/* ===============================
-   NEW THEMES (BASE COLORS)
-================================ */
 
 body.theme-aqua {
   --bg: radial-gradient(circle at top, #7cecff 0%, #0a2a3a 55%, #03141c 100%);
@@ -71,167 +50,135 @@ body.theme-midnight {
 }
 
 /* ===============================
-   LAYOUT (UNCHANGED)
+   APP SHELL
 ================================ */
 
-.app-shell { display:flex; min-height:100vh; }
-
-.sidebar {
-  width:220px;
-  padding:20px;
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(18px);
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
 }
 
+/* ===============================
+   SIDEBAR (FIXED)
+================================ */
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 220px;
+  padding: 20px;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(18px);
+  transition: transform 0.35s ease;
+  z-index: 1000;
+}
+
+/* CLOSED STATE */
+body.sidebar-hidden .sidebar {
+  transform: translateX(-100%);
+}
+
+/* ===============================
+   MAIN CONTENT
+================================ */
+
+.main {
+  flex: 1;
+  padding: 24px;
+  margin-left: 220px;
+  transition: margin-left 0.35s ease;
+}
+
+/* SHIFT MAIN WHEN SIDEBAR CLOSED */
+body.sidebar-hidden .main {
+  margin-left: 0;
+}
+
+/* ===============================
+   NAV ITEMS
+================================ */
+
 .nav-item {
-  padding:14px;
-  border-radius:14px;
-  margin-bottom:10px;
-  opacity:.7;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  opacity: 0.75;
 }
 
 .nav-item.active,
 .nav-item:hover {
-  opacity:1;
-  background:var(--card);
-  box-shadow:0 0 18px var(--accent);
-}
-
-.main { flex:1; padding:24px; }
-
-.topbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:24px;
+  opacity: 1;
+  background: var(--card);
+  box-shadow: 0 0 18px var(--accent);
 }
 
 /* ===============================
-   GRID MODES (UNCHANGED)
+   GRID LAYOUTS
 ================================ */
 
 body.layout-dashboard .grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
+  gap: 24px;
 }
 
 body.layout-focus .grid {
-  display:grid;
-  grid-template-columns:1fr;
-  gap:24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
 
 body.layout-vertical .grid {
-  display:flex;
-  flex-direction:column;
-  gap:20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* ===============================
-   PANELS (UNCHANGED)
+   PANELS
 ================================ */
 
 .panel {
-  background:var(--card);
-  border-radius:22px;
-  padding:22px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 8px 30px rgba(0,0,0,.35),
-             inset 0 0 0 1px rgba(255,255,255,.08);
-  animation:fadeUp .4s ease both;
+  background: var(--card);
+  border-radius: 22px;
+  padding: 22px;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 8px 30px rgba(0,0,0,.35),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+  animation: fadeUp .4s ease both;
 }
 
+/* ===============================
+   TEXT BLOCKS
+================================ */
+
 pre {
-  min-height:130px;
-  padding:16px;
-  border-radius:14px;
-  background:rgba(255,255,255,.05);
-  white-space:pre-wrap;
+  min-height: 130px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.05);
+  white-space: pre-wrap;
 }
 
 pre:empty::before {
-  content:"Waiting for output…";
-  animation:pulse 1.6s infinite;
+  content: "Waiting for output…";
+  animation: pulse 1.6s infinite;
 }
 
 /* ===============================
-   BUTTONS (UNCHANGED)
+   BUTTONS
 ================================ */
 
 .actions button {
-  padding:10px 18px;
-  border-radius:999px;
-  border:none;
-  background:var(--accent);
-  font-weight:600;
-}
-
-/* ===============================
-   AMBIENT PARTICLES (ONLY 3 THEMES)
-================================ */
-
-body::before {
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:0;
-}
-
-body.theme-mint::before,
-body.theme-aqua::before,
-body.theme-midnight::before {
-  opacity:0.35;
-  background-image:
-    radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px);
-  background-size:5px 5px;
-  animation:twinkle 8s ease-in-out infinite alternate;
-}
-
-/* ===============================
-   🌕 VISIBLE MOON GLOW (KEY PART)
-================================ */
-
-body::after {
-  content:"";
-  position:fixed;
-  top:-20%;
-  left:50%;
-  transform:translateX(-50%);
-  width:90vmax;
-  height:90vmax;
-  border-radius:50%;
-  pointer-events:none;
-  opacity:0;
-  filter:blur(80px);
-}
-
-/* Mint Moon */
-body.theme-mint::after {
-  opacity:0.55;
-  background:radial-gradient(circle,
-    rgba(170,255,220,0.9) 0%,
-    rgba(170,255,220,0.4) 30%,
-    transparent 65%);
-}
-
-/* Aqua Light Pool */
-body.theme-aqua::after {
-  opacity:0.5;
-  background:radial-gradient(circle,
-    rgba(140,240,255,0.9) 0%,
-    rgba(140,240,255,0.4) 30%,
-    transparent 65%);
-}
-
-/* Midnight Moon */
-body.theme-midnight::after {
-  opacity:0.45;
-  background:radial-gradient(circle,
-    rgba(180,170,255,0.9) 0%,
-    rgba(180,170,255,0.4) 30%,
-    transparent 65%);
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  font-weight: 600;
 }
 
 /* ===============================
@@ -239,98 +186,25 @@ body.theme-midnight::after {
 ================================ */
 
 @keyframes fadeUp {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:none; }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes pulse {
-  0%,100% { opacity:.4; }
-  50% { opacity:.9; }
-}
-
-@keyframes twinkle {
-  from { opacity:0.25; }
-  to { opacity:0.45; }
+  0%,100% { opacity: .4; }
+  50% { opacity: .9; }
 }
 
 /* ===============================
-   MOBILE
+   MOBILE FIX (IMPORTANT)
 ================================ */
 
-@media(max-width:768px){
-  .sidebar{display:none;}
-}
-/* =========================================
-   FIX: Moon glow stacking order
-========================================= */
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0;
+  }
 
-body::after,
-body::before {
-  z-index: 0;
-}
-
-.app-shell {
-  position: relative;
-  z-index: 1;
-}
-/* ================================
-   Midnight Fantasy Layer (SAFE)
-   ================================ */
-
-/* Ensure app always receives clicks */
-body {
-  position: relative;
-  z-index: 0;
-}
-
-/* Fix: background layers must NEVER intercept input */
-body::before,
-body::after {
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Midnight moon layer */
-body[data-theme="midnight"]::after {
-  content: "";
-  position: fixed;
-  top: -120px;
-  right: -120px;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-
-  /* Moon core */
-  background:
-    radial-gradient(circle at 30% 30%,
-      rgba(255,255,255,0.95),
-      rgba(200,220,255,0.85) 35%,
-      rgba(120,140,255,0.55) 55%,
-      rgba(80,90,180,0.25) 70%,
-      transparent 72%
-    );
-
-  /* Moon glow */
-  box-shadow:
-    0 0 120px rgba(120,140,255,0.45),
-    0 0 260px rgba(90,110,255,0.25);
-
-  opacity: 0.9;
-  filter: blur(0.3px);
-}
-
-/* Subtle night vignette for Midnight only */
-body[data-theme="midnight"]::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at top right,
-      rgba(120,140,255,0.12),
-      transparent 45%
-    ),
-    radial-gradient(circle at bottom,
-      rgba(0,0,40,0.55),
-      transparent 60%
-    );
+  .sidebar {
+    width: 220px;
+  }
 }
