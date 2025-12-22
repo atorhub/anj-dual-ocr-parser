@@ -14,7 +14,6 @@ body {
   margin: 0;
   font-family: system-ui, sans-serif;
 
-  /* global defaults */
   --bg: #020617;
   --card: rgba(255,255,255,.08);
   --text: #e5e7eb;
@@ -38,8 +37,6 @@ body {
 /* ===============================
    THEMES (COLOR PATCHED ONLY)
 ================================ */
-
-/* Default */
 body.theme-default {
   --bg: radial-gradient(circle at top,#1e1b4b,#020617);
   --card: rgba(255,255,255,.08);
@@ -47,7 +44,6 @@ body.theme-default {
   --accent: #8b5cf6;
 }
 
-/* Dark */
 body.theme-dark {
   --bg: #020617;
   --card: rgba(255,255,255,.06);
@@ -55,7 +51,7 @@ body.theme-dark {
   --accent: #38bdf8;
 }
 
-/* 🌸 Pink → Rose Quartz */
+/* 🌸 Pink – Rose Quartz */
 body.theme-pink {
   --bg: radial-gradient(circle at top,#ffb3c7 0%,#6b1d3b 65%,#2a0715 100%);
   --card: rgba(255,255,255,.22);
@@ -63,7 +59,7 @@ body.theme-pink {
   --accent: #ff6fa1;
 }
 
-/* 🌌 Galaxy → Cosmic Violet */
+/* 🌌 Galaxy – Cosmic Violet */
 body.theme-galaxy {
   --bg: radial-gradient(circle at top,#8b7dff 0%,#2a145a 65%,#0c041c 100%);
   --card: rgba(255,255,255,.18);
@@ -71,7 +67,7 @@ body.theme-galaxy {
   --accent: #c4b5fd;
 }
 
-/* 🧚 Fairy → Aurora Bloom */
+/* 🧚 Fairy – Aurora Bloom */
 body.theme-fairy {
   --bg: radial-gradient(circle at top,#f3c6ff 0%,#6a4fb3 60%,#201033 100%);
   --card: rgba(255,255,255,.20);
@@ -79,7 +75,7 @@ body.theme-fairy {
   --accent: #e9b7ff;
 }
 
-/* ⚡ Neon → Electric Blue */
+/* ⚡ Neon – Electric Blue */
 body.theme-neon {
   --bg: radial-gradient(circle at top,#4cc9ff 0%,#0b2a4a 65%,#020b16 100%);
   --card: rgba(255,255,255,.18);
@@ -87,7 +83,7 @@ body.theme-neon {
   --accent: #38e8ff;
 }
 
-/* 🌅 Sunset → Golden Hour */
+/* 🌅 Sunset – Golden Hour */
 body.theme-sunset {
   --bg: radial-gradient(circle at top,#ffb07c 0%,#7a2f2f 65%,#260b0b 100%);
   --card: rgba(255,255,255,.22);
@@ -124,11 +120,33 @@ body.theme-mint {
   background: rgba(0,0,0,.45);
   backdrop-filter: blur(18px);
   transition: transform .35s ease;
-  z-index: 10;
+  z-index: 2;
 }
 
 body.sidebar-hidden .sidebar {
   transform: translateX(-100%);
+}
+
+/* NAV ITEMS – DESKTOP + MOBILE */
+.nav-item {
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  opacity: .75;
+  transition: all .25s ease;
+}
+
+.nav-item:hover {
+  background: var(--card);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 45%, transparent);
+  opacity: 1;
+}
+
+.nav-item:active {
+  background: var(--card);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 60%, transparent);
+  opacity: 1;
+  transform: scale(0.97);
 }
 
 /* ===============================
@@ -139,6 +157,8 @@ body.sidebar-hidden .sidebar {
   padding: 24px;
   margin-left: 220px;
   transition: margin-left .35s ease;
+  position: relative;
+  z-index: 2;
 }
 
 body.sidebar-hidden .main {
@@ -184,15 +204,12 @@ body.layout-vertical .grid {
   animation: panel-breathe 7s ease-in-out infinite;
 }
 
-/* text safety */
 .panel pre {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-/* ===============================
-   EMPTY TEXT ANIMATION
-================================ */
+/* EMPTY OUTPUT TEXT */
 .panel pre:empty::before {
   content: "Waiting for output…";
   display: block;
@@ -202,25 +219,73 @@ body.layout-vertical .grid {
   animation: empty-pulse 1.6s ease-in-out infinite;
 }
 
-/* ===============================
-   PANEL SHEEN
-================================ */
+/* PANEL SHEEN */
 .panel::after {
   content: "";
   position: absolute;
   inset: -1px;
   pointer-events: none;
   border-radius: inherit;
-
   background: linear-gradient(
     120deg,
     transparent 25%,
     rgba(255,255,255,.22),
     transparent 75%
   );
-
   transform: translateX(-120%);
   animation: panel-sheen 6s ease-in-out infinite;
+}
+
+/* ===============================
+   MIDNIGHT SKY + MOON
+================================ */
+body.theme-midnight {
+  --bg: radial-gradient(circle at top,#6b6fff 0%,#070a1e 55%,#02030a 100%);
+  --card: rgba(32,36,90,.30);
+  --text: #eef0ff;
+  --accent: #7a7fff;
+
+  background:
+    radial-gradient(rgba(255,255,255,.45) 1px, transparent 1px) 0 0 / 140px 140px,
+    radial-gradient(rgba(180,200,255,.35) 1px, transparent 1px) 60px 80px / 220px 220px,
+    var(--bg);
+
+  animation: midnight-sky 90s linear infinite;
+}
+
+body.theme-midnight::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(150,160,255,.14), transparent 65%),
+    radial-gradient(ellipse at 75% 60%, rgba(120,130,255,.12), transparent 70%);
+  animation: cloud-drift 140s linear infinite;
+}
+
+body.theme-midnight::after {
+  content: "";
+  position: fixed;
+  top: -160px;
+  right: -140px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+
+  background:
+    radial-gradient(circle at 30% 30%,
+      rgba(255,255,255,.95),
+      rgba(200,210,255,.85) 28%,
+      rgba(120,140,255,.55) 48%,
+      rgba(70,80,160,.25) 62%,
+      transparent 68%
+    );
+
+  animation: moon-glow 6s ease-in-out infinite;
 }
 
 /* ===============================
@@ -240,14 +305,37 @@ body.layout-vertical .grid {
 }
 
 @keyframes panel-sheen {
-  0%   { transform: translateX(-120%); opacity: .2; }
-  45%  { transform: translateX(120%);  opacity: .55; }
-  100% { transform: translateX(120%);  opacity: .2; }
+  0% { transform: translateX(-120%); opacity: .2; }
+  45% { transform: translateX(120%); opacity: .55; }
+  100% { transform: translateX(120%); opacity: .2; }
 }
 
 @keyframes empty-pulse {
   0%,100% { opacity: .35; }
   50% { opacity: .85; }
+}
+
+@keyframes midnight-sky {
+  from { background-position: 0 0,60px 80px,center; }
+  to { background-position: 300px 600px,400px 300px,center; }
+}
+
+@keyframes cloud-drift {
+  from { transform: translateX(-6%); }
+  to { transform: translateX(6%); }
+}
+
+@keyframes moon-glow {
+  0%,100% {
+    box-shadow:
+      0 0 180px rgba(200,210,255,.45),
+      0 0 380px rgba(120,140,255,.25);
+  }
+  50% {
+    box-shadow:
+      0 0 260px rgba(220,230,255,.7),
+      0 0 520px rgba(150,170,255,.45);
+  }
 }
 
 /* ===============================
@@ -256,4 +344,4 @@ body.layout-vertical .grid {
 @media (max-width:768px) {
   .main { margin-left: 0; }
   .panel::after { opacity: .6; }
-}
+     }
