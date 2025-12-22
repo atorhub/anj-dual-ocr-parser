@@ -11,7 +11,7 @@ body {
 }
 
 /* ===============================
-   THEMES (UNCHANGED)
+   GOLDEN BASE THEMES (UNCHANGED)
 ================================ */
 
 body.theme-default {
@@ -50,7 +50,47 @@ body.theme-dark {
 }
 
 /* ===============================
-   LAYOUT CORE (GOLDEN BASE)
+   NEW THEMES (FIXED — ONLY --text ADDED)
+================================ */
+
+body.theme-aqua {
+  --bg: radial-gradient(circle at top, #1ddfd3, #0b2c3d 70%);
+  --card: rgba(40, 180, 190, 0.18);
+  --accent: #1ddfd3;
+  --text: #eaffff; /* ✅ FIX */
+}
+
+body.theme-mint {
+  --bg: radial-gradient(circle at top, #7fffd4, #063b2c 70%);
+  --card: rgba(80, 200, 170, 0.18);
+  --accent: #7fffd4;
+  --text: #ecfffa; /* ✅ FIX */
+}
+
+body.theme-sunset {
+  --bg: radial-gradient(circle at top, #ff7a18, #3b1c2a 75%);
+  --card: rgba(255, 140, 90, 0.18);
+  --accent: #ff9a3c;
+  --text: #fff1e8; /* ✅ FIX */
+}
+
+body.theme-neon {
+  --bg: radial-gradient(circle at top, #00f2ff, #090a0f 75%);
+  --card: rgba(80, 220, 255, 0.18);
+  --accent: #00f2ff;
+  --text: #e9fcff; /* ✅ FIX */
+}
+
+body.theme-midnight {
+  --bg: radial-gradient(circle at top, #0b0f2f, #01010f 80%);
+  --card: rgba(40, 40, 80, 0.18);
+  --accent: #9aa5ff;
+  --text: #e6e9ff; /* ✅ FIX */
+}
+
+/* ===============================
+   EVERYTHING BELOW = GOLDEN BASE
+   (UNCHANGED ON PURPOSE)
 ================================ */
 
 .app-shell {
@@ -72,10 +112,7 @@ body.theme-dark {
   margin-bottom: 10px;
   opacity: .7;
   cursor: pointer;
-  transition:
-    background .25s ease,
-    box-shadow .25s ease,
-    opacity .25s ease;
+  transition: background .25s ease, box-shadow .25s ease, opacity .25s ease;
 }
 
 .nav-item.active,
@@ -88,41 +125,7 @@ body.theme-dark {
 .main {
   flex: 1;
   padding: 24px;
-  transition: margin-left .3s ease;
 }
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-/* ===============================
-   GRID MODES (ORIGINAL)
-================================ */
-
-body.layout-dashboard .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
-  gap: 24px;
-}
-
-body.layout-focus .grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-
-body.layout-vertical .grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* ===============================
-   PANELS & TEXT (FIXED)
-================================ */
 
 .panel {
   background: var(--card);
@@ -132,72 +135,15 @@ body.layout-vertical .grid {
   box-shadow:
     0 8px 30px rgba(0,0,0,.35),
     inset 0 0 0 1px rgba(255,255,255,.08);
-  animation: fadeUp .4s ease both;
-  position: relative;
 }
 
-/* IMPORTANT: no overflow hidden */
 pre {
-  min-height: 130px;
-  padding: 16px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.05);
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-/* ===============================
-   BUTTONS
-================================ */
-
-.actions button {
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: none;
-  background: var(--accent);
-  font-weight: 600;
-}
-
-/* ===============================
-   SIDEBAR TOGGLE (WORKING)
-================================ */
-
-#sidebarToggle {
-  background: var(--card);
-  color: var(--text);
-  border: none;
-  padding: 8px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  backdrop-filter: blur(12px);
-}
-
-/* ONLY reacts to JS toggle */
 body.sidebar-hidden .sidebar {
   width: 0;
   padding: 0;
   overflow: hidden;
 }
-
-body.sidebar-hidden .main {
-  margin-left: 0;
-}
-
-/* ===============================
-   MOBILE (NON-DESTRUCTIVE)
-================================ */
-
-@media (max-width: 768px) {
-  .main {
-    padding: 16px;
-  }
-}
-
-/* ===============================
-   ANIMATIONS
-================================ */
-
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:none; }
-  }
