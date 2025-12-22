@@ -12,7 +12,7 @@ body {
 }
 
 /* ===============================
-   APP SHELL (THE REAL ROOT)
+   APP SHELL (ROOT)
 ================================ */
 
 .app-shell {
@@ -20,19 +20,21 @@ body {
   min-height: 100vh;
   position: relative;
 
-  /* fallback variables */
+  /* fallback variables (prevents white themes) */
   --bg: #020617;
   --card: rgba(255,255,255,.08);
   --text: #e5e7eb;
   --accent: #38bdf8;
 
   background: var(--bg);
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--text);
   transition: background .4s ease;
 }
 
 /* ===============================
-   THEMES (CORRECT TARGET)
+   THEMES
 ================================ */
 
 .app-shell.theme-default {
@@ -64,7 +66,7 @@ body {
 }
 
 /* ===============================
-   SIDEBAR
+   SIDEBAR (WORKING TOGGLE)
 ================================ */
 
 .sidebar {
@@ -85,7 +87,7 @@ body.sidebar-hidden .sidebar {
 }
 
 /* ===============================
-   MAIN
+   MAIN CONTENT
 ================================ */
 
 .main {
@@ -103,12 +105,14 @@ body.sidebar-hidden .main {
    GRID MODES
 ================================ */
 
+/* Dashboard = responsive grid */
 .app-shell.layout-dashboard .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
   gap: 24px;
 }
 
+/* Focus = centered reading mode */
 .app-shell.layout-focus .grid {
   display: grid;
   grid-template-columns: minmax(0,720px);
@@ -116,6 +120,7 @@ body.sidebar-hidden .main {
   gap: 24px;
 }
 
+/* Vertical = stacked workflow */
 .app-shell.layout-vertical .grid {
   display: flex;
   flex-direction: column;
@@ -137,7 +142,44 @@ body.sidebar-hidden .main {
 }
 
 /* ===============================
-   MIDNIGHT MOON (NOW IT WORKS)
+   MIDNIGHT SKY (CLOUDS + STARS)
+================================ */
+
+.app-shell.theme-midnight {
+  background:
+    /* ✨ stars */
+    radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
+    radial-gradient(rgba(180,200,255,0.5) 1px, transparent 1px),
+
+    /* ☁️ clouds */
+    radial-gradient(ellipse at 20% 30%,
+      rgba(160,170,255,0.18),
+      transparent 60%),
+    radial-gradient(ellipse at 70% 40%,
+      rgba(140,150,255,0.14),
+      transparent 65%),
+    radial-gradient(ellipse at 50% 70%,
+      rgba(100,120,220,0.12),
+      transparent 70%),
+
+    /* base theme */
+    var(--bg);
+
+  background-size:
+    120px 120px,
+    200px 200px,
+    160% 160%,
+    180% 180%,
+    200% 200%,
+    cover;
+
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+
+  animation: midnight-sky-move 80s linear infinite;
+}
+
+/* ===============================
+   MIDNIGHT MOON
 ================================ */
 
 .app-shell.theme-midnight::after {
@@ -161,11 +203,12 @@ body.sidebar-hidden .main {
     );
 
   box-shadow:
-    0 0 140px rgba(140,160,255,.45),
-    0 0 320px rgba(90,110,255,.28);
+    0 0 200px rgba(200,210,255,.65),
+    0 0 420px rgba(120,140,255,.35),
+    0 0 680px rgba(90,110,255,.2);
 }
 
-/* keep UI above moon */
+/* Keep UI above visuals */
 .sidebar,
 .main {
   position: relative;
@@ -173,64 +216,9 @@ body.sidebar-hidden .main {
 }
 
 /* ===============================
-   MOBILE
+   ANIMATION
 ================================ */
 
-@media(max-width:768px){
-  .main { margin-left: 0; }
-}
-/* =====================================
-   MIDNIGHT SKY LAYERS (REAL FIX)
-===================================== */
-
-.app-shell.theme-midnight {
-  background-image:
-    /* ✨ stars */
-    radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
-    radial-gradient(rgba(180,200,255,0.5) 1px, transparent 1px),
-
-    /* ☁️ clouds */
-    radial-gradient(ellipse at 20% 30%,
-      rgba(160,170,255,0.18),
-      transparent 60%),
-    radial-gradient(ellipse at 70% 40%,
-      rgba(140,150,255,0.14),
-      transparent 65%),
-    radial-gradient(ellipse at 50% 70%,
-      rgba(100,120,220,0.12),
-      transparent 70%),
-
-    /* base night sky */
-    var(--bg);
-
-  background-size:
-    120px 120px,
-    200px 200px,
-    160% 160%,
-    180% 180%,
-    200% 200%,
-    cover;
-
-  background-position:
-    0 0,
-    60px 80px,
-    0 0,
-    0 0,
-    0 0,
-    center;
-
-  animation: midnight-sky-move 80s linear infinite;
-}
-
-/* 🌙 Moon glow enhancement */
-.app-shell.theme-midnight::after {
-  box-shadow:
-    0 0 200px rgba(200,210,255,0.65),
-    0 0 420px rgba(120,140,255,0.35),
-    0 0 680px rgba(90,110,255,0.2);
-}
-
-/* 🎞️ Animation */
 @keyframes midnight-sky-move {
   from {
     background-position:
@@ -250,4 +238,12 @@ body.sidebar-hidden .main {
       -10% 0,
       center;
   }
-           }
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media(max-width:768px){
+  .main { margin-left: 0; }
+}
