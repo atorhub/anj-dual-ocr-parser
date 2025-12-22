@@ -252,3 +252,69 @@ body.theme-midnight::after {
 @media (max-width:768px) {
   .main { margin-left: 0; }
 }
+/* =====================================
+   MIDNIGHT SKY + MOVING CLOUDS (WORKING)
+===================================== */
+
+/* Layered animated background for midnight */
+body.theme-midnight {
+  background:
+    /* slowly drifting cloud shadows */
+    radial-gradient(ellipse at 20% 30%,
+      rgba(160,170,255,0.16),
+      transparent 60%) 0% 0% / 180% 180%,
+    radial-gradient(ellipse at 70% 40%,
+      rgba(140,150,255,0.14),
+      transparent 65%) 0% 0% / 200% 200%,
+    radial-gradient(ellipse at 50% 70%,
+      rgba(120,130,220,0.12),
+      transparent 70%) 0% 0% / 220% 220%,
+    /* subtle stars */
+    radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px) 0% 0% / 120px 120px,
+    radial-gradient(rgba(180,200,255,0.5) 1px, transparent 1px) 60px 80px / 200px 200px,
+    /* base theme */
+    var(--bg);
+  animation: midnight-sky 70s linear infinite;
+}
+
+/* moon glow breathing */
+body.theme-midnight::after {
+  animation: moon-glow 6s ease-in-out infinite;
+}
+
+/* moving clouds animation */
+@keyframes midnight-sky {
+  from {
+    background-position:
+      0% 0%,  /* cloud 1 */
+      0% 0%,  /* cloud 2 */
+      0% 0%,  /* cloud 3 */
+      0 0,    /* star 1 */
+      60px 80px,  /* star 2 */
+      center;
+  }
+  to {
+    background-position:
+      10% 8%,  /* cloud 1 slow drift */
+      5% 6%,   /* cloud 2 slow drift */
+      8% 4%,   /* cloud 3 slow drift */
+      300px 600px,
+      400px 300px,
+      center;
+  }
+}
+
+@keyframes moon-glow {
+  0%,100% {
+    box-shadow:
+      0 0 180px rgba(200,210,255,0.55),
+      0 0 380px rgba(120,140,255,0.28),
+      0 0 620px rgba(90,110,255,0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 230px rgba(220,230,255,0.75),
+      0 0 480px rgba(150,170,255,0.42),
+      0 0 760px rgba(110,130,255,0.28);
+  }
+}
