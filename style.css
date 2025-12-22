@@ -262,3 +262,34 @@ body.theme-midnight::after {
 @media (max-width:768px) {
   .main { margin-left: 0; }
    }
+/* ===============================
+   EMPTY PANEL VISUAL MOTION FIX
+   (guaranteed visible)
+================================ */
+
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 20%,
+      rgba(255,255,255,.06),
+      transparent 80%
+    );
+
+  opacity: .35;
+  transform: translateX(-100%);
+  animation: panel-sheen 6s ease-in-out infinite;
+}
+
+/* subtle moving sheen */
+@keyframes panel-sheen {
+  0%   { transform: translateX(-100%); opacity: .2; }
+  40%  { transform: translateX(100%);  opacity: .45; }
+  100% { transform: translateX(100%);  opacity: .2; }
+}
