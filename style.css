@@ -180,47 +180,16 @@ body.sidebar-hidden .main {
   .main { margin-left: 0; }
 }
 /* =====================================
-   MIDNIGHT MOON ENHANCEMENTS
-   ===================================== */
+   MIDNIGHT SKY LAYERS (REAL FIX)
+===================================== */
 
-/* Stronger moon glow */
-.app-shell.theme-midnight::after {
-  box-shadow:
-    0 0 160px rgba(180,190,255,0.55),
-    0 0 320px rgba(120,140,255,0.35),
-    0 0 520px rgba(90,110,255,0.18);
-}
-
-/* ✨ Glitter / stars layer */
-.app-shell.theme-midnight::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-
+.app-shell.theme-midnight {
   background-image:
-    radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px),
-    radial-gradient(rgba(200,220,255,0.4) 1px, transparent 1px);
-  background-size: 120px 120px, 180px 180px;
-  background-position: 0 0, 60px 90px;
+    /* ✨ stars */
+    radial-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
+    radial-gradient(rgba(180,200,255,0.5) 1px, transparent 1px),
 
-  opacity: 0.35;
-  animation: midnight-twinkle 8s ease-in-out infinite alternate;
-}
-
-/* ☁️ Soft drifting clouds */
-.app-shell.theme-midnight .main::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 160%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-
-  background:
+    /* ☁️ clouds */
     radial-gradient(ellipse at 20% 30%,
       rgba(160,170,255,0.18),
       transparent 60%),
@@ -229,26 +198,56 @@ body.sidebar-hidden .main {
       transparent 65%),
     radial-gradient(ellipse at 50% 70%,
       rgba(100,120,220,0.12),
-      transparent 70%);
+      transparent 70%),
 
-  filter: blur(60px);
-  animation: cloud-drift 60s linear infinite;
+    /* base night sky */
+    var(--bg);
+
+  background-size:
+    120px 120px,
+    200px 200px,
+    160% 160%,
+    180% 180%,
+    200% 200%,
+    cover;
+
+  background-position:
+    0 0,
+    60px 80px,
+    0 0,
+    0 0,
+    0 0,
+    center;
+
+  animation: midnight-sky-move 80s linear infinite;
 }
 
-/* Keep UI above effects */
-.sidebar,
-.main {
-  position: relative;
-  z-index: 1;
+/* 🌙 Moon glow enhancement */
+.app-shell.theme-midnight::after {
+  box-shadow:
+    0 0 200px rgba(200,210,255,0.65),
+    0 0 420px rgba(120,140,255,0.35),
+    0 0 680px rgba(90,110,255,0.2);
 }
 
-/* ✨ Animations */
-@keyframes midnight-twinkle {
-  from { opacity: 0.2; }
-  to   { opacity: 0.45; }
-}
-
-@keyframes cloud-drift {
-  from { transform: translateX(-10%); }
-  to   { transform: translateX(10%); }
-}
+/* 🎞️ Animation */
+@keyframes midnight-sky-move {
+  from {
+    background-position:
+      0 0,
+      60px 80px,
+      -10% 0,
+      0 0,
+      10% 0,
+      center;
+  }
+  to {
+    background-position:
+      300px 600px,
+      400px 300px,
+      10% 0,
+      0 0,
+      -10% 0,
+      center;
+  }
+           }
