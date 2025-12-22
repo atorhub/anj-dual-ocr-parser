@@ -3,6 +3,9 @@
 ================================ */
 * { box-sizing: border-box; }
 
+/* ===============================
+   BODY + FALLBACK VARIABLES
+================================ */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
@@ -28,7 +31,7 @@ body {
 }
 
 /* ===============================
-   THEMES (VARIABLE ONLY)
+   THEMES (VARIABLE ONLY — SAFE)
 ================================ */
 body.theme-default {
   --bg: radial-gradient(circle at top,#1e1b4b,#020617);
@@ -53,9 +56,9 @@ body.theme-mint {
 }
 
 body.theme-midnight {
-  --bg: radial-gradient(circle at top,#5f63d6 0%,#07091d 60%,#02030b 100%);
+  --bg: radial-gradient(circle at top,#6b6fff 0%,#070a1e 55%,#02030a 100%);
   --accent: #7a7fff;
-  --card: rgba(35,40,90,.22);
+  --card: rgba(32,36,90,.30);
 }
 
 /* ===============================
@@ -125,27 +128,63 @@ body.layout-vertical .grid {
   overflow: hidden;
 
   box-shadow:
-    0 8px 30px rgba(0,0,0,.35),
+    0 8px 28px rgba(0,0,0,.35),
     inset 0 0 0 1px rgba(255,255,255,.08);
 }
 
+/* text never escapes */
 .panel pre {
   white-space: pre-wrap;
   word-break: break-word;
-  overflow-wrap: anywhere;
 }
 
 /* ===============================
-   MIDNIGHT SKY (STABLE BASE)
+   PANEL MOTION (MOBILE SAFE)
+================================ */
+@keyframes panel-breathe {
+  0%,100% {
+    box-shadow:
+      0 8px 28px rgba(0,0,0,.35),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  50% {
+    box-shadow:
+      0 14px 40px rgba(0,0,0,.45),
+      inset 0 0 0 1px rgba(255,255,255,.14);
+  }
+}
+
+.panel {
+  animation: panel-breathe 7s ease-in-out infinite;
+  transition: box-shadow .35s ease, background .35s ease;
+}
+
+.panel:hover,
+.panel:active {
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.55),
+    inset 0 0 0 1px rgba(255,255,255,.18);
+}
+
+/* ===============================
+   MIDNIGHT SKY (ONLY MIDNIGHT)
 ================================ */
 body.theme-midnight {
   background:
+    /* stars */
     radial-gradient(rgba(255,255,255,0.45) 1px, transparent 1px) 0 0 / 140px 140px,
-    radial-gradient(rgba(160,180,255,0.35) 1px, transparent 1px) 60px 80px / 220px 220px,
+    radial-gradient(rgba(180,200,255,0.35) 1px, transparent 1px) 60px 80px / 220px 220px,
+
+    /* clouds */
+    radial-gradient(ellipse at 20% 30%, rgba(140,150,255,.14), transparent 60%) 0 0 / 180% 180%,
+    radial-gradient(ellipse at 70% 50%, rgba(120,130,255,.12), transparent 65%) 0 0 / 200% 200%,
+
     var(--bg);
+
+  animation: midnight-sky 90s linear infinite;
 }
 
-/* ☁️ CLOUD LAYER (VISIBLE + SOFT) */
+/* moving cloud layer */
 body.theme-midnight::before {
   content: "";
   position: fixed;
@@ -154,21 +193,13 @@ body.theme-midnight::before {
   z-index: 0;
 
   background:
-    radial-gradient(ellipse at 15% 35%,
-      rgba(255,255,255,0.10),
-      transparent 65%),
-    radial-gradient(ellipse at 60% 45%,
-      rgba(200,210,255,0.08),
-      transparent 70%),
-    radial-gradient(ellipse at 85% 60%,
-      rgba(180,190,255,0.06),
-      transparent 75%);
+    radial-gradient(ellipse at 30% 40%, rgba(150,160,255,.12), transparent 65%),
+    radial-gradient(ellipse at 75% 60%, rgba(120,130,255,.10), transparent 70%);
 
-  mix-blend-mode: overlay;
   animation: cloud-drift 140s linear infinite;
 }
 
-/* 🌙 MOON (GLOWING BUT CALM) */
+/* moon */
 body.theme-midnight::after {
   content: "";
   position: fixed;
@@ -182,10 +213,10 @@ body.theme-midnight::after {
 
   background:
     radial-gradient(circle at 30% 30%,
-      rgba(255,255,255,.9),
-      rgba(200,210,255,.75) 28%,
-      rgba(110,130,255,.45) 48%,
-      rgba(50,60,120,.2) 62%,
+      rgba(255,255,255,.95),
+      rgba(200,210,255,.85) 28%,
+      rgba(120,140,255,.55) 48%,
+      rgba(70,80,160,.25) 62%,
       transparent 68%
     );
 
@@ -202,6 +233,11 @@ body.theme-midnight::after {
 /* ===============================
    ANIMATIONS
 ================================ */
+@keyframes midnight-sky {
+  from { background-position: 0 0,60px 80px,0 0,0 0,center; }
+  to   { background-position: 300px 600px,400px 300px,10% 0,-10% 0,center; }
+}
+
 @keyframes cloud-drift {
   from { transform: translateX(-6%); }
   to   { transform: translateX(6%); }
@@ -210,13 +246,13 @@ body.theme-midnight::after {
 @keyframes moon-glow {
   0%,100% {
     box-shadow:
-      0 0 160px rgba(200,210,255,.45),
-      0 0 360px rgba(120,140,255,.22);
+      0 0 180px rgba(200,210,255,.45),
+      0 0 380px rgba(120,140,255,.25);
   }
   50% {
     box-shadow:
-      0 0 240px rgba(220,230,255,.65),
-      0 0 480px rgba(150,170,255,.35);
+      0 0 260px rgba(220,230,255,.7),
+      0 0 520px rgba(150,170,255,.45);
   }
 }
 
@@ -225,92 +261,4 @@ body.theme-midnight::after {
 ================================ */
 @media (max-width:768px) {
   .main { margin-left: 0; }
-}
-/* ===============================
-   PANEL MOTION RESTORE (SAFE)
-   idle + hover (premium feel)
-================================ */
-
-/* subtle idle breathing */
-@keyframes panel-idle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
-}
-
-/* base panel motion */
-.panel {
-  animation: panel-idle 8s ease-in-out infinite;
-  transition:
-    transform .35s ease,
-    box-shadow .35s ease,
-    background .35s ease;
-}
-
-/* hover interaction */
-.panel:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow:
-    0 18px 48px rgba(0,0,0,.45),
-    inset 0 0 0 1px rgba(255,255,255,.14);
-}
-
-/* ===============================
-   THEME VISUAL SEPARATION FIX
-   (NO LOGIC CHANGES)
-================================ */
-
-/* aqua: cooler glass */
-body.theme-aqua .panel {
-  background: rgba(35,130,160,.28);
-}
-
-/* mint: greener glass */
-body.theme-mint .panel {
-  background: rgba(40,150,120,.28);
-}
-
-/* midnight: darker glass */
-body.theme-midnight .panel {
-  background: rgba(30,35,80,.32);
-}
-
-/* default: neutral */
-body.theme-default .panel {
-  background: rgba(255,255,255,.10);
-}
-/* ===============================
-   PANEL MOTION (REAL FIX)
-   works with backdrop-filter
-================================ */
-
-/* idle glow breathing */
-@keyframes panel-breathe {
-  0%, 100% {
-    box-shadow:
-      0 8px 28px rgba(0,0,0,.35),
-      inset 0 0 0 1px rgba(255,255,255,.08);
-  }
-  50% {
-    box-shadow:
-      0 14px 40px rgba(0,0,0,.45),
-      inset 0 0 0 1px rgba(255,255,255,.14);
-  }
-}
-
-/* apply idle animation */
-.panel {
-  animation: panel-breathe 7s ease-in-out infinite;
-  transition: box-shadow .35s ease, background .35s ease;
-}
-
-/* touch + hover support */
-.panel:active,
-.panel:hover {
-  box-shadow:
-    0 20px 50px rgba(0,0,0,.55),
-    inset 0 0 0 1px rgba(255,255,255,.18);
-}
+   }
