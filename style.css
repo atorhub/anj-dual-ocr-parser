@@ -226,3 +226,59 @@ body.theme-midnight::after {
 @media (max-width:768px) {
   .main { margin-left: 0; }
 }
+/* ===============================
+   PANEL MOTION RESTORE (SAFE)
+   idle + hover (premium feel)
+================================ */
+
+/* subtle idle breathing */
+@keyframes panel-idle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* base panel motion */
+.panel {
+  animation: panel-idle 8s ease-in-out infinite;
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    background .35s ease;
+}
+
+/* hover interaction */
+.panel:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 18px 48px rgba(0,0,0,.45),
+    inset 0 0 0 1px rgba(255,255,255,.14);
+}
+
+/* ===============================
+   THEME VISUAL SEPARATION FIX
+   (NO LOGIC CHANGES)
+================================ */
+
+/* aqua: cooler glass */
+body.theme-aqua .panel {
+  background: rgba(35,130,160,.28);
+}
+
+/* mint: greener glass */
+body.theme-mint .panel {
+  background: rgba(40,150,120,.28);
+}
+
+/* midnight: darker glass */
+body.theme-midnight .panel {
+  background: rgba(30,35,80,.32);
+}
+
+/* default: neutral */
+body.theme-default .panel {
+  background: rgba(255,255,255,.10);
+}
