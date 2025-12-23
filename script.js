@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     el.status.style.color = err ? "#ff4d4d" : "#7CFC98";
   }
 
-  /* THEME SWITCH – SAFE */
   el.theme.addEventListener("change", () => {
     document.body.classList.forEach(c => {
       if (c.startsWith("theme-")) document.body.classList.remove(c);
@@ -25,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add(`theme-${el.theme.value}`);
   });
 
-  /* LAYOUT SWITCH – SAFE */
   el.layout.addEventListener("change", () => {
     document.body.classList.forEach(c => {
       if (c.startsWith("layout-")) document.body.classList.remove(c);
@@ -67,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return txt.replace(/\s+/g, " ").trim();
   }
 
+  /* -------- LEGACY PARSER (UNCHANGED) -------- */
   function parseInvoice(text) {
     const out = { merchant: null, date: null, total: null };
     const total = text.match(/total[:\s]*₹?\s*([\d,.]+)/i);
@@ -75,6 +74,72 @@ document.addEventListener("DOMContentLoaded", () => {
     if (date) out.date = date[0];
     out.merchant = text.split(" ").slice(0, 4).join(" ");
     return out;
+  }
+
+  /* -------- NEW ANALYSIS PARSER (ADDED) -------- */
+  function analyzeInvoice(text) {
+    const result = { merchant: null, date: null, total: null };
+
+    if (!text) return result;
+
+    const normalized = text
+      .replace(/₹/g, "Rs ")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
+    const lines = normalized
+      .split(/\r?\n/)
+      .map(l => l.trim())
+      .filter(Boolean);
+
+    /* MERCHANT */
+    const ignore = /invoice|bill|tax|gst|receipt|total|date/i;
+    for (let i = 0; i < Math.min(6, lines.length); i++) {
+      const l = lines[i];
+      if (!ignore.test(l) && !/[0-9]{3,}/.test(l) && l.length < 60) {
+        result.merchant = l;
+        break;
+      }
+    }
+
+    /* DATE */
+    const dateRx =
+      /\b((0?[1-9]|[12][0-9]|3[01])[\/\-.](0?[1-9]|1[012])[\/\-.]\d{2,4}|\d{4}[\/\-.](0?[1-9]|1[012])[\/\-.](0?[1-9]|[12][0-9]|3[01])|[A-Za-z]{3,9}\s+\d{1,2},\s*\d{4})\b/;
+
+    for (const l of lines) {
+      const m = l.match(dateRx);
+      if (m) {
+        result.date = m[0];
+        break;
+      }
+    }
+
+    /* TOTAL */
+    let candidates = [];
+    lines.forEach(l => {
+      if (/total|grand total|amount due|net payable|balance/i.test(l)) {
+        const num = l.replace(/[^0-9.,]/g, "").replace(/,+/g, "");
+        if (num) candidates.push(num);
+      }
+    });
+
+    if (candidates.length) {
+      result.total = candidates[0];
+    } else {
+      let max = 0;
+      lines.forEach(l => {
+        const m = l.match(/([0-9]+[.,][0-9]{2})/g);
+        if (m) {
+          m.forEach(v => {
+            const n = parseFloat(v.replace(/,/g, ""));
+            if (n > max) max = n;
+          });
+        }
+      });
+      if (max > 0) result.total = String(max);
+    }
+
+    return result;
   }
 
   async function processFile(useOCR) {
@@ -93,9 +158,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     text = cleanText(text);
+
+    const legacy = parseInvoice(text);
+    const analysis = analyzeInvoice(text);
+
+    const finalResult = {
+      merchant: analysis.merchant || legacy.merchant,
+      date: analysis.date || legacy.date,
+      total: analysis.total || legacy.total
+    };
+
     el.raw.textContent = text || "--";
     el.clean.textContent = text || "--";
-    el.json.textContent = JSON.stringify(parseInvoice(text), null, 2);
+    el.json.textContent = JSON.stringify(finalResult, null, 2);
+
     setStatus("Done ✓");
   }
 
@@ -106,11 +182,20 @@ document.addEventListener("DOMContentLoaded", () => {
       setStatus("Nothing to parse", true);
       return;
     }
+
+    const legacy = parseInvoice(el.clean.textContent);
+    const analysis = analyzeInvoice(el.clean.textContent);
+
     el.json.textContent = JSON.stringify(
-      parseInvoice(el.clean.textContent),
+      {
+        merchant: analysis.merchant || legacy.merchant,
+        date: analysis.date || legacy.date,
+        total: analysis.total || legacy.total
+      },
       null,
       2
     );
+
     setStatus("Parsed ✓");
   };
 
@@ -120,4 +205,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setStatus("Ready ✓");
 });
-          
+              
