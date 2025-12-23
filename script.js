@@ -9,7 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ocr: document.getElementById("ocrOnlyBtn"),
     parse: document.getElementById("parseBtn"),
     theme: document.getElementById("themeSelect"),
-    layout: document.getElementById("layoutSelect")
+    layout: document.getElementById("layoutSelect"),
+
+    /* ✅ UI-only editable fields (ADDED) */
+    editMerchant: document.getElementById("editMerchant"),
+    editDate: document.getElementById("editDate"),
+    editTotal: document.getElementById("editTotal")
   };
 
   function setStatus(msg, err = false) {
@@ -76,10 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return out;
   }
 
-  /* -------- NEW ANALYSIS PARSER (ADDED) -------- */
+  /* -------- ANALYSIS PARSER (UNCHANGED) -------- */
   function analyzeInvoice(text) {
     const result = { merchant: null, date: null, total: null };
-
     if (!text) return result;
 
     const normalized = text
@@ -92,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .map(l => l.trim())
       .filter(Boolean);
 
-    /* MERCHANT */
     const ignore = /invoice|bill|tax|gst|receipt|total|date/i;
     for (let i = 0; i < Math.min(6, lines.length); i++) {
       const l = lines[i];
@@ -102,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    /* DATE */
     const dateRx =
       /\b((0?[1-9]|[12][0-9]|3[01])[\/\-.](0?[1-9]|1[012])[\/\-.]\d{2,4}|\d{4}[\/\-.](0?[1-9]|1[012])[\/\-.](0?[1-9]|[12][0-9]|3[01])|[A-Za-z]{3,9}\s+\d{1,2},\s*\d{4})\b/;
 
@@ -114,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    /* TOTAL */
     let candidates = [];
     lines.forEach(l => {
       if (/total|grand total|amount due|net payable|balance/i.test(l)) {
@@ -172,11 +173,17 @@ document.addEventListener("DOMContentLoaded", () => {
     el.clean.textContent = text || "--";
     el.json.textContent = JSON.stringify(finalResult, null, 2);
 
+    /* ✅ Populate editable UI fields (ADDED) */
+    el.editMerchant.value = finalResult.merchant || "";
+    el.editDate.value = finalResult.date || "";
+    el.editTotal.value = finalResult.total || "";
+
     setStatus("Done ✓");
   }
 
   el.dual.onclick = () => processFile(true);
   el.ocr.onclick = () => processFile(true);
+
   el.parse.onclick = () => {
     if (!el.clean.textContent || el.clean.textContent === "--") {
       setStatus("Nothing to parse", true);
@@ -186,23 +193,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const legacy = parseInvoice(el.clean.textContent);
     const analysis = analyzeInvoice(el.clean.textContent);
 
-    el.json.textContent = JSON.stringify(
-      {
-        merchant: analysis.merchant || legacy.merchant,
-        date: analysis.date || legacy.date,
-        total: analysis.total || legacy.total
-      },
-      null,
-      2
-    );
+    const result = {
+      merchant: analysis.merchant || legacy.merchant,
+      date: analysis.date || legacy.date,
+      total: analysis.total || legacy.total
+    };
+
+    el.json.textContent = JSON.stringify(result, null, 2);
+
+    /* ✅ Populate editable UI fields (ADDED) */
+    el.editMerchant.value = result.merchant || "";
+    el.editDate.value = result.date || "";
+    el.editTotal.value = result.total || "";
 
     setStatus("Parsed ✓");
   };
 
   const sidebarToggle = document.getElementById("sidebarToggle");
-  sidebarToggle.onclick = () =>
-    document.body.classList.toggle("sidebar-hidden");
+  if (sidebarToggle) {
+    sidebarToggle.onclick = () =>
+      document.body.classList.toggle("sidebar-hidden");
+  }
 
   setStatus("Ready ✓");
 });
-              
+    
