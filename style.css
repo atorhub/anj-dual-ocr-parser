@@ -50,47 +50,46 @@ body.theme-dark {
 }
 
 /* ===============================
-   NEW THEMES (FIXED — ONLY --text ADDED)
+   NEW THEMES (ONLY --text FIX)
 ================================ */
 
 body.theme-aqua {
   --bg: radial-gradient(circle at top, #1ddfd3, #0b2c3d 70%);
   --card: rgba(40, 180, 190, 0.18);
   --accent: #1ddfd3;
-  --text: #eaffff; /* ✅ FIX */
+  --text: #eaffff;
 }
 
 body.theme-mint {
   --bg: radial-gradient(circle at top, #7fffd4, #063b2c 70%);
   --card: rgba(80, 200, 170, 0.18);
   --accent: #7fffd4;
-  --text: #ecfffa; /* ✅ FIX */
+  --text: #ecfffa;
 }
 
 body.theme-sunset {
   --bg: radial-gradient(circle at top, #ff7a18, #3b1c2a 75%);
   --card: rgba(255, 140, 90, 0.18);
   --accent: #ff9a3c;
-  --text: #fff1e8; /* ✅ FIX */
+  --text: #fff1e8;
 }
 
 body.theme-neon {
   --bg: radial-gradient(circle at top, #00f2ff, #090a0f 75%);
   --card: rgba(80, 220, 255, 0.18);
   --accent: #00f2ff;
-  --text: #e9fcff; /* ✅ FIX */
+  --text: #e9fcff;
 }
 
 body.theme-midnight {
   --bg: radial-gradient(circle at top, #0b0f2f, #01010f 80%);
   --card: rgba(40, 40, 80, 0.18);
   --accent: #9aa5ff;
-  --text: #e6e9ff; /* ✅ FIX */
+  --text: #e6e9ff;
 }
 
 /* ===============================
-   EVERYTHING BELOW = GOLDEN BASE
-   (UNCHANGED ON PURPOSE)
+   LAYOUT (UNCHANGED)
 ================================ */
 
 .app-shell {
@@ -127,6 +126,10 @@ body.theme-midnight {
   padding: 24px;
 }
 
+/* ===============================
+   PANELS (ANIMATION RESTORED)
+================================ */
+
 .panel {
   background: var(--card);
   border-radius: 22px;
@@ -135,15 +138,59 @@ body.theme-midnight {
   box-shadow:
     0 8px 30px rgba(0,0,0,.35),
     inset 0 0 0 1px rgba(255,255,255,.08);
+  animation: fadeUp .4s ease both;
 }
 
+/* ===============================
+   TEXT BOX + EMPTY STATE (ADDED)
+================================ */
+
 pre {
+  min-height: 120px;
+  padding: 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.05);
   white-space: pre-wrap;
   word-break: break-word;
+  display: block;
+  animation: fadeUp .5s ease both;
 }
+
+/* Empty box placeholder text + animation */
+pre:empty::before {
+  content: "Waiting for output…";
+  opacity: 0.35;
+  font-style: italic;
+  animation: pulseText 1.6s ease-in-out infinite;
+}
+
+/* ===============================
+   SIDEBAR TOGGLE (UNCHANGED)
+================================ */
 
 body.sidebar-hidden .sidebar {
   width: 0;
   padding: 0;
   overflow: hidden;
+}
+
+/* ===============================
+   ANIMATIONS (ADDED, SAFE)
+================================ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulseText {
+  0%   { opacity: 0.25; }
+  50%  { opacity: 0.6; }
+  100% { opacity: 0.25; }
 }
