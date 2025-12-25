@@ -2,21 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+
+  <!-- 📌 REQUIRED FOR RESPONSIVENESS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>ANJ Dual OCR Parser</title>
 
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="theme-default layout-dashboard">
+<body class="theme-default layout-dashboard sidebar-hidden">
 
 <div class="app-shell">
 
   <aside class="sidebar">
     <div class="logo">ANJ</div>
+
     <nav>
       <div class="nav-item active">📤 Upload</div>
       <div class="nav-item">🔍 OCR</div>
@@ -24,6 +28,11 @@
       <div class="nav-item">🕘 History</div>
       <div class="nav-item">⚙️ Settings</div>
     </nav>
+
+    <div class="history-panel">
+      <h3>History</h3>
+      <ul id="historyList"></ul>
+    </div>
   </aside>
 
   <main class="main">
@@ -58,6 +67,7 @@
     </header>
 
     <section class="grid">
+
       <section class="panel">
         <h2>Upload Invoice</h2>
         <input type="file" id="fileInput" />
@@ -80,27 +90,25 @@
 
       <section class="panel">
         <h2>Parsed JSON</h2>
-        <pre id="jsonPreview"></pre>
-      </section>
 
-      <!-- ✅ NEW PANEL: Editable Parsed Fields (UI ONLY) -->
-      <section class="panel">
-        <h2>Review & Edit Parsed Data</h2>
+        <button id="saveBtn">💾 Save to History</button>
 
         <label>
           Merchant
-          <input type="text" id="editMerchant" placeholder="Merchant name" />
+          <input type="text" id="editMerchant" />
         </label>
 
         <label>
           Date
-          <input type="text" id="editDate" placeholder="Invoice date" />
+          <input type="text" id="editDate" />
         </label>
 
         <label>
           Total
-          <input type="text" id="editTotal" placeholder="Total amount" />
+          <input type="text" id="editTotal" />
         </label>
+
+        <pre id="jsonPreview"></pre>
       </section>
 
     </section>
