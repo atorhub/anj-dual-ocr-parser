@@ -1,18 +1,43 @@
+/* =========================================
+   GLOBAL RESET
+========================================= */
+
 * {
   box-sizing: border-box;
 }
 
+/* =========================================
+   ROOT + THEME BRIDGE
+   (abhiii layout vars + cool theme vars)
+========================================= */
+
 body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
+  /* abhiii base vars */
+  --bg-main: #020617;
+  --bg-panel: rgba(255,255,255,0.08);
+  --bg-panel-hover: rgba(255,255,255,0.12);
+  --bg-sidebar: rgba(0,0,0,0.45);
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --accent: #7c3aed;
+
+  /* cool theme vars (mapped safely) */
+  --bg: var(--bg-main);
+  --card: var(--bg-panel);
+  --text: var(--text-main);
+
   background: var(--bg);
   color: var(--text);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
   transition: background .5s ease;
 }
 
-/* ===============================
-   GOLDEN BASE THEMES (UNCHANGED)
-================================ */
+/* =========================================
+   THEMES (FROM cool.css — UNTOUCHED)
+========================================= */
 
 body.theme-default {
   --bg: radial-gradient(circle at top,#1e1b4b,#020617);
@@ -49,10 +74,6 @@ body.theme-dark {
   --accent: #38bdf8;
 }
 
-/* ===============================
-   NEW THEMES (ONLY --text FIX)
-================================ */
-
 body.theme-aqua {
   --bg: radial-gradient(circle at top, #1ddfd3, #0b2c3d 70%);
   --card: rgba(40, 180, 190, 0.18);
@@ -88,62 +109,108 @@ body.theme-midnight {
   --text: #e6e9ff;
 }
 
-/* ===============================
-   LAYOUT (UNCHANGED)
-================================ */
+/* =========================================
+   APP SHELL (abhiii — UNCHANGED)
+========================================= */
 
 .app-shell {
-  display: flex;
+  display: grid;
+  grid-template-columns: 240px 1fr;
   min-height: 100vh;
 }
 
+/* =========================================
+   SIDEBAR (STRUCTURE abhiii + VISUAL cool)
+========================================= */
+
 .sidebar {
-  width: 220px;
-  padding: 20px;
-  background: rgba(0,0,0,.45);
+  width: 240px;
+  background: var(--bg-sidebar);
   backdrop-filter: blur(18px);
-  transition: width .3s ease, padding .3s ease;
+  transition: transform .3s ease;
 }
 
-.nav-item {
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  opacity: .7;
-  cursor: pointer;
-  transition: background .25s ease, box-shadow .25s ease, opacity .25s ease;
+body.sidebar-hidden .sidebar {
+  transform: translateX(-100%);
 }
 
-.nav-item.active,
-.nav-item:hover {
-  opacity: 1;
-  background: var(--card);
-  box-shadow: 0 0 18px var(--accent);
-}
+/* =========================================
+   MAIN CONTENT (abhiii)
+========================================= */
 
 .main {
-  flex: 1;
+  min-height: 100vh;
   padding: 24px;
 }
 
-/* ===============================
-   PANELS (ANIMATION RESTORED)
-================================ */
+/* =========================================
+   GRID
+========================================= */
+
+.grid {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+}
+
+/* =========================================
+   PANELS (MERGED: STRUCTURE + ANIMATION)
+========================================= */
 
 .panel {
   background: var(--card);
   border-radius: 22px;
   padding: 22px;
+  overflow: hidden;
+  word-wrap: break-word;
+  line-height: 1.5;
   backdrop-filter: blur(18px);
   box-shadow:
     0 8px 30px rgba(0,0,0,.35),
     inset 0 0 0 1px rgba(255,255,255,.08);
+  transition:
+    background .25s ease,
+    transform .25s ease,
+    box-shadow .25s ease;
   animation: fadeUp .4s ease both;
 }
 
-/* ===============================
-   TEXT BOX + EMPTY STATE (ADDED)
-================================ */
+.panel:hover {
+  background: var(--bg-panel-hover);
+  transform: translateY(-2px);
+}
+
+.panel p,
+.panel span,
+.panel div {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* =========================================
+   TEXT
+========================================= */
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+/* =========================================
+   PRE / OUTPUT BOX (cool)
+========================================= */
 
 pre {
   min-height: 120px;
@@ -156,27 +223,63 @@ pre {
   animation: fadeUp .5s ease both;
 }
 
-/* Empty box placeholder text + animation */
 pre:empty::before {
   content: "Waiting for output…";
-  opacity: 0.35;
+  opacity: .35;
   font-style: italic;
   animation: pulseText 1.6s ease-in-out infinite;
 }
 
-/* ===============================
-   SIDEBAR TOGGLE (UNCHANGED)
-================================ */
+/* =========================================
+   FOCUS MODE (abhiii)
+========================================= */
 
-body.sidebar-hidden .sidebar {
-  width: 0;
-  padding: 0;
-  overflow: hidden;
+body.sidebar-hidden .app-shell {
+  grid-template-columns: 1fr;
 }
 
-/* ===============================
-   ANIMATIONS (ADDED, SAFE)
-================================ */
+body.sidebar-hidden .main {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =========================================
+   MOBILE (abhiii — UNTOUCHED)
+========================================= */
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    background: var(--bg);
+  }
+
+  #sidebarToggle {
+    position: relative;
+    z-index: 1200;
+  }
+
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 16px;
+  }
+}
+
+/* =========================================
+   ANIMATIONS (cool)
+========================================= */
 
 @keyframes fadeUp {
   from {
