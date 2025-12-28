@@ -201,7 +201,17 @@ document.addEventListener("DOMContentLoaded", () => {
     out.merchant = text.split(" ").slice(0, 4).join(" ");
     return out;
   }
+function calculateConfidence(parsed, text) {
+  let score = 0;
 
+  if (parsed.total) score += 40;
+  if (parsed.date) score += 30;
+  if (parsed.merchant) score += 20;
+  if (text && text.length > 100) score += 10;
+
+  return Math.min(score, 100);
+                          }
+  
   el.parse?.addEventListener("click", () => {
     if (!el.clean.textContent || el.clean.textContent === "--") {
       setStatus("Nothing to parse", true);
@@ -220,7 +230,9 @@ document.addEventListener("DOMContentLoaded", () => {
     el.editTotal.value = parsed.total;
 
     updateParsedUI(true);
-    setStatus("Parsed ✓");
+  const confidence = calculateConfidence(parsed, el.clean.textContent);
+setStatus(`Parsed ✓  |  Confidence: ${confidence}%`);
+    
 
     document.querySelector('[data-page="parsed"]')?.click();
   });
