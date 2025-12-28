@@ -297,3 +297,44 @@ body.sidebar-hidden .main {
   50%  { opacity: 0.6; }
   100% { opacity: 0.25; }
 }
+/* ===== PAGE SYSTEM (HYBRID) ===== */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+@media (max-width: 768px) {
+  body:not(.sidebar-hidden) .sidebar {
+    z-index: 1200;
+  }
+}
+/* Sidebar close button */
+.sidebar-close {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 12px 16px;
+  background: inherit;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  text-align: right;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Mobile only */
+@media (max-width: 768px) {
+  .sidebar-close {
+    display: block;
+  }
+}
+/* =======================
+   History highlight
+======================= */
+.history-active {
+  background: rgba(124, 252, 152, 0.15);
+  border-left: 3px solid #7CFC98;
+   }
